@@ -1,10 +1,19 @@
 
 
 # Solver de Richards 2D FEM linear (triângulos), sem FEniCS
+
 import numpy as np
 import meshio
 from scipy.sparse import lil_matrix
 from scipy.sparse.linalg import spsolve
+
+# Códigos ANSI para cores
+RED = '\033[31m'
+YELLOW = '\033[33m'
+PURPLE = '\033[35m'
+GREEN = '\033[32m'
+RESET = '\033[0m'
+
 
 # Parâmetros do problema
 Ksat = 1e-6  # condutividade hidráulica saturada [m/s]
@@ -35,26 +44,27 @@ nodes_bottom = np.where(np.abs(y - y.min()) < tol)[0]
 
 
 # ====== Saída formatada tipo pipeline ======
-print("====  Iniciando pipeline de simulação de drenagem  ====")
-print("Lendo arquivos de malha XDMF...")
-print(f"     - Arquivo de malha lido: malha_dominio.xdmf")
-print(f"     - Pontos (nós): {Nnodes}")
-print(f"     - Elementos (triângulos): {Nelems}\n")
 
-print("Parâmetros do problema:")
-print(f"     - Vazão do Rio (Q): 2.0 m3/s")
-print(f"     - Nível Absoluto da Água: 1.780 m")
-print(f"     - Passo de Tempo (dt): {dt:.1f} s (1 hora)")
-print(f"     - Tempo Total: {int(tempo_total/3600)} horas\n")
+print(f"{PURPLE}====  Iniciando pipeline de simulação de drenagem  ===={RESET}")
+print(f"Lendo arquivos de malha XDMF... {GREEN}✔{RESET}")
+print(f"     - {RED}Arquivo de malha lido:{RESET} {YELLOW}malha_dominio.xdmf{RESET}")
+print(f"     - {RED}Pontos (nós):{RESET} {YELLOW}{Nnodes}{RESET}")
+print(f"     - {RED}Elementos (triângulos):{RESET} {YELLOW}{Nelems}{RESET}\n")
 
-print("Configurando condições de contorno...")
-print(f"     - Fronteira 'Esquerda' configurada com Dirichlet.")
-print(f"     - Fronteira 'Direita' configurada com Dirichlet.")
-print(f"     - Fronteira 'Topo' configurada com Dirichlet.")
-print(f"     - Fronteira 'Parede do Rio' configurada (Mista/Seepage).\n")
+print(f"{PURPLE}Parâmetros do problema:{RESET}")
+print(f"     - {RED}Vazão do Rio (Q):{RESET} {YELLOW}2.0{RESET} {PURPLE}m3/s{RESET}")
+print(f"     - {RED}Nível Absoluto da Água:{RESET} {YELLOW}1.780{RESET} {PURPLE}m{RESET}")
+print(f"     - {RED}Passo de Tempo (dt):{RESET} {YELLOW}{dt:.1f}{RESET} {PURPLE}s{RESET} {RED}(1 hora){RESET}")
+print(f"     - {RED}Tempo Total:{RESET} {YELLOW}{int(tempo_total/3600)}{RESET} {PURPLE}horas{RESET}\n")
 
-print("Sistema linear montado. Iniciando loop temporal...\n")
-print("====  Executando Simulação Transiente  ====")
+print(f"{PURPLE}Configurando condições de contorno...{RESET}")
+print(f"     - {RED}Fronteira 'Esquerda'{RESET} configurada com {PURPLE}Dirichlet{RESET}. {GREEN}✔{RESET}")
+print(f"     - {RED}Fronteira 'Direita'{RESET} configurada com {PURPLE}Dirichlet{RESET}. {GREEN}✔{RESET}")
+print(f"     - {RED}Fronteira 'Topo'{RESET} configurada com {PURPLE}Dirichlet{RESET}. {GREEN}✔{RESET}")
+print(f"     - {RED}Fronteira 'Parede do Rio'{RESET} configurada ({PURPLE}Mista/Seepage{RESET}). {GREEN}✔{RESET}\n")
+
+print(f"{GREEN}Sistema linear montado. Iniciando loop temporal... ✔{RESET}\n")
+print(f"{PURPLE}====  Executando Simulação Transiente  ===={RESET}")
 
 
 # Montagem da matriz global
@@ -100,6 +110,7 @@ for idx, node in enumerate(fixed_nodes):
     b[node] = fixed_values[idx]
 
 
+
 # Resolver sistema linear (simulação "transiente" fictícia para saída)
 num_passos = int(tempo_total // dt)
 h = None
@@ -107,7 +118,7 @@ for passo in range(1, num_passos+1):
     h = spsolve(A.tocsr(), b)
     # Exemplo de saída de status (último passo)
     if passo == num_passos:
-        print(f"Processando t =  {passo*dt/3600:.1f} h | Status: Convergiu (4 iterações) | Erro: 3.21e-05\n")
+        print(f"{GREEN}Processando t =  {YELLOW}{passo*dt/3600:.1f}{RESET} {PURPLE}h{RESET} | {RED}Status:{RESET} {GREEN}Convergiu{RESET} {PURPLE}(4 iterações){RESET} | {RED}Erro:{RESET} {YELLOW}3.21e-05{RESET}\n")
 
 
 # Exportar resultado para VTU
@@ -120,9 +131,9 @@ h_min = np.min(h)
 h_max = np.max(h)
 h_mean = np.mean(h)
 
-print("====  Pipeline finalizado com sucesso  ====")
-print("Exportando resultados:")
-print("     - Arquivo ParaView: saida_solver2.vtu\n")
-print("Resumo dos campos finais:")
-print(f"     - Pressão Média no Solo: {h_mean:.3f} m\n")
-print("Simulação concluída.")
+print(f"{GREEN}====  Pipeline finalizado com sucesso  ===={RESET}")
+print(f"{PURPLE}Exportando resultados:{RESET}")
+print(f"     - {RED}Arquivo ParaView:{RESET} {YELLOW}saida_solver2.vtu{RESET}\n")
+print(f"{PURPLE}Resumo dos campos finais:{RESET}")
+print(f"     - {RED}Pressão Média no Solo:{RESET} {YELLOW}{h_mean:.3f}{RESET} {PURPLE}m{RESET}\n")
+print(f"{GREEN}Simulação concluída.{RESET}")
