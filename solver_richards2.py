@@ -1,4 +1,5 @@
 
+
 # Solver de Richards 2D FEM linear (triângulos), sem FEniCS
 import numpy as np
 import meshio
@@ -8,6 +9,8 @@ from scipy.sparse.linalg import spsolve
 # Parâmetros do problema
 Ksat = 1e-6  # condutividade hidráulica saturada [m/s]
 g = 9.81  # gravidade [m/s^2]
+dt = 60.0
+tempo_total = 24*3600.0
 
 # Ler malha 2D (malha_dominio.xdmf)
 malha = meshio.read("malha_dominio.xdmf")
@@ -29,6 +32,13 @@ h_bottom = -2.0
 tol = 1e-8
 nodes_top = np.where(np.abs(y - y.max()) < tol)[0]
 nodes_bottom = np.where(np.abs(y - y.min()) < tol)[0]
+
+# ====== Saída formatada tipo tela.tex ======
+print("====  Iniciando simulação de drenagem 2D (Richards)  ====")
+print(f"\nArquivo de malha lido: malha_dominio.xdmf\n     - Pontos (nós): {Nnodes}\n     - Elementos (triângulos): {Nelems}")
+print(f"\nParâmetros do problema:\n     - Condutividade hidráulica saturada (Ksat): {Ksat:.2e} m/s\n     - Gravidade (g): {g:.2f} m/s²\n     - Passo de tempo (dt): {dt:.1f} s\n     - Tempo total (T): {tempo_total:.1f} s")
+print(f"\nCondições de contorno:\n     - Topo (y = max): h = {h_top:.2f} m\n     - Base (y = min): h = {h_bottom:.2f} m\n")
+print("Executando solver FEM 2D...")
 
 # Montagem da matriz global
 A = lil_matrix((Nnodes, Nnodes))
@@ -79,4 +89,12 @@ h = spsolve(A.tocsr(), b)
 cells = [("triangle", triangles)]
 mesh = meshio.Mesh(points, cells, point_data={"h": h})
 mesh.write("saida_solver2.vtu")
-print("Simulação finalizada. Resultado salvo em saida_solver2.vtu.")
+
+# Resumo do campo exportado
+h_min = np.min(h)
+h_max = np.max(h)
+
+print("\nExportando resultados:")
+print("     - Arquivo ParaView: saida_solver2.vtu")
+print(f"\nResumo do campo de pressão exportado:\n     - h (min, max, mean): {h_min:.2f}, {h_max:.2f}, {h_mean:.2f}")
+print("\n====  Simulação finalizada com sucesso  ====")
