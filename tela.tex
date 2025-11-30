@@ -1,0 +1,30 @@
+# Template de saída para terminal do solver_richards2.py
+# Salve como tela.tex e personalize conforme desejar
+
+====  Iniciando simulação de drenagem 2D (Richards)  ====
+
+Arquivo de malha lido: malha_dominio.xdmf
+     - Pontos (nós): {num_nodes}
+     - Elementos (triângulos): {num_elems}
+
+Parâmetros do problema:
+     - Condutividade hidráulica saturada (Ksat): {ksat:.2e} m/s
+     - Gravidade (g): {gravidade:.2f} m/s²
+     - Passo de tempo (dt): {dt:.1f} s
+     - Tempo total (T): {tempo_total:.1f} s
+
+Condições de contorno:
+     - Topo (y = max): h = {h_top:.2f} m
+     - Base (y = min): h = {h_bottom:.2f} m
+
+Executando solver FEM 2D...
+     - Sistema linear montado.
+     - Solução obtida.
+
+Exportando resultados:
+     - Arquivo ParaView: saida_solver2.vtu
+
+Resumo do campo de pressão exportado:
+     - h (min, max, mean): {h_min:.2f}, {h_max:.2f}, {h_mean:.2f}
+
+====  Simulação finalizada com sucesso  ====
