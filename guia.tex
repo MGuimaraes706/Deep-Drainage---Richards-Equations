@@ -1,117 +1,73 @@
+onde $m = 1 - 1/n$, e $\alpha, n$ são parâmetros empíricos de forma do solo.
+onde $\theta_s$ é o conteúdo de umidade saturado (porosidade) e $\theta_r$ é o conteúdo residual.
+onde $K_s$ é a condutividade hidráulica do solo saturado.
 \documentclass[a4paper,12pt]{article}
-
-% Pacotes para codificação e idioma
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[brazil]{babel}
-
-% Pacotes matemáticos essenciais
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{amsfonts}
-\usepackage{mathtools}
-
-% Pacote para formatação de margens
 \usepackage{geometry}
-\geometry{a4paper, left=3cm, right=2cm, top=3cm, bottom=2cm}
+\geometry{left=3cm, right=2cm, top=3cm, bottom=2cm}
 
-% Título e Autor
-\title{\textbf{Formulação Matemática: Drenagem Profunda em Córregos com Aduelas em Meio Não Saturado}}
-\author{Modelagem Numérica}
+	itle{\textbf{Modelagem de Interação Rio-Aquífero em Drenagem Urbana Profunda}}
+\author{Estudo de Caso: Aduela de Concreto}
 \date{\today}
 
 \begin{document}
 
 \maketitle
 
-\section{Introdução}
-Este documento descreve o modelo matemático para a simulação de fluxo em meios porosos variadamente saturados, aplicado ao contexto de drenagem profunda utilizando aduelas (box culverts). A física do problema é governada pela conservação de massa acoplada à Lei de Darcy generalizada.
+\section{Definição do Problema}
+O objetivo é modelar o fluxo transiente em meio poroso variadamente saturado ao redor de uma galeria de drenagem (aduela), considerando a interação dinâmica com o nível d'água do escoamento fluvial interno.
 
-\section{Equação Governante}
-O fluxo de água na zona vadosa (solo não saturado) e na zona saturada é descrito pela \textbf{Equação de Richards}. Adota-se aqui a formulação mista (carga de pressão e conteúdo de umidade) para garantir melhor conservação de massa numérica.
-
-A equação governante em um domínio $\Omega \subset \mathbb{R}^d$ ($d=2$ ou $3$) é dada por:
+\section{Modelo de Fluxo no Solo (Meio Poroso)}
+O fluxo na matriz do solo é governado pela \textbf{Equação de Richards} na forma mista:
 
 \begin{equation}
-    \frac{\partial \theta(h)}{\partial t} = \nabla \cdot \left[ \mathbf{K}(h) \cdot (\nabla h + \mathbf{e}_z) \right] + S
-    \label{eq:richards}
+    C(h) \frac{\partial h}{\partial t} = \nabla \cdot \left[ \mathbf{K}(h) \cdot (\nabla h + \mathbf{e}_z) \right]
 \end{equation}
 
-\noindent onde:
-\begin{itemize}
-    \item $h$: Carga de pressão [L] (variável primária).
-    \item $\theta(h)$: Conteúdo volumétrico de umidade [-].
-    \item $t$: Tempo [T].
-    \item $\mathbf{K}(h)$: Tensor de condutividade hidráulica [L/T].
-    \item $\mathbf{e}_z$: Vetor unitário na direção vertical (gravidade), $\mathbf{e}_z = (0, \dots, 1)^T$.
-    \item $S$: Termo de fonte/sumidouro volumétrico [1/T].
-\end{itemize}
+As propriedades do solo ($\theta$ e $K$) são definidas pelas curvas de retenção de Van Genuchten-Mualem, considerando a estratigrafia do terreno (camadas com diferentes $K_s$ e porosidades $\theta_s$).
 
-A carga hidráulica total $H$ é definida como $H = h + z$, onde $z$ é a cota de elevação.
+\section{Modelo Hidráulico do Canal (Fluxo Interno)}
+Diferente de um dreno simples, a aduela transporta um fluxo fluvial. O nível da água no interior do duto, $z_{rio}(t)$, é determinado pela equação de escoamento em canal aberto (Manning), assumindo regime permanente para cada passo de tempo:
 
-\section{Relações Constitutivas (Modelo de Solo)}
-Para fechar o sistema de equações, as propriedades hidráulicas do solo ($\theta$ e $K$) são descritas pelas curvas características de retenção de água e condutividade. Utiliza-se o modelo de \textbf{Van Genuchten-Mualem}:
-
-\subsection{Saturação Efetiva ($S_e$)}
 \begin{equation}
-    S_e(h) = 
+    Q = \frac{1}{n} A(z_{rio}) [R(z_{rio})]^{2/3} \sqrt{S_0}
+\end{equation}
+Onde $Q$ é a vazão do córrego, $n$ é a rugosidade de Manning do concreto, e $S_0$ a declividade longitudinal. A solução desta equação fornece a cota da superfície livre $z_{rio}$ dentro da aduela.
+
+\section{Condições de Contorno Acopladas}
+A fronteira interna da aduela ($\Gamma_{int}$) apresenta uma condição de contorno mista dependente da cota $z$ de cada nó da malha em relação ao nível do rio $z_{rio}$.
+
+\subsection{Zona Submersa ($z < z_{rio}$)}
+Na parte inferior da aduela, onde há água do rio, a pressão é hidrostática e positiva, forçando a entrada de água no solo (se $h_{solo} < h_{rio}$) ou resistindo à saída:
+\begin{equation}
+    h(\mathbf{x}, t) = z_{rio} - z \quad \text{para } z < z_{rio}
+\end{equation}
+	extit{(Condição de Dirichlet Prescrita)}
+
+\subsection{Zona de Drenagem/Seca ($z \ge z_{rio}$)}
+Na parte superior da aduela (acima da lâmina d'água), a parede atua como uma superfície de infiltração (seepage face). A água do solo só entra na aduela se o solo estiver saturado:
+\begin{equation}
     \begin{cases} 
-        \left[ 1 + |\alpha h|^n \right]^{-m} & \text{se } h < 0 \\
-        1 & \text{se } h \ge 0
+        h = 0 & \text{se } \text{Solo Saturado} \\
+        \frac{\partial h}{\partial n} = 0 & \text{se } \text{Solo Não-Saturado}
     \end{cases}
 \end{equation}
-onde $m = 1 - 1/n$, e $\alpha, n$ são parâmetros empíricos de forma do solo.
 
-\subsection{Conteúdo de Umidade ($\theta$)}
-\begin{equation}
-    \theta(h) = \theta_r + (\theta_s - \theta_r) S_e(h)
-\end{equation}
-onde $\theta_s$ é o conteúdo de umidade saturado (porosidade) e $\theta_r$ é o conteúdo residual.
-
-\subsection{Função de Condutividade Hidráulica ($K$)}
-\begin{equation}
-    K(h) = K_s \cdot S_e^{1/2} \left[ 1 - \left( 1 - S_e^{1/m} \right)^m \right]^2
-\end{equation}
-onde $K_s$ é a condutividade hidráulica do solo saturado.
-
-\section{Condições de Contorno}
-A modelagem correta da aduela requer condições de contorno específicas para representar a interface solo-estrutura e a drenagem (seepage face).
-
-\subsection{Fronteira do Córrego ($\Gamma_{c}$)}
-Assume-se uma condição de Dirichlet baseada no nível da água do córrego $z_w$:
-\begin{equation}
-    h(\mathbf{x}, t) = \max(0, z_w - z) \quad \text{em } \Gamma_{c}
-\end{equation}
-
-\subsection{Fronteira da Aduela/Dreno ($\Gamma_{d}$)}
-A parede da aduela atua como uma \textit{superfície de infiltração}. A água só pode sair do solo para a aduela se a pressão for positiva (saturada); caso contrário, a parede é impermeável. Isso configura um problema de condição de contorno complementar (tipo Signorini):
-
-\begin{equation}
-    \begin{cases} 
-        h \le 0 \\
-        Q_n \ge 0 \quad (\text{Fluxo saindo do domínio}) \\
-        h \cdot Q_n = 0
-    \end{cases} \quad \text{em } \Gamma_{d}
-\end{equation}
-
-Numericamente, isso é implementado verificando a cada iteração:
-\begin{itemize}
-    \item Se o nó está saturado ($h \ge 0$): Impõe-se $h = 0$ (Pressão Atmosférica).
-    \item Se o nó está não-saturado ($h < 0$): Impõe-se $\frac{\partial h}{\partial n} = 0$ (Fluxo Nulo).
-\end{itemize}
-
-\subsection{Fronteiras Impermeáveis ($\Gamma_{imp}$)}
-Para a base do aquífero ou divisores de águas laterais:
-\begin{equation}
-    \mathbf{q} \cdot \mathbf{n} = -\mathbf{K}(h) \nabla H \cdot \mathbf{n} = 0 \quad \text{em } \Gamma_{imp}
-\end{equation}
-
-\section{Discretização Temporal}
-Devido à alta não-linearidade de $C(h) = \partial \theta / \partial h$, recomenda-se o uso de um esquema de Euler Implícito (Backward Euler) com linearização via método de Picard ou Newton-Raphson:
-
-\begin{equation}
-    C(h^{k}) \frac{h^{k+1} - h^{t}}{\Delta t} - \nabla \cdot \left[ \mathbf{K}(h^k) (\nabla h^{k+1} + \mathbf{e}_z) \right] = S
-\end{equation}
-Onde $k$ denota a iteração dentro do passo de tempo atual.
+\section{Resumo do Algoritmo}
+Para cada passo de tempo $\Delta t$:
+\begin{enumerate}
+    \item Calcular $z_{rio}$ baseado na vazão $Q$ atual (Eq. de Manning).
+    \item Atualizar as condições de contorno em $\Gamma_{int}$:
+    \begin{itemize}
+        \item Nós abaixo de $z_{rio}$: Fixar $h = z_{rio} - z$.
+        \item Nós acima de $z_{rio}$: Aplicar condição de Seepage Face.
+    \end{itemize}
+    \item Resolver a Eq. de Richards para obter a distribuição de pressão $h$ no solo.
+    \item Calcular fluxos $q$ (Entrada ou saída de água do aquífero).
+\end{enumerate}
 
 \end{document}
