@@ -93,6 +93,7 @@ mesh.write("saida_solver2.vtu")
 # Resumo do campo exportado
 h_min = np.min(h)
 h_max = np.max(h)
+h_mean = np.mean(h)
 
 print("\nExportando resultados:")
 print("     - Arquivo ParaView: saida_solver2.vtu")
