@@ -4,10 +4,10 @@ from mpi4py import MPI
 from dolfinx import fem, io, default_scalar_type
 from dolfinx.fem.petsc import LinearProblem
 import ufl
-import basix.ufl 
+import basix.ufl  # <--- ESTA É A LINHA QUE ESTAVA FALTANDO
 from petsc4py import PETSc
 
-# Importa módulos locais
+# Importa módulos locais (Certifique-se que base.py e config.py estão na mesma pasta)
 import base
 import config
 
@@ -22,10 +22,15 @@ if rank == 0:
     print(f"--> Vazão do Rio Configurada: {config.VAZAO_RIO} m3/s")
 
 # Ler Malha do Domínio (Triângulos)
-# O nome "Grid" deve bater com o que foi salvo no mesh_converter.py
-with io.XDMFFile(comm, "malha_dominio.xdmf", "r") as xdmf:
-    domain = xdmf.read_mesh(name="Grid")
-    ct = xdmf.read_meshtags(domain, name="Grid") # Tags dos Materiais
+try:
+    with io.XDMFFile(comm, "malha_dominio.xdmf", "r") as xdmf:
+        domain = xdmf.read_mesh(name="Grid")
+        ct = xdmf.read_meshtags(domain, name="Grid") # Tags dos Materiais
+except RuntimeError:
+    if rank == 0:
+        print("ERRO CRÍTICO: Não foi possível ler 'malha_dominio.xdmf'.")
+        print("Verifique se você rodou o 'mesh_converter.py' com sucesso.")
+    exit()
 
 # Ler Malha das Bordas (Linhas)
 with io.XDMFFile(comm, "malha_bordas.xdmf", "r") as xdmf:
@@ -34,7 +39,7 @@ with io.XDMFFile(comm, "malha_bordas.xdmf", "r") as xdmf:
 domain.topology.create_connectivity(domain.topology.dim, domain.topology.dim - 1)
 
 # ==============================================================================
-# 2. ESPAÇOS DE FUNÇÃO (Correção para FEniCSx v0.8+)
+# 2. ESPAÇOS DE FUNÇÃO (Compatível com FEniCSx v0.8+)
 # ==============================================================================
 
 # Elemento P1 (Lagrange grau 1) para a Pressão (h) - Contínuo
@@ -42,7 +47,7 @@ P1 = basix.ufl.element("Lagrange", domain.topology.cell_name(), 1)
 V = fem.functionspace(domain, P1)
 
 # Elemento DG0 (Discontinuous Galerkin grau 0) para Propriedades Físicas (K e C)
-# DG0 é constante dentro de cada elemento, essencial para materiais com saltos bruscos
+# DG0 é constante dentro de cada elemento
 DG0 = basix.ufl.element("DG", domain.topology.cell_name(), 0)
 Q = fem.functionspace(domain, DG0)
 
@@ -50,9 +55,9 @@ Q = fem.functionspace(domain, DG0)
 # 3. CAMPOS E FUNÇÕES
 # ==============================================================================
 
-h = fem.Function(V, name="Pressao_Atual")           # Solução do passo atual (k)
-h_n = fem.Function(V, name="Pressao_Passo_Anterior") # Solução do tempo anterior (n)
-h_iter = fem.Function(V, name="Pressao_Auxiliar_Picard") # Auxiliar para iteração
+h = fem.Function(V, name="Pressao_Atual")           
+h_n = fem.Function(V, name="Pressao_Passo_Anterior") 
+h_iter = fem.Function(V, name="Pressao_Auxiliar_Picard") 
 
 # Propriedades Materiais (Variáveis no espaço e tempo)
 K_field = fem.Function(Q, name="Condutividade_K")
@@ -64,12 +69,11 @@ C_field = fem.Function(Q, name="Capacidade_C")
 def update_material_properties(h_func):
     """
     Atualiza os campos K e C em toda a malha com base na pressão h_func.
-    Lê as tags do arquivo XDMF para aplicar as propriedades de Areia, Argila ou Brita.
     """
     # 1. Obter tags dos materiais
     material_tags = ct.values
     
-    # 2. Interpolar a pressão h para o centro dos elementos (DG0 precisa disso)
+    # 2. Interpolar a pressão h para o centro dos elementos
     expr = fem.Expression(h_func, Q.element.interpolation_points())
     h_vals = expr.eval(domain, list(range(domain.topology.index_map(domain.topology.dim).size_local))).flatten()
     
@@ -77,7 +81,7 @@ def update_material_properties(h_func):
     k_vals = np.zeros_like(h_vals)
     c_vals = np.zeros_like(h_vals)
     
-    dh = 1e-4 # Delta h para derivada numérica da capacidade
+    dh = 1e-4 # Delta h para derivada numérica
     
     # 3. Loop sobre cada material existente na malha
     for tag in np.unique(material_tags):
@@ -88,12 +92,10 @@ def update_material_properties(h_func):
             h_loc = h_vals[cells]
             
             # --- Calcular K (Condutividade) ---
-            # Chama a função do base.py vetorizada
             ks = np.array([base.condutividade_hidraulica(val, tag) for val in h_loc])
             k_vals[cells] = ks
             
             # --- Calcular C (Capacidade = dTheta/dh) ---
-            # Diferenças finitas centradas usando a função conteudo_umidade do base.py
             th_p = np.array([base.conteudo_umidade(val + dh, tag) for val in h_loc])
             th_m = np.array([base.conteudo_umidade(val - dh, tag) for val in h_loc])
             cs = (th_p - th_m) / (2 * dh)
@@ -146,7 +148,6 @@ if len(rio_facets) > 0:
         vals = np.zeros(x.shape[1])
         for i in range(x.shape[1]):
             tipo, val = config.condicao_parede_rio(x[1,i])
-            # Simplificação robusta para Picard: Impomos o valor retornado.
             vals[i] = val 
         return vals
 
@@ -161,10 +162,6 @@ dt = fem.Constant(domain, default_scalar_type(3600.0)) # Passo de tempo: 1 hora
 u, v = ufl.TrialFunction(V), ufl.TestFunction(V)
 
 # Resíduo da Equação de Richards (Discretização Backward Euler no tempo)
-# Termo Temporal: C * (h - h_n) / dt
-# Termo Difusivo: div(K * grad(h)) -> K * dot(grad(u), grad(v)) na forma fraca
-# Termo Gravidade: div(K * ez) -> K * d(v)/dy na forma fraca
-
 F = (C_field * (u - h_n) / dt) * v * ufl.dx \
   + ufl.dot(K_field * ufl.grad(u), ufl.grad(v)) * ufl.dx \
   + K_field * ufl.grad(v)[1] * ufl.dx 
