@@ -1,8 +1,5 @@
-def theta(h):
-def C(h):
-def K(h):
 
-# Solver de Richards 1D com elementos finitos lineares (FEM), sem FEniCS
+# Solver de Richards 2D FEM linear (triângulos), sem FEniCS
 import numpy as np
 import meshio
 from scipy.sparse import lil_matrix
@@ -10,93 +7,76 @@ from scipy.sparse.linalg import spsolve
 
 # Parâmetros do problema
 Ksat = 1e-6  # condutividade hidráulica saturada [m/s]
-theta_s = 0.4  # teor de água na saturação
-theta_r = 0.1  # teor de água residual
-alpha = 0.8  # parâmetro de Van Genuchten [1/m]
-n = 1.5  # parâmetro de Van Genuchten
-m = 1 - 1/n
 g = 9.81  # gravidade [m/s^2]
 
-# Domínio 1D
-L = 1.0  # comprimento [m]
-Nx = 50
-x = np.linspace(0, L, Nx)
-dx = x[1] - x[0]
+# Ler malha 2D (malha_dominio.xdmf)
+malha = meshio.read("malha_dominio.xdmf")
+points = malha.points
+triangles = None
+for cell_block in malha.cells:
+    if cell_block.type == "triangle":
+        triangles = cell_block.data
+        break
+if triangles is None:
+    raise RuntimeError("Malha não contém elementos triangulares!")
+Nnodes = points.shape[0]
+Nelems = triangles.shape[0]
 
-# Condições de contorno
-h_top = 0.0  # pressão no topo [m]
-h_bottom = -2.0  # pressão na base [m]
+# Condições de contorno: exemplo - h=0 no topo (y=max), h=-2 na base (y=min)
+y = points[:,1]
+h_top = 0.0
+h_bottom = -2.0
+tol = 1e-8
+nodes_top = np.where(np.abs(y - y.max()) < tol)[0]
+nodes_bottom = np.where(np.abs(y - y.min()) < tol)[0]
 
-# Funções constitutivas
-def theta(h):
-    return theta_r + (theta_s - theta_r) / (1 + (alpha * np.abs(h))**n)**m
+# Montagem da matriz global
+A = lil_matrix((Nnodes, Nnodes))
+b = np.zeros(Nnodes)
 
-def C(h):
-    dh = 1e-6
-    return (theta(h + dh) - theta(h - dh)) / (2 * dh)
+for elem in triangles:
+    node_ids = elem
+    coords = points[node_ids, :2]
+    # Matriz de área do triângulo
+    x1, y1 = coords[0]
+    x2, y2 = coords[1]
+    x3, y3 = coords[2]
+    area = 0.5 * np.abs((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1))
+    # Gradientes das funções de forma
+    b1 = y2 - y3
+    b2 = y3 - y1
+    b3 = y1 - y2
+    c1 = x3 - x2
+    c2 = x1 - x3
+    c3 = x2 - x1
+    B = np.array([[b1, b2, b3], [c1, c2, c3]]) / (2*area)
+    # Matriz local de rigidez (K constante)
+    k_local = Ksat * area * (B.T @ B)
+    for i in range(3):
+        for j in range(3):
+            A[node_ids[i], node_ids[j]] += k_local[i, j]
+    # Fonte (zero neste exemplo)
 
-def K(h):
-    Se = (theta(h) - theta_r) / (theta_s - theta_r)
-    return Ksat * Se**0.5 * (1 - (1 - Se**(1/m))**m)**2
+# Vetor de carga (fonte nula)
+# b já é zero
 
-# Inicialização
-h0 = -1.0 * np.ones(Nx)
-h0[0] = h_top
-h0[-1] = h_bottom
-h = h0.copy()
+# Aplicar condições de contorno de Dirichlet
+fixed_nodes = np.concatenate([nodes_top, nodes_bottom])
+fixed_values = np.concatenate([
+    np.full(nodes_top.shape, h_top),
+    np.full(nodes_bottom.shape, h_bottom)
+])
 
-# Parâmetros de tempo
-T = 3600.0 * 24  # tempo total [s]
-dt = 60.0  # passo de tempo [s]
-nt = int(T / dt)
+for idx, node in enumerate(fixed_nodes):
+    A[node, :] = 0
+    A[node, node] = 1
+    b[node] = fixed_values[idx]
 
-# Montagem da matriz global (FEM linear 1D)
-for step in range(nt):
-    K_local = np.zeros(Nx-1)
-    C_local = np.zeros(Nx)
-    for e in range(Nx-1):
-        h_e = 0.5 * (h[e] + h[e+1])
-        K_local[e] = K(h_e)
-    for i in range(Nx):
-        C_local[i] = C(h[i])
+# Resolver sistema linear
+h = spsolve(A.tocsr(), b)
 
-    A = lil_matrix((Nx, Nx))
-    M = lil_matrix((Nx, Nx))
-    for e in range(Nx-1):
-        # Elemento [e, e+1]
-        ke = K_local[e] / dx
-        me = 0.5 * dx * np.array([[C_local[e], 0],[0, C_local[e+1]]])
-        # Rigidez
-        A[e, e] += ke
-        A[e, e+1] -= ke
-        A[e+1, e] -= ke
-        A[e+1, e+1] += ke
-        # Massa
-        M[e, e] += me[0,0]
-        M[e, e+1] += me[0,1]
-        M[e+1, e] += me[1,0]
-        M[e+1, e+1] += me[1,1]
-
-    # Sistema linear: (M + dt*A) h^{n+1} = M h^n
-    lhs = M + dt*A
-    rhs = M @ h
-
-    # Condições de contorno de Dirichlet
-    lhs[0,:] = 0
-    lhs[0,0] = 1
-    rhs[0] = h_top
-    lhs[-1,:] = 0
-    lhs[-1,-1] = 1
-    rhs[-1] = h_bottom
-
-    h_new = spsolve(lhs.tocsr(), rhs)
-    h = h_new
-    if step % 100 == 0:
-        print(f"Passo {step}/{nt}")
-
-# Exportar resultado para VTK (VTU)
-points = np.column_stack([x, np.zeros_like(x), np.zeros_like(x)])
-cells = [("line", np.array([[i, i+1] for i in range(Nx-1)]))]
+# Exportar resultado para VTU
+cells = [("triangle", triangles)]
 mesh = meshio.Mesh(points, cells, point_data={"h": h})
 mesh.write("saida_solver2.vtu")
 print("Simulação finalizada. Resultado salvo em saida_solver2.vtu.")
