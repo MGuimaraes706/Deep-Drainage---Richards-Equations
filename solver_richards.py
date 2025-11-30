@@ -1,247 +1,227 @@
 import numpy as np
 import os
 from mpi4py import MPI
-from dolfinx import fem, io, mesh
+from dolfinx import fem, io, default_scalar_type
+from dolfinx.fem.petsc import LinearProblem
 import ufl
+import basix.ufl 
 from petsc4py import PETSc
-import config
+
+# Importa módulos locais
 import base
+import config
 
 # ==============================================================================
-# 1. CARREGAMENTO DA MALHA E MATERIAIS
+# 1. CARREGAR MALHAS
 # ==============================================================================
 comm = MPI.COMM_WORLD
-if comm.rank == 0:
-    print("--> Carregando malhas...")
+rank = comm.rank
 
-# Ler a Malha do Domínio
+if rank == 0:
+    print("--> Iniciando Solver de Richards...")
+    print(f"--> Vazão do Rio Configurada: {config.VAZAO_RIO} m3/s")
+
+# Ler Malha do Domínio (Triângulos)
+# O nome "Grid" deve bater com o que foi salvo no mesh_converter.py
 with io.XDMFFile(comm, "malha_dominio.xdmf", "r") as xdmf:
     domain = xdmf.read_mesh(name="Grid")
-    # Ler as Tags dos Materiais (Areia, Argila, etc)
-    # Importante: O nome "Grid" deve bater com o que o meshio gravou
-    ct = xdmf.read_meshtags(domain, name="Grid")
+    ct = xdmf.read_meshtags(domain, name="Grid") # Tags dos Materiais
 
-# Ler a Malha das Bordas (Para Condições de Contorno)
+# Ler Malha das Bordas (Linhas)
 with io.XDMFFile(comm, "malha_bordas.xdmf", "r") as xdmf:
-    ft = xdmf.read_meshtags(domain, name="Grid")
+    ft = xdmf.read_meshtags(domain, name="Grid") # Tags das Fronteiras
 
 domain.topology.create_connectivity(domain.topology.dim, domain.topology.dim - 1)
 
 # ==============================================================================
-# 2. ESPAÇOS DE FUNÇÃO
+# 2. ESPAÇOS DE FUNÇÃO (Correção para FEniCSx v0.8+)
 # ==============================================================================
-# V: Espaço Contínuo (Lagrange grau 1) para a Pressão (h)
-V = fem.FunctionSpace(domain, ("CG", 1))
 
-# Q: Espaço Descontínuo (DG grau 0) para as Propriedades (K e C)
-# DG0 significa que o valor é constante dentro de cada triângulo (ideal para materiais)
-Q = fem.FunctionSpace(domain, ("DG", 0))
+# Elemento P1 (Lagrange grau 1) para a Pressão (h) - Contínuo
+P1 = basix.ufl.element("Lagrange", domain.topology.cell_name(), 1)
+V = fem.functionspace(domain, P1)
 
-# Funções da Pressão
-h = fem.Function(V, name="Pressao_Atual")
-h_n = fem.Function(V, name="Pressao_Anterior") # Passo anterior
-h_k = fem.Function(V, name="Pressao_Picard")   # Iteração atual de Picard
-
-# Funções das Propriedades (Que variam no espaço e tempo)
-K_func = fem.Function(Q, name="Condutividade")
-C_func = fem.Function(Q, name="Capacidade")
+# Elemento DG0 (Discontinuous Galerkin grau 0) para Propriedades Físicas (K e C)
+# DG0 é constante dentro de cada elemento, essencial para materiais com saltos bruscos
+DG0 = basix.ufl.element("DG", domain.topology.cell_name(), 0)
+Q = fem.functionspace(domain, DG0)
 
 # ==============================================================================
-# 3. FUNÇÕES AUXILIARES DE ATUALIZAÇÃO (FÍSICA)
+# 3. CAMPOS E FUNÇÕES
 # ==============================================================================
-def update_properties(h_current):
+
+h = fem.Function(V, name="Pressao_Atual")           # Solução do passo atual (k)
+h_n = fem.Function(V, name="Pressao_Passo_Anterior") # Solução do tempo anterior (n)
+h_iter = fem.Function(V, name="Pressao_Auxiliar_Picard") # Auxiliar para iteração
+
+# Propriedades Materiais (Variáveis no espaço e tempo)
+K_field = fem.Function(Q, name="Condutividade_K")
+C_field = fem.Function(Q, name="Capacidade_C")
+
+# ==============================================================================
+# 4. LÓGICA DE ATUALIZAÇÃO DA FÍSICA (Loop sobre Materiais)
+# ==============================================================================
+def update_material_properties(h_func):
     """
-    Atualiza os campos K e C em cada elemento da malha baseado 
-    na pressão atual (h_current) e no material (ct).
+    Atualiza os campos K e C em toda a malha com base na pressão h_func.
+    Lê as tags do arquivo XDMF para aplicar as propriedades de Areia, Argila ou Brita.
     """
-    # Pega os arrays de dados locais
-    k_array = K_func.x.array
-    c_array = C_func.x.array
-    
-    # Pega a pressão média em cada célula (aproximação para DG0)
-    # Como h é CG1 (vértices), e queremos passar para DG0 (centro),
-    # uma forma rápida é interpolar ou avaliar no centro.
-    # Para simplificar neste script, vamos iterar sobre as células.
-    
-    # Tags dos materiais para cada célula
+    # 1. Obter tags dos materiais
     material_tags = ct.values
     
-    # Precisamos dos valores de h nos centros das células. 
-    # Estratégia eficiente em FEniCSx: Usar Expressão.
-    expr = fem.Expression(h_current, Q.element.interpolation_points())
-    h_centers = expr.eval(domain, list(range(domain.topology.index_map(domain.topology.dim).size_local)))
+    # 2. Interpolar a pressão h para o centro dos elementos (DG0 precisa disso)
+    expr = fem.Expression(h_func, Q.element.interpolation_points())
+    h_vals = expr.eval(domain, list(range(domain.topology.index_map(domain.topology.dim).size_local))).flatten()
     
-    # Loop sobre células (pode ser otimizado com vetorização numpy depois)
-    # Achata o array de h (que pode vir (N, 1))
-    h_vals = h_centers.flatten()
+    # Arrays temporários
+    k_vals = np.zeros_like(h_vals)
+    c_vals = np.zeros_like(h_vals)
     
-    # Vetorização via Base.py
-    # Criamos arrays temporários
-    new_k = np.zeros_like(k_array)
-    new_c = np.zeros_like(c_array)
+    dh = 1e-4 # Delta h para derivada numérica da capacidade
     
-    # Itera sobre os tipos de materiais únicos presentes na malha
-    unique_mats = np.unique(material_tags)
-    
-    for mat_id in unique_mats:
-        # Máscara booleana: Onde está esse material?
-        mask = (material_tags == mat_id)
+    # 3. Loop sobre cada material existente na malha
+    for tag in np.unique(material_tags):
+        # Máscara: quais células são deste material?
+        cells = (material_tags == tag)
         
-        # Valores de h nesses locais
-        h_local = h_vals[mask]
-        
-        # Calcula K e C usando as funções do base.py
-        # Nota: Precisamos adaptar base.py para aceitar arrays ou fazer loop
-        # Vamos fazer um map simples aqui para robustez
-        ks = np.array([base.condutividade_hidraulica(hv, mat_id) for hv in h_local])
-        
-        # Capacidade C(h) = dTheta/dh
-        # Aproximação por diferenças finitas centrais
-        dh = 1e-5
-        theta_plus = np.array([base.condutividade_hidraulica(hv+dh, mat_id) for hv in h_local]) # Usando K provisoriamente se não tiver theta no base
-        # CORREÇÃO: Você precisa implementar theta() no base.py.
-        # Vou assumir C = 0 por enquanto se não tiver a função, ou usar uma derivada numérica do K como dummy
-        # O ideal é ter base.conteudo_umidade(h, mat_id)
-        
-        # Preenche os arrays globais
-        new_k[mask] = ks
-        # new_c[mask] = ... (Cálculo do C)
-        # Para evitar erro, vamos colocar um C pequeno constante se não implementado
-        new_c[mask] = 0.01 
-        
-    K_func.x.array[:] = new_k
-    C_func.x.array[:] = new_c
+        if np.any(cells):
+            h_loc = h_vals[cells]
+            
+            # --- Calcular K (Condutividade) ---
+            # Chama a função do base.py vetorizada
+            ks = np.array([base.condutividade_hidraulica(val, tag) for val in h_loc])
+            k_vals[cells] = ks
+            
+            # --- Calcular C (Capacidade = dTheta/dh) ---
+            # Diferenças finitas centradas usando a função conteudo_umidade do base.py
+            th_p = np.array([base.conteudo_umidade(val + dh, tag) for val in h_loc])
+            th_m = np.array([base.conteudo_umidade(val - dh, tag) for val in h_loc])
+            cs = (th_p - th_m) / (2 * dh)
+            
+            # Evitar zero absoluto para estabilidade numérica
+            cs = np.maximum(cs, 1e-9)
+            c_vals[cells] = cs
+            
+    # 4. Atualiza as funções do FEniCS
+    K_field.x.array[:] = k_vals
+    C_field.x.array[:] = c_vals
 
 # ==============================================================================
-# 4. CONDIÇÕES DE CONTORNO
+# 5. CONDIÇÕES DE CONTORNO
 # ==============================================================================
 bcs = []
-
-# Identificar facetas (arestas) das bordas
 fdim = domain.topology.dim - 1
 
-# --- A. Bordas Externas (Esquerda, Direita, etc) ---
-# Mapeamento do Config para a Malha
-boundary_map = {
+# Mapeamento do config.py para nomes legíveis
+bc_map = {
     config.TAG_BORDA_ESQUERDA: "Esquerda",
     config.TAG_BORDA_DIREITA: "Direita",
-    config.TAG_BORDA_TOPO: "Topo",
-    config.TAG_BORDA_BASE: "Base" # Geralmente Neumann (não entra na lista bcs)
+    config.TAG_BORDA_TOPO: "Topo"
 }
 
-# Coordenadas dos nós para aplicar funções
-x_coords = V.tabulate_dof_coordinates()
-
-for tag, nome in boundary_map.items():
-    # Achar arestas com essa tag
+# --- A. Bordas Externas ---
+for tag, nome in bc_map.items():
     facets = ft.find(tag)
     if len(facets) > 0:
         dofs = fem.locate_dofs_topological(V, fdim, facets)
         
-        # Como o valor pode variar com Y (hidrostático), precisamos iterar ou projetar
-        # Simplificação: Aplicar valor médio ou iterar sobre DOFs
-        # FEniCSx permite aplicar função. Vamos criar uma função que interpolada o config.
-        
-        def bc_func_wrapper(x):
-            # x é array (3, N)
-            values = np.zeros(x.shape[1])
+        # Função wrapper para interpolar valores do config.py
+        def bc_wrapper(x):
+            vals = np.zeros(x.shape[1])
             for i in range(x.shape[1]):
-                # Chama a lógica do config.py
                 val = config.aplicar_bc_externa(x[0,i], x[1,i], tag)
-                if val is not None:
-                    values[i] = val
-            return values
+                if val is not None: vals[i] = val
+            return vals
+            
+        bc_func = fem.Function(V)
+        bc_func.interpolate(bc_wrapper)
+        bcs.append(fem.dirichletbc(bc_func, dofs))
 
-        bc_val = fem.Function(V)
-        bc_val.interpolate(bc_func_wrapper)
-        bcs.append(fem.dirichletbc(bc_val, dofs))
-
-# --- B. Parede do Rio (Complexa: Mista) ---
+# --- B. Parede do Rio (Condição Mista) ---
 rio_facets = ft.find(config.TAG_PAREDE_RIO)
 if len(rio_facets) > 0:
     rio_dofs = fem.locate_dofs_topological(V, fdim, rio_facets)
     
-    def rio_func_wrapper(x):
-        values = np.zeros(x.shape[1])
+    def rio_wrapper(x):
+        vals = np.zeros(x.shape[1])
         for i in range(x.shape[1]):
-            # Chama lógica do config.py
             tipo, val = config.condicao_parede_rio(x[1,i])
-            if tipo == "Dirichlet":
-                values[i] = val
-            else:
-                # Seepage Face: Em Picard, se h < 0, vira Neumann (fluxo 0).
-                # Se h > 0, vira Dirichlet (h=0).
-                # Isso é não-linear. Vamos simplificar fixando 0 onde deveria ser Seepage.
-                values[i] = 0.0 
-        return values
+            # Simplificação robusta para Picard: Impomos o valor retornado.
+            vals[i] = val 
+        return vals
 
-    rio_bc_val = fem.Function(V)
-    rio_bc_val.interpolate(rio_func_wrapper)
-    bcs.append(fem.dirichletbc(rio_bc_val, rio_dofs))
-
+    rio_bc_func = fem.Function(V)
+    rio_bc_func.interpolate(rio_wrapper)
+    bcs.append(fem.dirichletbc(rio_bc_func, rio_dofs))
 
 # ==============================================================================
-# 5. FORMULAÇÃO VARIACIONAL (PICARD)
+# 6. FORMULAÇÃO VARIACIONAL E SOLVER
 # ==============================================================================
-dt = fem.Constant(domain, 3600.0) # Delta T (segundos)
-v = ufl.TestFunction(V)
-u = ufl.TrialFunction(V) # Usado para o solve linear dentro de Picard
+dt = fem.Constant(domain, default_scalar_type(3600.0)) # Passo de tempo: 1 hora
+u, v = ufl.TrialFunction(V), ufl.TestFunction(V)
 
-# Termos da Equação: C * (h - h_n)/dt - Div(K * Grad(h)) = 0
-# Forma fraca: Integral(C*(h-h_n)/dt * v) + Integral(K * Grad(h) * Grad(v)) ...
+# Resíduo da Equação de Richards (Discretização Backward Euler no tempo)
+# Termo Temporal: C * (h - h_n) / dt
+# Termo Difusivo: div(K * grad(h)) -> K * dot(grad(u), grad(v)) na forma fraca
+# Termo Gravidade: div(K * ez) -> K * d(v)/dy na forma fraca
 
-# Como é Picard, o 'u' que resolvemos é o h_novo, mas K e C dependem de h_k (iter anterior)
-F = (C_func * (u - h_n) / dt) * v * ufl.dx + \
-    ufl.dot(K_func * ufl.grad(u), ufl.grad(v)) * ufl.dx + \
-    ufl.dot(K_func * fem.Constant(domain, np.array([0.0, 1.0, 0.0])), ufl.grad(v)) * ufl.dx # Gravidade dz
+F = (C_field * (u - h_n) / dt) * v * ufl.dx \
+  + ufl.dot(K_field * ufl.grad(u), ufl.grad(v)) * ufl.dx \
+  + K_field * ufl.grad(v)[1] * ufl.dx 
 
-# Separar Bilinear (a) e Linear (L)
-a, L = ufl.lhs(F), ufl.rhs(F)
-
-problem = fem.petsc.LinearProblem(a, L, bcs=bcs, petsc_options={"ksp_type": "preonly", "pc_type": "lu"})
+problem = LinearProblem(ufl.lhs(F), ufl.rhs(F), bcs=bcs, 
+                        petsc_options={"ksp_type": "preonly", "pc_type": "lu"})
 
 # ==============================================================================
-# 6. LOOP DE TEMPO
+# 7. LOOP DE TEMPO
 # ==============================================================================
 T_total = 24 * 3600 # 1 dia
-t = 0
-h_n.interpolate(lambda x: np.full(x.shape[1], -2.0)) # Condição Inicial: Solo seco (-2m)
+t = 0.0
+
+# Condição Inicial: Solo não saturado (-1.0m)
+h_n.x.array[:] = -1.0 
+h_iter.x.array[:] = -1.0 
 
 # Preparar arquivo de saída
+if not os.path.exists("resultados"): os.makedirs("resultados")
 vtk = io.VTKFile(comm, "resultados/drenagem.pvd", "w")
 vtk.write_function(h_n, 0.0)
 
 while t < T_total:
-    t += float(dt)
-    if comm.rank == 0: print(f"Calculando t = {t/3600:.2f} h")
+    t += dt.value
+    if rank == 0: print(f"=== Tempo: {t/3600:.1f} h ===")
     
-    # Picard Loop
-    h_k.x.array[:] = h_n.x.array[:] # Chute inicial = passo anterior
-    for i in range(10): # Max iterações
-        # 1. Atualizar K e C com base no h_k atual
-        update_properties(h_k)
+    # Início do Picard
+    h_iter.x.array[:] = h_n.x.array[:]
+    
+    for i in range(15):
+        # 1. Atualizar física com base no 'chute' atual
+        update_material_properties(h_iter)
         
-        # 2. Resolver Sistema Linear
-        h_solution = problem.solve()
+        # 2. Resolver sistema linear
+        try:
+            h_new = problem.solve()
+        except Exception as e:
+            if rank==0: print(f"Erro no solver linear: {e}")
+            break
+            
+        # 3. Calcular erro
+        diff = h_new.x.array - h_iter.x.array
+        error = np.linalg.norm(diff) / (np.linalg.norm(h_new.x.array) + 1e-6)
         
-        # 3. Calcular erro (norma da diferença)
-        diff = h_solution.x.array - h_k.x.array
-        error = np.linalg.norm(diff, ord=2)
+        h_iter.x.array[:] = h_new.x.array[:]
         
-        # Atualiza h_k para próxima iteração
-        h_k.x.array[:] = h_solution.x.array[:]
-        
-        if error < 1e-5:
-            if comm.rank == 0: print(f"  Convergiu em {i+1} iterações (Erro: {error:.2e})")
+        if error < 1e-4:
+            if rank == 0: print(f"   Convergiu na iteração {i+1} (Erro: {error:.2e})")
             break
     else:
-        if comm.rank == 0: print("  AVISO: Picard não convergiu neste passo.")
+        if rank == 0: print("   AVISO: Picard não convergiu neste passo.")
 
     # Atualiza passo de tempo
-    h_n.x.array[:] = h_solution.x.array[:]
+    h_n.x.array[:] = h_iter.x.array[:]
     
-    # Salvar
+    # Salva resultado
     vtk.write_function(h_n, t)
 
 vtk.close()
-print("Simulação concluída!")
+if rank == 0: print("Simulação Concluída. Abra 'resultados/drenagem.pvd' no ParaView.")
