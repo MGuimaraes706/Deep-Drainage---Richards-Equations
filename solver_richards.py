@@ -26,7 +26,9 @@ try:
         domain = xdmf.read_mesh(name="Grid")
         ct = xdmf.read_meshtags(domain, name="Grid")
 except Exception as e:
-    print(f"ERRO ao ler malha_dominio.xdmf: {e}")
+    if rank == 0:
+        print(f"ERRO ao ler malha_dominio.xdmf: {e}")
+        print("Dica: Verifique se rodou o 'converter_malha.py' antes.")
     exit()
 
 # Ler Malha das Bordas
@@ -34,7 +36,8 @@ try:
     with io.XDMFFile(comm, "malha_bordas.xdmf", "r") as xdmf:
         ft = xdmf.read_meshtags(domain, name="Grid")
 except Exception as e:
-    print(f"ERRO ao ler malha_bordas.xdmf: {e}")
+    if rank == 0:
+        print(f"ERRO ao ler malha_bordas.xdmf: {e}")
     exit()
 
 domain.topology.create_connectivity(domain.topology.dim, domain.topology.dim - 1)
@@ -111,12 +114,15 @@ for tag, nome in bc_map.items():
     facets = ft.find(tag)
     if len(facets) > 0:
         dofs = fem.locate_dofs_topological(V, fdim, facets)
+        
+        # Função wrapper para interpolar valores do config.py
         def bc_wrapper(x):
             vals = np.zeros(x.shape[1])
             for i in range(x.shape[1]):
                 val = config.aplicar_bc_externa(x[0,i], x[1,i], tag)
                 if val is not None: vals[i] = val
             return vals
+            
         bc_func = fem.Function(V)
         bc_func.interpolate(bc_wrapper)
         bcs.append(fem.dirichletbc(bc_func, dofs))
@@ -125,12 +131,14 @@ for tag, nome in bc_map.items():
 rio_facets = ft.find(config.TAG_PAREDE_RIO)
 if len(rio_facets) > 0:
     rio_dofs = fem.locate_dofs_topological(V, fdim, rio_facets)
+    
     def rio_wrapper(x):
         vals = np.zeros(x.shape[1])
         for i in range(x.shape[1]):
             tipo, val = config.condicao_parede_rio(x[1,i])
             vals[i] = val 
         return vals
+
     rio_bc_func = fem.Function(V)
     rio_bc_func.interpolate(rio_wrapper)
     bcs.append(fem.dirichletbc(rio_bc_func, rio_dofs))
