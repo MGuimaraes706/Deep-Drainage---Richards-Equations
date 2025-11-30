@@ -1,10 +1,11 @@
 import meshio
 import os
+import numpy as np
 
 def converter_gmsh_para_xdmf(nome_arquivo_msh):
     """
     Converte um arquivo .msh (Gmsh) para dois arquivos .xdmf (Python/Paraview/FEniCS).
-    Separa a geometria 2D (triângulos) das fronteiras 1D (linhas).
+    Versão Robusta: Itera sobre blocos para garantir sincronia entre geometria e dados físicos.
     """
     
     # Verifica se o arquivo existe
@@ -25,70 +26,70 @@ def converter_gmsh_para_xdmf(nome_arquivo_msh):
     # ===================================================
     # 1. EXTRAIR O DOMÍNIO (TRIÂNGULOS)
     # ===================================================
-    # Procura por células do tipo 'triangle'
-    triangle_cells = [c for c in msh.cells if c.type == "triangle"]
+    print("--> Processando Triângulos (Domínio 2D)...")
     
-    if triangle_cells:
-        # Extrai os dados físicos (Tags) associados aos triângulos
-        # O meshio guarda isso em msh.cell_data['gmsh:physical']
-        # Precisamos pegar o índice correto correspondente aos triângulos
-        
-        # Encontra o índice no array de células onde estão os triângulos
-        index_tri = -1
-        for i, c in enumerate(msh.cells):
-            if c.type == "triangle":
-                index_tri = i
-                break
-        
-        if index_tri != -1:
-            triangle_data = msh.cell_data["gmsh:physical"][index_tri]
+    tri_cells = []
+    tri_data = []
+
+    # Itera sobre os blocos para garantir que pegamos o dado do bloco certo
+    for i, cell_block in enumerate(msh.cells):
+        if cell_block.type == "triangle":
+            # Adiciona a geometria (quem conecta com quem)
+            tri_cells.append(("triangle", cell_block.data))
             
-            # Cria a nova malha limpa só de triângulos
-            triangle_mesh = meshio.Mesh(
-                points=msh.points,
-                cells=[("triangle", triangle_cells[0].data)],
-                cell_data={"material_tag": [triangle_data]}
-            )
-            
-            meshio.write("malha_dominio.xdmf", triangle_mesh)
-            print("--> Sucesso: 'malha_dominio.xdmf' criado (Contém os Solos, Brita, Concreto).")
-        else:
-            print("AVISO: Células triangulares detectadas mas sem dados físicos associados.")
+            # Adiciona os dados físicos (Tags)
+            if "gmsh:physical" in msh.cell_data:
+                # Pega o array de dados correspondente exatamente a este bloco
+                data_array = msh.cell_data["gmsh:physical"][i]
+                tri_data.append(data_array)
+            else:
+                print("    AVISO: Bloco de triângulos sem tag física. Preenchendo com 0.")
+                tri_data.append(np.zeros(len(cell_block.data)))
+
+    if tri_cells:
+        # Cria a nova malha limpa só de triângulos
+        triangle_mesh = meshio.Mesh(
+            points=msh.points,
+            cells=tri_cells,
+            cell_data={"material_tag": tri_data} # O meshio lida com a lista de arrays automaticamente
+        )
+        
+        meshio.write("malha_dominio.xdmf", triangle_mesh)
+        print("    Sucesso: 'malha_dominio.xdmf' criado.")
     else:
-        print("ERRO CRÍTICO: Nenhum triângulo encontrado! Você gerou a malha 2D no Gmsh?")
+        print("    ERRO: Nenhum triângulo encontrado! Verifique se gerou malha 2D no Gmsh.")
 
     # ===================================================
     # 2. EXTRAIR AS BORDAS (LINHAS)
     # ===================================================
-    # Procura por células do tipo 'line'
-    line_cells = [c for c in msh.cells if c.type == "line"]
+    print("--> Processando Linhas (Condições de Contorno)...")
     
+    line_cells = []
+    line_data = []
+
+    for i, cell_block in enumerate(msh.cells):
+        if cell_block.type == "line":
+            line_cells.append(("line", cell_block.data))
+            
+            if "gmsh:physical" in msh.cell_data:
+                line_data.append(msh.cell_data["gmsh:physical"][i])
+            else:
+                line_data.append(np.zeros(len(cell_block.data)))
+
     if line_cells:
-        index_line = -1
-        for i, c in enumerate(msh.cells):
-            if c.type == "line":
-                index_line = i
-                break
-                
-        if index_line != -1:
-            line_data = msh.cell_data["gmsh:physical"][index_line]
-            
-            line_mesh = meshio.Mesh(
-                points=msh.points,
-                cells=[("line", line_cells[0].data)],
-                cell_data={"borda_tag": [line_data]}
-            )
-            
-            meshio.write("malha_bordas.xdmf", line_mesh)
-            print("--> Sucesso: 'malha_bordas.xdmf' criado (Contém Entrada, Saída, Rio, etc).")
+        line_mesh = meshio.Mesh(
+            points=msh.points,
+            cells=line_cells,
+            cell_data={"borda_tag": line_data}
+        )
+        
+        meshio.write("malha_bordas.xdmf", line_mesh)
+        print("    Sucesso: 'malha_bordas.xdmf' criado.")
     else:
-        print("AVISO: Nenhuma linha de fronteira encontrada. Verifique se você definiu 'Physical Curve' no .geo.")
+        print("    AVISO: Nenhuma linha de fronteira encontrada.")
 
 if __name__ == "__main__":
-    # ==========================================
-    # CONFIGURAÇÃO
-    # ==========================================
-    # Mude aqui se o nome do seu arquivo for diferente
+    # NOME DO ARQUIVO .MSH (Certifique-se que este nome está igual ao que você salvou no Gmsh)
     ARQUIVO_ENTRADA = "malha_tubular.msh" 
     
     converter_gmsh_para_xdmf(ARQUIVO_ENTRADA)
