@@ -15,7 +15,7 @@ with io.XDMFFile(MPI.COMM_WORLD, "malha_dominio.xdmf", "r") as xdmf:
     mesh = xdmf.read_mesh(name="Grid")
 
 # ===================== 2. Espaço de funções =====================
-V = fem.FunctionSpace(mesh, ufl.FiniteElement("Lagrange", mesh.ufl_cell(), 1))
+V = fem.FunctionSpace(mesh, ufl.finiteelement("Lagrange", mesh.ufl_cell(), 1))
 h = fem.Function(V)
 h_n = fem.Function(V)
 
