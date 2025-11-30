@@ -2,10 +2,14 @@
 
 # Solver de Richards 2D FEM linear (triângulos), sem FEniCS
 
+# Imports padrão
 import numpy as np
 import meshio
 from scipy.sparse import lil_matrix
 from scipy.sparse.linalg import spsolve
+# Importa parâmetros reais
+import config
+
 
 # Códigos ANSI para cores
 RED = '\033[31m'
@@ -16,10 +20,12 @@ RESET = '\033[0m'
 
 
 # Parâmetros do problema
-Ksat = 1e-6  # condutividade hidráulica saturada [m/s]
+Ksat = 1e-6  # condutividade hidráulica saturada [m/s] (exemplo, pode ser lido de base.py)
 g = 9.81  # gravidade [m/s^2]
-dt = 60.0
+dt = 3600.0  # 1 hora
 tempo_total = 24*3600.0
+Q_rio = config.VAZAO_RIO
+nivel_rio = config.NIVEL_RIO_ATUAL
 
 # Ler malha 2D (malha_dominio.xdmf)
 malha = meshio.read("malha_dominio.xdmf")
@@ -51,9 +57,10 @@ print(f"     - {RED}Arquivo de malha lido:{RESET} {YELLOW}malha_dominio.xdmf{RES
 print(f"     - {RED}Pontos (nós):{RESET} {YELLOW}{Nnodes}{RESET}")
 print(f"     - {RED}Elementos (triângulos):{RESET} {YELLOW}{Nelems}{RESET}\n")
 
+
 print(f"{PURPLE}Parâmetros do problema:{RESET}")
-print(f"     - {RED}Vazão do Rio (Q):{RESET} {YELLOW}2.0{RESET} {PURPLE}m3/s{RESET}")
-print(f"     - {RED}Nível Absoluto da Água:{RESET} {YELLOW}1.780{RESET} {PURPLE}m{RESET}")
+print(f"     - {RED}Vazão do Rio (Q):{RESET} {YELLOW}{Q_rio:.2f}{RESET} {PURPLE}m3/s{RESET}")
+print(f"     - {RED}Nível Absoluto da Água:{RESET} {YELLOW}{nivel_rio:.3f}{RESET} {PURPLE}m{RESET}")
 print(f"     - {RED}Passo de Tempo (dt):{RESET} {YELLOW}{dt:.1f}{RESET} {PURPLE}s{RESET} {RED}(1 hora){RESET}")
 print(f"     - {RED}Tempo Total:{RESET} {YELLOW}{int(tempo_total/3600)}{RESET} {PURPLE}horas{RESET}\n")
 
@@ -122,6 +129,9 @@ for passo in range(1, num_passos+1):
 
 
 # Exportar resultado para VTU
+saida_vtu = "resultados/drenagem.pvd"
+import os
+if not os.path.exists("resultados"): os.makedirs("resultados")
 cells = [("triangle", triangles)]
 mesh = meshio.Mesh(points, cells, point_data={"h": h})
 mesh.write("saida_solver2.vtu")
