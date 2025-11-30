@@ -2,7 +2,7 @@ import numpy as np
 import os
 from mpi4py import MPI
 from dolfinx import fem, io, default_scalar_type
-from dolfinx.fem import petsc  # Importação direta do módulo petsc
+from dolfinx.fem import petsc
 import ufl
 import basix.ufl 
 from petsc4py import PETSc
@@ -45,12 +45,12 @@ DG0 = basix.ufl.element("DG", domain.topology.cell_name(), 0)
 Q = fem.functionspace(domain, DG0)
 
 # ==============================================================================
-# 3. CAMPOS E FUNÇÕES
+# 3. CAMPOS E FUNÇÕES (Verifique se h_new está aqui!)
 # ==============================================================================
 h = fem.Function(V, name="Pressao_Atual")           
 h_n = fem.Function(V, name="Pressao_Passo_Anterior") 
 h_iter = fem.Function(V, name="Pressao_Auxiliar")    
-h_new = fem.Function(V, name="Pressao_Nova_Iteracao") # Variável extra para o solver
+h_new = fem.Function(V, name="Pressao_Nova_Iteracao") # <--- A VARIÁVEL QUE FALTAVA
 
 K_field = fem.Function(Q, name="Condutividade_K")
 C_field = fem.Function(Q, name="Capacidade_C")
