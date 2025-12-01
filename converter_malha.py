@@ -6,7 +6,7 @@ def converter_gmsh_para_xdmf(nome_arquivo_msh):
     """
     Versão Robusta: Itera sobre blocos para garantir sincronia entre geometria e dados físicos.
     """
-    Converte um arquivo .msh (Gmsh) para dois arquivos .xdmf (Python/Paraview).
+    Converte um arquivo .msh (Gmsh) para dois arquivos .xdmf (Python/Paraview/FEniCS).
     Versão Robusta: Itera sobre blocos para garantir sincronia entre geometria e dados físicos.
     """
     
