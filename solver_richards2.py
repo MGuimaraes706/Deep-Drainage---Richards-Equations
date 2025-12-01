@@ -20,9 +20,9 @@ RESET = '\033[0m'
 
 
 # Parâmetros do problema
-Ksat = 1e-6  # condutividade hidráulica saturada [m/s] (exemplo, pode ser lido de base.py)
-g = 9.81  # gravidade [m/s^2]
-dt = 3600.0  # 1 hora
+Ksat = 1e-6  # condutividade hidráulica saturada [m/s] (exemplo, pode ser lido de base.py)
+g = 9.81  # gravidade [m/s^2]
+dt = 3600.0  # 1 hora
 tempo_total = 24*3600.0
 Q_rio = config.VAZAO_RIO
 nivel_rio = config.NIVEL_AGUA_ABSOLUTO
@@ -32,11 +32,11 @@ malha = meshio.read("malha_dominio.xdmf")
 points = malha.points
 triangles = None
 for cell_block in malha.cells:
-    if cell_block.type == "triangle":
-        triangles = cell_block.data
-        break
+	if cell_block.type == "triangle":
+		triangles = cell_block.data
+		break
 if triangles is None:
-    raise RuntimeError("Malha não contém elementos triangulares!")
+	raise RuntimeError("Malha não contém elementos triangulares!")
 Nnodes = points.shape[0]
 Nelems = triangles.shape[0]
 
@@ -50,10 +50,11 @@ nodes_top = np.where(np.abs(y - y.max()) < tol)[0]
 nodes_bottom = np.where(np.abs(y - y.min()) < tol)[0]
 # Bordas esquerda e direita
 x = points[:,0]
-h_esq = 0.0  # ou outro valor físico adequado
+h_esq = 0.0  # ou outro valor físico adequado
 h_dir = -2.0 # ou outro valor físico adequado
 nodes_left = np.where(np.abs(x - x.min()) < tol)[0]
 nodes_right = np.where(np.abs(x - x.max()) < tol)[0]
+
 
 
 # ====== RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO ======
