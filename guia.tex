@@ -9,6 +9,7 @@
 \usepackage{geometry}
 \geometry{left=3cm, right=2cm, top=3cm, bottom=2cm}
 
+\usepackage{graphicx}
 \title{\textbf{Documentação do Solver Transiente de Richards}}
 
 \author{Pipeline Richards v3 -- Aduela de Concreto}
@@ -16,12 +17,42 @@
 
 \begin{document}
 
-\maketitle
+onde $z$ é positivo para cima. O script \texttt{solver\_richards2.py} monta elementos finitos lineares de dois nós para cada intervalo $[z_i, z_{i+1}]$, com rigidez local $(K_s/L_e)\begin{bmatrix}1 & -1\\-1 & 1\end{bmatrix}$. As condições de contorno Dirichlet ($h=-2$ m no topo, $h=0$ m na base) substituem diretamente as linhas correspondentes. Após resolver \texttt{spsolve}, calcula-se o fluxo específico
 
 \section{Caso Estacionário 1D (\texttt{solver\_richards2.py})}
 Como degrau inicial, resolvemos um perfil unidimensional em regime estacionário assumindo condutividade saturada constante ($K_s$) e ausência do termo de capacidade. A Equação de Richards reduz-se a
 \begin{equation}
     \frac{\mathrm{d}}{\mathrm{d}z}\left[K_s\left(\frac{\mathrm{d}h}{\mathrm{d}z}+1\right)\right]=0 \quad \Rightarrow \quad \frac{\mathrm{d}^2 h}{\mathrm{d}z^2}=0,
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{figuras/estacionario_1d_linear.png}
+    \caption{Perfil 1D previsto para o caso estacionário com $K_s$ constante.}
+    \label{fig:perfil1d}
+\end{figure}
+
+\section{Caso Estacionário 2D}
+O próximo passo é congelar o termo transiente no domínio bidimensional obtido da malha \texttt{malha\_dominio.xdmf}. Nesse cenário, resolvemos $\nabla \cdot [K(h)(\nabla h + \mathbf{e}_z)] = 0$ com as mesmas condições de contorno empregadas no solver transiente, porém sem acumulação. Embora ainda não haja implementação específica, a distribuição de carga deve apresentar gradientes suaves entre o lençol alto (esquerda/fundo) e a superfície seca (topo/direita). As Figuras~\ref{fig:perfil2d}--\ref{fig:superficie2d} ilustram as curvas esperadas: um perfil vertical característico, o mapa de contornos e a superfície 3D da carga hidráulica.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figuras/estacionario_2d_perfil.png}
+    \caption{Perfil vertical previsto em uma seção intermediária do domínio 2D estacionário.}
+    \label{fig:perfil2d}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figuras/estacionario_2d_contorno.png}
+    \caption{Curvas de nível esperadas para o regime 2D estacionário.}
+    \label{fig:contorno2d}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figuras/estacionario_2d_superficie.png}
+    \caption{Superfície de carga prevista para o caso 2D estacionário.}
+    \label{fig:superficie2d}
+\end{figure}
 \end{equation}
 onde $z$ é positivo para cima. Implementamos diferenças finitas centralizadas em uma malha uniforme ($N=51$ pontos) e impomos Dirichlet no topo ($h=-2$ m) e no fundo ($h=0$ m). O sistema linear tridiagonal resultante é resolvido com \texttt{spsolve}; em seguida calcula-se o fluxo específico
 \begin{equation}
@@ -168,6 +199,23 @@ Durante a simulação, o solver imprime para cada passo relevante:
     \item Alertas caso o critério de convergência não seja atendido.
 \end{itemize}
 O pós-processamento gera \texttt{drenagem\_\# .vtu} e uma coleção \texttt{drenagem.pvd}. Como a malha é 2D, adiciona-se automaticamente a coordenada $z = 0$ para satisfazer o formato VTU.
+
+\subsection{Visualização Esperada do Caso Transiente}
+Para fins de planejamento e comunicação com o cliente, geramos imagens sintéticas que representam duas etapas típicas da simulação: o instante inicial (superfície ainda seca) e a condição após 24 h (gradiente suavizado pela drenagem). As Figuras~\ref{fig:transiente0} e \ref{fig:transiente24} podem ser substituídas posteriormente pelos resultados reais exportados em VTU.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figuras/transiente_t0.png}
+    \caption{Distribuição esperada da carga hidráulica no início da simulação ($t=0$ h).}
+    \label{fig:transiente0}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figuras/transiente_t24.png}
+    \caption{Distribuição esperada após 24 h de drenagem ($t=24$ h).}
+    \label{fig:transiente24}
+\end{figure}
 
 \section{Parâmetros Numéricos Principais}
 \begin{itemize}
