@@ -29,6 +29,7 @@ def print_log(*args, **kwargs):
     with open("saida_terminal_pipeline.txt", "a", encoding="utf-8") as f_log:
         f_log.write(text + "\n")
 
+
 # Ler malha e tags
 try:
     malha = meshio.read("malha_dominio.xdmf")
@@ -49,6 +50,52 @@ except Exception as e:
 
 Nnodes = points.shape[0]
 Nelems = triangles.shape[0]
+
+# Parâmetros do problema (iguais ao pipeline antigo)
+g = 9.81  # gravidade [m/s^2]
+dt = 3600.0  # 1 hora
+tempo_total = 24*3600.0
+Q_rio = config.VAZAO_RIO if hasattr(config, 'VAZAO_RIO') else 0.0
+nivel_rio = config.NIVEL_AGUA_ABSOLUTO if hasattr(config, 'NIVEL_AGUA_ABSOLUTO') else 0.0
+
+# ====== RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO ======
+print_log("="*72)
+print_log("==== Iniciando pipeline de simulação de drenagem " + "="*23)
+print_log("="*72)
+print_log("")
+print_log(f"{PURPLE}ARQUIVO DE MALHA{RESET}")
+print_log(f"Caminho:         {YELLOW}malha_dominio.xdmf{RESET}")
+print_log(f"Caminho Bordas:  {YELLOW}malha_bordas.xdmf{RESET}")
+print_log(f"Pontos (Nós):    {YELLOW}{Nnodes}{RESET}")
+print_log(f"Elementos (Tri): {YELLOW}{Nelems}{RESET}")
+print_log("")
+print_log(f"{PURPLE}PARÂMETROS FÍSICOS{RESET}")
+print_log(f"Vazão do Rio (Q):          {GREEN}{Q_rio:.2f}{RESET} m³/s")
+print_log(f"Coeficiente de Manning (n): {GREEN}{getattr(config, 'MANNING_N', 0.0)}{RESET}")
+ks_presentes = [base.MATERIAIS.get(tag, {"ks": 0})["ks"] for tag in np.unique(tags_materiais)]
+ks_medio = np.mean(ks_presentes) if ks_presentes else 0
+print_log(f"Condutividade (Ks):        {GREEN}{ks_medio:.2e}{RESET} m/s (média dos materiais)")
+print_log(f"Cota de Fundo do Duto:     {GREEN}{getattr(config, 'Y_FUNDO_ADUELA', 0.0):.3f}{RESET} m")
+print_log(f"Lâmina d'Água (h):         {GREEN}{getattr(config, 'LAMINA_AGUA', 0.0):.3f}{RESET} m")
+print_log(f"Gravidade (g):             {GREEN}{g:.2f}{RESET} m/s²")
+print_log(f"Nível Absoluto da Água:    {GREEN}{nivel_rio:.3f}{RESET} m")
+print_log("")
+print_log(f"{PURPLE}CONFIGURAÇÃO DO SOLVER{RESET}")
+print_log(f"Tempo Total:               {YELLOW}24 horas{RESET}")
+print_log(f"Passo de Tempo (dt):       {YELLOW}{dt:.1f}{RESET} s (1 hora)")
+print_log(f"Método de Integração:      {YELLOW}Backward-Euler{RESET}")
+print_log(f"Tolerância Picard:         {YELLOW}1e-4{RESET}")
+print_log(f"Max Iterações:             {YELLOW}15{RESET}")
+print_log("")
+print_log(f"{PURPLE}CONDIÇÕES DE CONTORNO{RESET}")
+print_log(f"Esquerda: {YELLOW}Dirichlet Variável{RESET} ({PURPLE}Lençol Alto{RESET})")
+print_log(f"Direita:  {YELLOW}Dirichlet Variável{RESET} ({PURPLE}Lençol Baixo{RESET})")
+print_log(f"Topo:     {YELLOW}Dirichlet Constante{RESET} ({PURPLE}Superfície Seca{RESET})")
+print_log(f"Rio:      {YELLOW}Mista{RESET} ({PURPLE}Seepage Face / Hidrostática{RESET})")
+print_log("")
+print_log(f"{YELLOW}{'='*72}{RESET}")
+print_log(f"{YELLOW}==== PROCESSAMENTO TEMPORAL {'='*39}{RESET}")
+print_log(f"{YELLOW}{'='*72}{RESET}")
 
 def get_kh_ch(h_elem, tag_mat):
     props = base.MATERIAIS.get(tag_mat, None)
@@ -168,7 +215,12 @@ if h_list:
         f.write('<Collection>\n')
         for i, h_step in enumerate(h_list):
             nome_vtu = f"drenagem_{i}.vtu"
-            mesh = meshio.Mesh(points, [("triangle", triangles)], point_data={"Pressao_h": h_step})
+            # Garante que os pontos tenham shape (N,3) para VTU
+            if points.shape[1] == 2:
+                points_vtu = np.column_stack([points, np.zeros(points.shape[0])])
+            else:
+                points_vtu = points
+            mesh = meshio.Mesh(points_vtu, [("triangle", triangles)], point_data={"Pressao_h": h_step})
             mesh.write(f"resultados/{nome_vtu}", file_format="vtu")
             f.write(f'<DataSet timestep="{tempos[i]/3600.0}" file="{nome_vtu}"/>\n')
         f.write('</Collection>\n')

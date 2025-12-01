@@ -51,3 +51,93 @@ Passo de Tempo (dt):       [33m3600.0[0m s (1 hora)
 Tempo Total:               [33m24.0[0m horas
 Tolerância Picard:         [33m1.0e-04[0m
 
+========================================================================
+==== Solver de Richards Transiente Não-Linear ====
+========================================================================
+Pontos (Nós):    [33m1625[0m
+Elementos (Tri): [33m2844[0m
+Passo de Tempo (dt):       [33m3600.0[0m s (1 hora)
+Tempo Total:               [33m24.0[0m horas
+Tolerância Picard:         [33m1.0e-04[0m
+
+Tempo t = [33m1.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m3[0m) | Erro: [33m9.62e-06[0m
+Tempo t = [33m2.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m3[0m) | Erro: [33m6.18e-06[0m
+Tempo t = [33m3.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m3[0m) | Erro: [33m4.67e-06[0m
+Tempo t = [33m4.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m8.72e-05[0m
+...
+Tempo t = [33m5.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m7.75e-05[0m
+Tempo t = [33m6.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m7.07e-05[0m
+Tempo t = [33m7.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m6.54e-05[0m
+Tempo t = [33m8.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m6.12e-05[0m
+Tempo t = [33m9.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m5.76e-05[0m
+Tempo t = [33m10.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m5.46e-05[0m
+Tempo t = [33m11.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m5.20e-05[0m
+Tempo t = [33m12.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.97e-05[0m
+Tempo t = [33m13.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.76e-05[0m
+Tempo t = [33m14.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.57e-05[0m
+Tempo t = [33m15.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.41e-05[0m
+Tempo t = [33m16.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.25e-05[0m
+Tempo t = [33m17.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.12e-05[0m
+Tempo t = [33m18.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.99e-05[0m
+Tempo t = [33m19.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.87e-05[0m
+Tempo t = [33m20.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.77e-05[0m
+Tempo t = [33m21.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.67e-05[0m
+Tempo t = [33m22.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.58e-05[0m
+Tempo t = [33m23.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.50e-05[0m
+Tempo t = [33m24.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.43e-05[0m
+
+[35mRESUMO ESTATÍSTICO FINAL (t=24.0h)[0m
+
+Pressão Mínima:      [33m-2.000[0m
+Pressão Máxima:      [33m0.000[0m
+Pressão Média:       [33m-0.984[0m
+Visualização: [33mresultados/drenagem.pvd[0m (ParaView)
+Status da Execução:  [32mSUCESSO[0m
+[33m================================================================================[0m
+[35mFIM DO RELATÓRIO[0m
+
+========================================================================
+==== Solver de Richards Transiente Não-Linear ====
+========================================================================
+Pontos (Nós):    [33m1625[0m
+Elementos (Tri): [33m2844[0m
+Passo de Tempo (dt):       [33m3600.0[0m s (1 hora)
+Tempo Total:               [33m24.0[0m horas
+Tolerância Picard:         [33m1.0e-04[0m
+
+Tempo t = [33m1.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m3[0m) | Erro: [33m9.62e-06[0m
+Tempo t = [33m2.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m3[0m) | Erro: [33m6.18e-06[0m
+Tempo t = [33m3.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m3[0m) | Erro: [33m4.67e-06[0m
+Tempo t = [33m4.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m8.72e-05[0m
+...
+Tempo t = [33m5.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m7.75e-05[0m
+Tempo t = [33m6.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m7.07e-05[0m
+Tempo t = [33m7.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m6.54e-05[0m
+Tempo t = [33m8.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m6.12e-05[0m
+Tempo t = [33m9.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m5.76e-05[0m
+Tempo t = [33m10.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m5.46e-05[0m
+Tempo t = [33m11.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m5.20e-05[0m
+Tempo t = [33m12.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.97e-05[0m
+Tempo t = [33m13.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.76e-05[0m
+Tempo t = [33m14.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.57e-05[0m
+Tempo t = [33m15.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.41e-05[0m
+Tempo t = [33m16.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.25e-05[0m
+Tempo t = [33m17.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m4.12e-05[0m
+Tempo t = [33m18.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.99e-05[0m
+Tempo t = [33m19.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.87e-05[0m
+Tempo t = [33m20.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.77e-05[0m
+Tempo t = [33m21.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.67e-05[0m
+Tempo t = [33m22.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.58e-05[0m
+Tempo t = [33m23.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.50e-05[0m
+Tempo t = [33m24.0[0m [35mh[0m | [32mConvergiu[0m (Iter: [33m2[0m) | Erro: [33m3.43e-05[0m
+
+[35mRESUMO ESTATÍSTICO FINAL (t=24.0h)[0m
+
+Pressão Mínima:      [33m-2.000[0m
+Pressão Máxima:      [33m0.000[0m
+Pressão Média:       [33m-0.984[0m
+Visualização: [33mresultados/drenagem.pvd[0m (ParaView)
+Status da Execução:  [32mSUCESSO[0m
+[33m================================================================================[0m
+[35mFIM DO RELATÓRIO[0m
+
