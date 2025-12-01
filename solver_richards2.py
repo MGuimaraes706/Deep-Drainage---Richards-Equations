@@ -29,7 +29,7 @@ print(f"{YELLOW}{'='*80}{RESET}")
 print(f"{PURPLE}RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO{RESET}\n")
 
 print(f"{YELLOW}{'#'*80}{RESET}")
-print(f"[1] DADOS DE ENTRADA (INPUT)")
+print(f"{YELLOW}[1] DADOS DE ENTRADA (INPUT){RESET}")
 print(f"{YELLOW}{'#'*80}{RESET}")
 
 # --- 1.1 Leitura do Domínio ---
@@ -58,37 +58,42 @@ except Exception as e:
     print(f"{RED}ERRO AO LER DOMÍNIO: {e}{RESET}")
     sys.exit(1)
 
-print(f"[ARQUIVO DE MALHA]")
-print(f"Caminho:         {arquivo_malha}")
-print(f"Caminho Bordas:  malha_bordas.xdmf")
-print(f"Pontos (Nós):    {points.shape[0]}")
-print(f"Elementos (Tri): {triangles.shape[0]}")
 
-print(f"\n[PARÂMETROS FÍSICOS]")
-print(f"Vazão do Rio (Q):          {base.Q_RIO:.2f} m³/s")
-print(f"Coeficiente de Manning (n): {base.N_MANNING}")
-print(f"Declividade (S0):          {base.S0:.3f} m/m")
-print(f"Cota de Fundo do Duto:     {base.COTA_FUNDO_DUTO:.3f} m")
-print(f"Lâmina d'água (h):         {base.LAMINA_AGUA:.3f} m")
-print(f"Nível Absoluto da Água:    {base.NIVEL_ABSOLUTO_AGUA:.3f} m")
+# ARQUIVO DE MALHA
+print(f"{PURPLE}[ARQUIVO DE MALHA]{RESET}")
+print(f"Caminho:         {YELLOW}malha_dominio.xdmf{RESET}")
+print(f"Caminho Bordas:  {YELLOW}malha_bordas.xdmf{RESET}")
+print(f"Pontos (Nós):    {YELLOW}{points.shape[0]}{RESET}")
+print(f"Elementos (Tri): {YELLOW}{triangles.shape[0]}{RESET}")
 
-print(f"\n[CONFIGURAÇÃO DO SOLVER]")
-print(f"Tempo Total:               24 horas")
-print(f"Passo de Tempo (dt):       3600.0 s (1 hora)")
-print(f"Método de Integração:      Backward Euler")
-print(f"Tolerância Picard:         1e-4")
-print(f"Max Iterações:             15")
+# PARÂMETROS FÍSICOS
+print(f"\n{PURPLE}[PARÂMETROS FÍSICOS]{RESET}")
+print(f"Vazão do Rio (Q):          {GREEN}{base.Q_RIO:.2f}{RESET} m³/s")
+print(f"Coeficiente de Manning (n): {GREEN}{base.N_MANNING}{RESET}")
+print(f"Declividade (S0):          {GREEN}{base.S0:.3f}{RESET} m/m")
+print(f"Cota de Fundo do Duto:     {GREEN}{base.COTA_FUNDO_DUTO:.3f}{RESET} m")
+print(f"Lâmina d'água (h):         {GREEN}{base.LAMINA_AGUA:.3f}{RESET} m")
+print(f"Nível Absoluto da Água:    {GREEN}{base.NIVEL_ABSOLUTO_AGUA:.3f}{RESET} m")
 
-print(f"\n[CONDIÇÕES DE CONTORNO]")
-print(f"Esquerda: Dirichlet Variável (Lençol Alto)")
-print(f"Direita:  Dirichlet Variável (Lençol Baixo)")
-print(f"Topo:     Dirichlet Constante (Sucção)")
-print(f"Rio:      Mista (Seepage Face / Hidrostática)")
+# CONFIGURAÇÃO DO SOLVER
+print(f"\n{PURPLE}[CONFIGURAÇÃO DO SOLVER]{RESET}")
+print(f"Tempo Total:               {YELLOW}24 horas{RESET}")
+print(f"Passo de Tempo (dt):       {YELLOW}3600.0 s (1 hora){RESET}")
+print(f"Método de Integração:      {YELLOW}Backward Euler{RESET}")
+print(f"Tolerância Picard:         {YELLOW}1e-4{RESET}")
+print(f"Max Iterações:             {YELLOW}15{RESET}")
+
+# CONDIÇÕES DE CONTORNO
+print(f"\n{PURPLE}[CONDIÇÕES DE CONTORNO]{RESET}")
+print(f"Esquerda: {YELLOW}Dirichlet Variável{RESET} ({PURPLE}Lençol Alto{RESET})")
+print(f"Direita:  {YELLOW}Dirichlet Variável{RESET} ({PURPLE}Lençol Baixo{RESET})")
+print(f"Topo:     {YELLOW}Dirichlet Constante{RESET} ({PURPLE}Sucção{RESET})")
+print(f"Rio:      {YELLOW}Mista{RESET} ({PURPLE}Seepage Face / Hidrostática{RESET})")
 
 print(f"{YELLOW}{'#'*80}{RESET}")
-print(f"[2] DADOS DE SAÍDA (OUTPUT)")
+print(f"{YELLOW}[2] DADOS DE SAÍDA (OUTPUT){RESET}")
 print(f"{YELLOW}{'#'*80}{RESET}")
-print(f"[PROCESSAMENTO TEMPORAL]\n")
+print(f"{PURPLE}[PROCESSAMENTO TEMPORAL]{RESET}\n")
 
 # --- 1.2 Leitura das Bordas (CRÍTICO) ---
 boundary_nodes = {}
@@ -250,7 +255,7 @@ for passo in range(1, num_passos+1):
         break
     diff = np.linalg.norm(h_new - h_old)
     tempo_h = passo * dt / 3600.0
-    print(f"Tempo t =  {tempo_h:4.1f} h | Status: Convergiu (Iter: 3) | Erro: {diff:.2e}")
+    print(f"Tempo t =  {YELLOW}{tempo_h:4.1f}{RESET} h | Status: {GREEN}Convergiu{RESET} (Iter: {YELLOW}3{RESET}) | Erro: {YELLOW}{diff:.2e}{RESET}")
     h_old = h_new.copy()
 
 # ==============================================================================
@@ -258,7 +263,8 @@ for passo in range(1, num_passos+1):
 # ==============================================================================
 
 # =================== RELATÓRIO FINAL ===================
-print(f"\n[ARQUIVOS GERADOS]")
+
+print(f"\n{PURPLE}[ARQUIVOS GERADOS]{RESET}")
 if not np.any(np.isnan(h_new)):
     if not os.path.exists("resultados"): os.makedirs("resultados")
     outfile = "resultados/drenagem.pvd"
@@ -269,8 +275,8 @@ if not np.any(np.isnan(h_new)):
         cell_data={"Velocidade_Darcy": [velocidades_elementos]}
     )
     mesh_out.write(outfile)
-    print(f"Visualização: {outfile} (ParaView)")
-    print(f"Malha HDF5:   malha_dominio.h5")
+    print(f"Visualização: {YELLOW}{outfile}{RESET} (ParaView)")
+    print(f"Malha HDF5:   {YELLOW}malha_dominio.h5{RESET}")
     # Plot Matplotlib
     try:
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -285,19 +291,20 @@ if not np.any(np.isnan(h_new)):
 else:
     print(f"{RED}Simulação falhou. Verifique as tags de borda.{RESET}")
 
-print(f"\n[RESUMO ESTATÍSTICO FINAL (t=24h)]\n")
+print(f"\n{PURPLE}[RESUMO ESTATÍSTICO FINAL (t=24h)]{RESET}\n")
 if not np.any(np.isnan(h_new)):
     pmin = np.nanmin(h_new)
     pmax = np.nanmax(h_new)
     pmed = np.nanmean(h_new)
-    print(f"Pressão Mínima:      {pmin:.3f}")
-    print(f"Pressão Máxima:      {pmax:.3f}")
-    print(f"Pressão Média:       {pmed:.3f}")
-    print(f"Status da Execução:  SUCESSO")
+    print(f"Pressão Mínima:      {YELLOW}{pmin:.3f}{RESET}")
+    print(f"Pressão Máxima:      {YELLOW}{pmax:.3f}{RESET}")
+    print(f"Pressão Média:       {YELLOW}{pmed:.3f}{RESET}")
+    print(f"Status da Execução:  {GREEN}SUCESSO{RESET}")
 else:
-    print(f"Pressão Mínima:      nan (Superfície Seca)")
-    print(f"Pressão Máxima:      nan (Fundo do Rio)")
-    print(f"Pressão Média:       nan")
-    print(f"Status da Execução:  FALHA")
+    print(f"Pressão Mínima:      {YELLOW}nan{RESET} (Superfície Seca)")
+    print(f"Pressão Máxima:      {YELLOW}nan{RESET} (Fundo do Rio)")
+    print(f"Pressão Média:       {YELLOW}nan{RESET}")
+    print(f"Status da Execução:  {RED}FALHA{RESET}")
 
 print(f"{YELLOW}{'='*80}{RESET}")
+print(f"{YELLOW}{'FIM DO RELATÓRIO':^80}{RESET}")
