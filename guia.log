@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  1 DEC 2025 15:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  1 DEC 2025 16:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -272,10 +272,7 @@ File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-06-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count305
-) (guia.aux
-Package babel Info: 'brazil' activates 'portuges' shorthands.
-(babel)             Reported on input line 5.
-)
+) (guia.aux)
 \openout1 = `guia.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
@@ -292,6 +289,8 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
 LaTeX Font Info:    ... okay on input line 18.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
 LaTeX Font Info:    ... okay on input line 18.
+Package babel Info: 'brazil' activates 'portuges' shorthands.
+(babel)             Reported on input line 18.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
