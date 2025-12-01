@@ -513,21 +513,6 @@ def assemble_matrices(h_iter, tags_materiais, points, triangles, dt):
             for j in range(3):
                 A_global[node_ids[i], node_ids[j]] += A_local[i, j]
                 M_global[node_ids[i], node_ids[j]] += M_local[i, j]
-    return A_global.tocsr(), M_global.tocsr(), b_grav_global, np.array(K_diag), np.array(C_diag)
-
-
-            # 2. Matriz do Sistema Global: Lado Esquerdo
-            K_global = M_mat + A_mat
-        
-            # 3. Vetor de Carga Global: Lado Direito
-            b_time = M_mat @ h_old # Termo de tempo (M/dt * h^n)
-            b_global = b_time - b_grav 
-        
-            # 4. Aplicação das Condições de Contorno Dirichlet
-            K_global_csr = K_global.tocsr()
-        
-            for idx, node in enumerate(unique_nodes):
-                h_bc = unique_values[idx]
             
                 # Força K_global e b_global para a solução de contorno
                 K_global_csr[node, :] = 0
