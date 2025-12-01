@@ -52,6 +52,7 @@ Não há termos de fonte no lado direito. Montamos a matriz global $\mathbf{K}$ 
     \caption{Esquema do elemento 1D linear padrão (P1) com funções de forma $N_1$ e $N_2$.}
     \label{fig:elemento1d}
 \end{figure}
+O desenho da Figura~\ref{fig:elemento1d} representa exatamente a transformação isoparamétrica usual: começamos do segmento de referência $\xi\in[0,1]$, associamos $N_1=1-\xi$, $N_2=\xi$ e mapeamos para o segmento físico $[z_i,z_j]$. O comprimento $L_e$ surge do Jacobiano ($\mathrm{d}z/\mathrm{d}\xi=L_e$) e garante que o gradiente das funções de forma seja constante, facilitando o cálculo da matriz local.
 
 \subsection{Sistema Linear e Pós-processamento}
 O sistema resultante é $\mathbf{K}\,\mathbf{h}=\mathbf{f}$, resolvido com \texttt{spsolve}. O fluxo em cada elemento é calculado por
@@ -97,6 +98,7 @@ com $A_e$ a área do triângulo. Se $K$ for assumido constante por elemento (cas
     \caption{Elemento triangular $P_1$ usado no domínio 2D: nós $i,j,k$, vetores $\mathbf{B}$ constantes e coordenadas baricêntricas.}
     \label{fig:elemento2d}
 \end{figure}
+Na Figura~\ref{fig:elemento2d} destacamos o triângulo de referência com coordenadas baricêntricas $(\lambda_1,\lambda_2,\lambda_3)$: cada função de forma é igual à respectiva coordenada, resultando em gradientes constantes após o mapeamento afim para o triângulo físico. Os vetores $\mathbf{B}$ nada mais são que as derivadas espaciais dessas funções, reescaladas pela área $A_e$ conforme a expressão apresentada acima.
 
 \subsection{Montagem e Aplicação de Contornos}
 As matrizes locais são adicionadas ao sistema global usando a numeração de nós retornada pelo Gmsh. Os contornos Dirichlet (topo, fundo, esquerda, direita e parede interna) são tratados zerando as linhas correspondentes na matriz global (em formato LIL) e forçando a diagonal igual a 1, com o vetor de força substituído pelo valor prescrito. Nenhum termo de massa aparece, pois estamos tratando o regime estacionário. O sistema final $\mathbf{K}\,\mathbf{h}=\mathbf{f}$ pode ser resolvido com \texttt{spsolve} diretamente.

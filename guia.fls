@@ -133,8 +133,8 @@ OUTPUT guia.pdf
 INPUT .\figuras\elemento_1d.png
 INPUT .\figuras\elemento_1d.png
 INPUT .\figuras\elemento_1d.png
-INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt1200.tfm
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt1200.tfm
 INPUT .\figuras\estacionario_1d_linear.png
 INPUT .\figuras\estacionario_1d_linear.png
 INPUT .\figuras\estacionario_1d_linear.png
