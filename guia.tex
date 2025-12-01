@@ -20,15 +20,38 @@
 \maketitle
 
 \section{Caso Estacionário 1D (\texttt{solver\_richards2.py})}
-Como degrau inicial, resolvemos um perfil unidimensional em regime estacionário assumindo condutividade saturada constante ($K_s$) e ausência do termo de capacidade. A Equação de Richards reduz-se a
+Como degrau inicial, resolvemos um perfil unidimensional em regime estacionário assumindo condutividade saturada constante ($K_s$) e ausência do termo de capacidade.
+
+\subsection{Equação Forte}
+Considerando fluxo vertical com $z$ positivo para cima, a forma forte reduzida da equação de Richards é
 \begin{equation}
-    \frac{\mathrm{d}}{\mathrm{d}z}\left[K_s\left(\frac{\mathrm{d}h}{\mathrm{d}z}+1\right)\right]=0 \quad \Rightarrow \quad \frac{\mathrm{d}^2 h}{\mathrm{d}z^2}=0,
+    \frac{\mathrm{d}}{\mathrm{d}z}\left[K_s\left(\frac{\mathrm{d}h}{\mathrm{d}z}+1\right)\right]=0,
 \end{equation}
-onde $z$ é positivo para cima. O script \texttt{solver\_richards2.py} monta elementos finitos lineares de dois nós para cada intervalo $[z_i, z_{i+1}]$, com rigidez local $(K_s/L_e)\begin{bmatrix}1 & -1\\-1 & 1\end{bmatrix}$. As condições de contorno Dirichlet ($h=-2$ m no topo, $h=0$ m na base) substituem diretamente as linhas correspondentes. Após resolver \texttt{spsolve}, calcula-se o fluxo específico
+cuja integração direta mostra que $K_s(\mathrm{d}h/\mathrm{d}z + 1)$ é constante. Com $K_s$ uniforme, obtemos um perfil linear e o fluxo específico $q=-K_s(\mathrm{d}h/\mathrm{d}z+1)$.
+
+\subsection{Formulação Variacional}
+Seja $V=\{v\in H^1(0,H)\,|\, v=0 \text{ nos nodos com Dirichlet}\}$ e $h_D$ o campo que satisfaz as condições de contorno prescritas ($h(0)=-2$ m e $h(H)=0$ m). Procuramos $\hat h = h - h_D \in V$ tal que
+\begin{align}
+    &\text{Encontre } \hat h \in V: \quad a(\hat h, v) = \ell(v) \; \forall v \in V,\\
+    &a(u,v) = \int_0^H K_s \frac{\mathrm{d}u}{\mathrm{d}z}\frac{\mathrm{d}v}{\mathrm{d}z}\,\mathrm{d}z, \qquad \ell(v) = - \int_0^H K_s \frac{\mathrm{d}h_D}{\mathrm{d}z}\frac{\mathrm{d}v}{\mathrm{d}z}\,\mathrm{d}z.
+\end{align}
+Como $h_D$ já corresponde ao perfil imposto nos extremos, basta discretizar diretamente $h$ impondo Dirichlet nos nós extremos.
+
+\subsection{Discretização por Elementos Finitos}
+Dividimos $[0,H]$ em $N-1$ intervalos de comprimento $L_e$ e adotamos funções de forma lineares $N_1(\xi)=1-\xi$, $N_2(\xi)=\xi$ ($0\le\xi\le 1$). Para um elemento $e$ com nós $i$ e $j$, o gradiente é constante: $\mathrm{d}N_1/\mathrm{d}z=-1/L_e$, $\mathrm{d}N_2/\mathrm{d}z=1/L_e$. Substituindo na forma variacional resulta na matriz local
 \begin{equation}
-    q(z) = -K_s \left( \frac{\mathrm{d}h}{\mathrm{d}z} + 1 \right)
+    \mathbf{K}_e = \int_{z_i}^{z_j} K_s \begin{bmatrix} \frac{\mathrm{d}N_1}{\mathrm{d}z} \\ \frac{\mathrm{d}N_2}{\mathrm{d}z} \end{bmatrix}
+    \begin{bmatrix} \frac{\mathrm{d}N_1}{\mathrm{d}z} & \frac{\mathrm{d}N_2}{\mathrm{d}z} \end{bmatrix}\mathrm{d}z = \frac{K_s}{L_e}
+    \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix}.
 \end{equation}
-para verificar se o gradiente total excede o termo gravitacional. Os vetores $(z,h,q)$ são gravados em \texttt{resultados/caso\_estacionario\_1d.npz}. A Figura~\ref{fig:perfil1d} mostra o perfil esperado e serve como referência analítica para validar os constitutivos antes de ativarmos os casos 2D.
+Não há termos de fonte no lado direito. Montamos a matriz global $\mathbf{K}$ somando contribuições dos elementos e impomos Dirichlet fixando as linhas dos nós extremos.
+
+\subsection{Sistema Linear e Pós-processamento}
+O sistema resultante é $\mathbf{K}\,\mathbf{h}=\mathbf{f}$, resolvido com \texttt{spsolve}. O fluxo em cada elemento é calculado por
+\begin{equation}
+    q_e = -K_s\left( \frac{h_j - h_i}{L_e} + 1 \right).
+\end{equation}
+Os vetores $(z,h,q)$ são gravados em \texttt{resultados/caso\_estacionario\_1d.npz}. A Figura~\ref{fig:perfil1d} mostra o perfil esperado e serve como referência analítica para validar os constitutivos antes de ativarmos os casos 2D.
 
 \begin{figure}[h!]
     \centering
@@ -39,7 +62,32 @@ para verificar se o gradiente total excede o termo gravitacional. Os vetores $(z
 Observe que a reta descendente reflete exatamente as condições de contorno impostas: o topo possui sucção fixa de $-2$ m e o fundo está em $0$ m. Como o problema reduz-se à equação de Laplace 1D, a solução obrigatoriamente é linear, indicando gradiente hidráulico constante e fluxo uniforme em toda a coluna.
 
 \section{Caso Estacionário 2D}
-O próximo passo é congelar o termo transiente no domínio bidimensional obtido da malha \texttt{malha\_dominio.xdmf}. Nesse cenário, resolvemos $\nabla \cdot [K(h)(\nabla h + \mathbf{e}_z)] = 0$ com as mesmas condições de contorno empregadas no solver transiente, porém sem acumulação. Embora ainda não haja implementação específica, a distribuição de carga deve apresentar gradientes suaves entre o lençol alto (esquerda/fundo) e a superfície seca (topo/direita). As Figuras~\ref{fig:perfil2d}--\ref{fig:superficie2d} ilustram as curvas esperadas: um perfil vertical característico, o mapa de contornos e a superfície 3D da carga hidráulica.
+O próximo passo é congelar o termo transiente no domínio bidimensional obtido da malha \texttt{malha\_dominio.xdmf}. Nesse cenário, resolvemos
+\begin{equation}
+    \nabla \cdot \left[ K(h) (\nabla h + \mathbf{e}_z) \right] = 0 \quad \text{em } \Omega \subset \mathbb{R}^2
+\end{equation}
+com as mesmas condições de contorno empregadas no solver transiente, porém sem acumulação.
+
+\subsection{Formulação Variacional}
+Defina $V = \{ v \in H^1(\Omega) \mid v=0 \text{ em } \Gamma_D \}$ e decomponha $h = h_D + \hat h$. O problema variacional consiste em encontrar $\hat h \in V$ tal que
+\begin{align}
+    a(\hat h, v) &= \ell(v) \quad \forall v \in V, \\
+    a(u,v) &= \int_\Omega K(h(u))\, \nabla u \cdot \nabla v\,\mathrm{d}\Omega, \\
+    \ell(v) &= - \int_\Omega K(h_D)\, \nabla h_D \cdot \nabla v\,\mathrm{d}\Omega,
+\end{align}
+onde $h_D$ incorpora os valores prescritos em topo, fundo e laterais.
+
+\subsection{Aproximação por Elementos Finitos $P_1$}
+Dividimos o domínio em triângulos e aproximamos $h$ por combinações lineares das funções de forma $N_i$. Em cada elemento $e$, o gradiente é obtido por $\nabla N_i = \mathbf{B}_i$ (linhas da matriz $\mathbf{B}$). Assim, a contribuição local para a matriz de rigidez é
+\begin{equation}
+    \mathbf{K}_e = \int_{\Omega_e} K(h_e) \, (\mathbf{B}^T \mathbf{B})\,\mathrm{d}\Omega \approx K(h_e) A_e \, \mathbf{B}^T \mathbf{B},
+\end{equation}
+com $A_e$ a área do triângulo. Se $K$ for assumido constante por elemento (caso linear), basta usar o valor médio $K(h_e)$.
+
+\subsection{Montagem e Aplicação de Contornos}
+As matrizes locais são adicionadas ao sistema global usando a numeração de nós retornada pelo Gmsh. Os contornos Dirichlet (topo, fundo, esquerda, direita e parede interna) são tratados zerando as linhas correspondentes na matriz global (em formato LIL) e forçando a diagonal igual a 1, com o vetor de força substituído pelo valor prescrito. Nenhum termo de massa aparece, pois estamos tratando o regime estacionário. O sistema final $\mathbf{K}\,\mathbf{h}=\mathbf{f}$ pode ser resolvido com \texttt{spsolve} diretamente.
+
+Embora a implementação esteja em planejamento, a distribuição de carga deve apresentar gradientes suaves entre o lençol alto (esquerda/fundo) e a superfície seca (topo/direita). As Figuras~\ref{fig:perfil2d}--\ref{fig:superficie2d} ilustram as curvas esperadas: um perfil vertical característico, o mapa de contornos e a superfície 3D da carga hidráulica.
 
 \begin{figure}[h!]
     \centering
@@ -69,11 +117,11 @@ Nesta visualização 3D, nota-se um ``plateau'' no canto esquerdo (lençol eleva
 Modela-se o fluxo variavelmente saturado no entorno de uma galeria de drenagem profunda (aduela) em regime transiente. A geometria bidimensional é discretizada por elementos triangulares obtidos do arquivo \texttt{malha	extunderscore dominio.xdmf}. O objetivo é reproduzir a evolução da carga hidráulica $h$ em sete camadas de solo, incorporando a recarga e a extração induzidas pelo nível de água no canal interno.
 
 \section{Governo Físico}
-A formulação parte da Equação de Richards na forma mista (pressão 	extit{heads}):
+A formulação transiente usa a Equação de Richards na forma mista (pressão \textit{heads}):
 \begin{equation}
     C(h)\frac{\partial h}{\partial t} = \nabla \cdot \big[ \mathbf{K}(h) (\nabla h + \mathbf{e}_z) \big],
 \end{equation}
-onde $C(h) = \partial \theta / \partial h$ é a capacidade hídrica e $\mathbf{K}(h)$ é o tensor de condutividade hidráulica dependente de $h$.
+onde $C(h) = \partial \theta / \partial h$ é a capacidade hídrica e $\mathbf{K}(h)$ é o tensor de condutividade dependente de $h$. O objetivo numérico é, para cada passo temporal, encontrar $h$ tal que o fluxo divergente (lado direito) compense a variação de armazenamento (lado esquerdo).
 
 \subsection{Modelo de Van Genuchten--Mualem}
 Cada material listado em \texttt{base.py} possui parâmetros $(\theta_r,\theta_s,\alpha,n,K_s)$, com $m = 1 - 1/n$. As funções constitutivas usadas no código são:
@@ -92,15 +140,15 @@ O arquivo \texttt{base.py} centraliza todas as tags de material e os parâmetros
 \begin{center}
 \begin{tabularx}{\textwidth}{>{\ttfamily}lX}
 	oprule
-Parâmetro & Relação com a equação \textit{de Richards} \\
+Parâmetro $\&$ Relação com a equação \textit{de Richards} \\
 \midrule
-ks & Condutividade hidráulica saturada $K_s$ [m/s]. É o valor limite de $K(h)$ quando $h \ge 0$. No solver estacionário 1D usa-se ks constante em toda a coluna; no transiente multiplica-se o termo $\mathbf{B}^T \mathbf{B}$ de cada elemento. \\
-theta\_s & Conteúdo de umidade saturado. Define o platô máximo da função $\theta(h)$ e, portanto, do termo $C(h)=\partial \theta / \partial h$. \\
-theta\_r & Conteúdo de umidade residual. Garante que $\theta(h)$ não tende a zero em sucções elevadas, evitando singularidades em $C(h)$. \\
-alpha & Parâmetro de sucção de entrada de ar [1/m]. Controla a curvatura da relação $\theta(h)$ e, indiretamente, a transição entre zona saturada e não saturada. Aparece dentro de $S_e = (1 + |\alpha h|^n)^{-m}$. \\
-n & Expoente de forma dos poros (adimensional). Define $m = 1 - 1/n$ e influencia tanto $\theta(h)$ quanto $K(h)$ na expressão de Mualem. \\
-m & Derivado de $n$; usado explicitamente na implementação para evitar recomputar $1 - 1/n$ durante a avaliação das curvas. \\
-TAG\_* & Identificadores inteiros para cada subdomínio (Solo\_Inferior, Solo\_Superior, Envelope\_Brita, Concreto). São lidos do dataset \texttt{data2} em \texttt{malha\_dominio.h5} e permitem buscar rapidamente o conjunto \{ks,\theta_s,\theta_r,\alpha,n\} aplicável a cada elemento. \\
+ks $\&$ Condutividade hidráulica saturada $K_s$ [m/s]. É o valor limite de $K(h)$ quando $h \ge 0$. No solver estacionário 1D usa-se ks constante em toda a coluna; no transiente multiplica-se o termo $\mathbf{B}^T \mathbf{B}$ de cada elemento. \\
+theta\_s $\&$ Conteúdo de umidade saturado. Define o platô máximo da função $\theta(h)$ e, portanto, do termo $C(h)=\partial \theta / \partial h$. \\
+theta\_r $\&$ Conteúdo de umidade residual. Garante que $\theta(h)$ não tende a zero em sucções elevadas, evitando singularidades em $C(h)$. \\
+alpha $\&$ Parâmetro de sucção de entrada de ar [1/m]. Controla a curvatura da relação $\theta(h)$ e, indiretamente, a transição entre zona saturada e não saturada. Aparece dentro de $S_e = (1 + |\alpha h|^n)^{-m}$. \\
+n $\&$ Expoente de forma dos poros (adimensional). Define $m = 1 - 1/n$ e influencia tanto $\theta(h)$ quanto $K(h)$ na expressão de Mualem. \\
+m $\&$ Derivado de $n$; usado explicitamente na implementação para evitar recomputar $1 - 1/n$ durante a avaliação das curvas. \\
+$TAG\_$ * $\&$ Identificadores inteiros para cada subdomínio $(Solo\_Inferior, Solo\_Superior, Envelope\_Brita, Concreto)$. São lidos do dataset \texttt{data2} em \texttt{malha\_dominio.h5} e permitem buscar rapidamente o conjunto $\{ks,\theta_s,\theta_r,\alpha,n\}$ aplicável a cada elemento. \\
 \bottomrule
 \end{tabularx}
 \end{center}
@@ -108,11 +156,15 @@ TAG\_* & Identificadores inteiros para cada subdomínio (Solo\_Inferior, Solo\_S
 Além da tabela, \texttt{base.py} expõe helpers \texttt{condutividade\_hidraulica(h, tag)} e \texttt{conteudo\_umidade(h, tag)}, os quais são chamados em \texttt{solver\_richards\_transiente.py} para calcular $K(h)$ e $\theta(h)$ durante as iterações de Picard. Qualquer novo material deve ser inserido nesse arquivo para manter a consistência entre a malha, as tags físicas e os coeficientes usados nas matrizes globais.
 
 \section{Formulação Fraca e Elementos Finitos}
-Adotando funções de peso $w$, integra-se a equação em um elemento $\Omega_e$ e aplica-se integração por partes, obtendo-se
+O procedimento numérico segue três passos principais:
+
+\paragraph{1. Forma Variacional} Multiplica-se a equação por uma função de peso $w$ e integra-se sobre o elemento $\Omega_e$:
 \begin{equation}
-    \int_{\Omega_e} w\,C(h)\frac{\partial h}{\partial t}\,d\Omega + \int_{\Omega_e} \nabla w^T \mathbf{K}(h) (\nabla h + \mathbf{e}_z)\,d\Omega = \int_{\Gamma_q} w\,q_n\,d\Gamma.
+    \int_{\Omega_e} w\,C(h)\frac{\partial h}{\partial t}\,\mathrm{d}\Omega + \int_{\Omega_e} \nabla w^T \mathbf{K}(h) (\nabla h + \mathbf{e}_z)\,\mathrm{d}\Omega = \int_{\Gamma_q} w\,q_n\,\mathrm{d}\Gamma.
 \end{equation}
-Usam-se elementos triangulares lineares $P_1$. As funções de forma $N_i$ conduzem ao vetor gradiente constante por elemento, com a matriz
+O segundo termo é integrado por partes transferindo o gradiente de $\mathbf{K}(h)(\nabla h + \mathbf{e}_z)$ para $w$, surgindo os fluxos naturais $q_n$.
+
+\paragraph{2. Aproximação $P_1$} Usam-se elementos triangulares lineares. As funções de forma $N_i$ conduzem ao vetor gradiente constante por elemento, com a matriz
 \begin{equation}
     \mathbf{B} = \frac{1}{2A_e}
     \begin{bmatrix}
@@ -132,14 +184,22 @@ onde $A_e$ é a área, $b_i = y_j - y_k$ e $c_i = x_k - x_j$. O solver monta:
     \mathbf{b}^{\text{grav}}_e &= \frac{K(h_e)}{2}
     \begin{bmatrix}c_1 & c_2 & c_3\end{bmatrix}^T,
 \end{align}
-com $h_e = \frac{1}{3}\sum h_i$ representando a média nodal do elemento.
+com $h_e = \tfrac{1}{3}\sum h_i$ representando a média nodal do elemento.
+
+\paragraph{3. Montagem Global} As matrizes locais são acumuladas em estruturas LIL. Após completar a montagem, aplicam-se as condições de contorno (zerando linhas e impondo valores), e finalmente converte-se para CSR para resolver o sistema.
 
 \section{Discretização Temporal e Iterações de Picard}
-O termo transiente é integrado por Backward Euler com $\Delta t = 600$ s (10 minutos). Em cada passo $n\rightarrow n+1$ resolve-se
+O termo transiente é integrado por Backward Euler com $\Delta t = 600$ s (10 minutos). Denotando $h^{n+1}$ a solução desconhecida e $h^n$ o estado convergido do passo anterior, temos
+\begin{equation}
+    C(h^{n+1})\frac{h^{n+1}-h^n}{\Delta t} - \nabla \cdot \left[ \mathbf{K}(h^{n+1})(\nabla h^{n+1}+\mathbf{e}_z) \right] = 0.
+\end{equation}
+Como $C$ e $\mathbf{K}$ dependem de $h$, linearizamos via Picard: assume-se uma estimativa $h^{(k)}$, avaliam-se $C(h^{(k)})$ e $\mathbf{K}(h^{(k)})$, monta-se o sistema e resolve-se a correção $\Delta h^{(k)} = h^{(k+1)} - h^{(k)}$.
+
+Em notação matricial, obtém-se
 \begin{equation}
     \left(\mathbf{M}(h^{(k)}) + \mathbf{A}(h^{(k)})\right)\Delta h^{(k)} = \mathbf{M}(h^{(k)}) h^{n} - \mathbf{b}^{\text{grav}}(h^{(k)}) - \mathbf{A}(h^{(k)})h^{(k)},
 \end{equation}
-utilizando iterações de Picard, onde $h^{(k+1)} = h^{(k)} + \Delta h^{(k)}$. A convergência é avaliada pelo erro relativo
+onde $\mathbf{M}$ é a matriz de massa dependente de $C(h)$, $\mathbf{A}$ a matriz de rigidez dependente de $K(h)$ e $\mathbf{b}^{\text{grav}}$ incorpora o termo gravitacional. Atualizamos $h^{(k+1)} = h^{(k)} + \Delta h^{(k)}$. A convergência é avaliada pelo erro relativo
 \begin{equation}
     \varepsilon = \frac{\lVert h^{(k+1)} - h^{(k)} \rVert_2}{\lVert h^{(k+1)} \rVert_2 + 10^{-12}} < 10^{-4}.
 \end{equation}

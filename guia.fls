@@ -67,6 +67,9 @@ INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex\latex\graphi
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex\latex\graphics-def\pdftex.def
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
+INPUT .\guia.aux
+INPUT .\guia.aux
+INPUT guia.aux
 OUTPUT guia.aux
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
@@ -116,19 +119,25 @@ INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm7.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecbx1440.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm0800.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm0600.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx12.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx8.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx6.tfm
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt1200.tfm
-INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecbx1200.tfm
-INPUT .\figuras\estacionario_1d_linear.png
-INPUT .\figuras\estacionario_1d_linear.png
-INPUT .\figuras\estacionario_1d_linear.png
-INPUT .\figuras\estacionario_1d_linear.png
 OUTPUT guia.pdf
+INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
+INPUT .\figuras\estacionario_1d_linear.png
+INPUT .\figuras\estacionario_1d_linear.png
+INPUT .\figuras\estacionario_1d_linear.png
+INPUT .\figuras\estacionario_1d_linear.png
 INPUT .\figuras\estacionario_1d_linear.png
 INPUT .\figuras\estacionario_1d_linear.png
 INPUT .\figuras\estacionario_1d_linear.png
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx12.tfm
-INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx8.tfm
-INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx6.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx10.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx7.tfm
 INPUT .\figuras\estacionario_2d_perfil.png
 INPUT .\figuras\estacionario_2d_perfil.png
 INPUT .\figuras\estacionario_2d_perfil.png
@@ -136,7 +145,6 @@ INPUT .\figuras\estacionario_2d_perfil.png
 INPUT .\figuras\estacionario_2d_perfil.png
 INPUT .\figuras\estacionario_2d_perfil.png
 INPUT .\figuras\estacionario_2d_perfil.png
-INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
 INPUT .\figuras\estacionario_2d_contorno.png
 INPUT .\figuras\estacionario_2d_contorno.png
 INPUT .\figuras\estacionario_2d_contorno.png
@@ -151,10 +159,11 @@ INPUT .\figuras\estacionario_2d_superficie.png
 INPUT .\figuras\estacionario_2d_superficie.png
 INPUT .\figuras\estacionario_2d_superficie.png
 INPUT .\figuras\estacionario_2d_superficie.png
-INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecbx1440.tfm
-INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm0800.tfm
-INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm0600.tfm
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecti1200.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecit1200.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt0800.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt0800.tfm
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecbx1200.tfm
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\tcrm1200.tfm
 INPUT .\figuras\transiente_t0.png
 INPUT .\figuras\transiente_t0.png
@@ -175,14 +184,16 @@ INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\tcrm1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm0800.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm0800.pk
-INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1200.pk
-INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1200.pk
-INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1440.pk
-INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1440.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk
+INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecit1200.pk
+INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecit1200.pk
+INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1200.pk
+INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt1200.pk
+INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1440.pk
+INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1440.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt1728.pk
@@ -203,11 +214,17 @@ INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\publ
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi6.pfb
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi8.pfb
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi8.pfb
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr10.pfb
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr10.pfb
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr12.pfb
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr12.pfb
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr6.pfb
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr6.pfb
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr8.pfb
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr8.pfb
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy10.pfb
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy10.pfb
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy8.pfb
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy8.pfb
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\symbols\msbm10.pfb
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\symbols\msbm10.pfb
