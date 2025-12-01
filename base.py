@@ -93,3 +93,5 @@ def conteudo_umidade(h, material_tag):
     Se = 1.0 / denom
     
     return theta_r + (theta_s - theta_r) * Se
+
+Q_RIO = 2.0  # Vazão do Rio (m³/s)
