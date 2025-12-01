@@ -34,13 +34,19 @@ GREEN = '\033[32m'
 RESET = '\033[0m'
 
 
+
 # Parâmetros do problema
-Ksat = 1e-6  # condutividade hidráulica saturada [m/s] (exemplo, pode ser lido de base.py)
 g = 9.81  # gravidade [m/s^2]
 dt = 3600.0  # 1 hora
 tempo_total = 24*3600.0
 Q_rio = config.VAZAO_RIO
 nivel_rio = config.NIVEL_AGUA_ABSOLUTO
+
+# Importa materiais e tags
+import h5py
+import base
+with h5py.File("malha_dominio.h5", "r") as f:
+	tags_materiais = np.array(f["data2"])
 
 # Ler malha 2D (malha_dominio.xdmf)
 malha = meshio.read("malha_dominio.xdmf")
@@ -100,7 +106,9 @@ print("")
 print(f"{PURPLE}PARÂMETROS FÍSICOS{RESET}")
 print(f"Vazão do Rio (Q):          {GREEN}{Q_rio:.2f}{RESET} m³/s")
 print(f"Coeficiente de Manning (n): {GREEN}{config.MANNING_N}{RESET}")
-print(f"Condutividade (Ks):        {GREEN}{Ksat:.2e}{RESET} m/s")
+ks_presentes = [base.MATERIAIS.get(tag, {"ks": 0})["ks"] for tag in np.unique(tags_materiais)]
+ks_medio = np.mean(ks_presentes) if ks_presentes else 0
+print(f"Condutividade (Ks):        {GREEN}{ks_medio:.2e}{RESET} m/s (média dos materiais)")
 print(f"Cota de Fundo do Duto:     {GREEN}{config.Y_FUNDO_ADUELA:.3f}{RESET} m")
 print(f"Lâmina d'Água (h):         {GREEN}{config.LAMINA_AGUA:.3f}{RESET} m")
 print(f"Gravidade (g):             {GREEN}{g:.2f}{RESET} m/s²")
@@ -129,7 +137,9 @@ A = lil_matrix((Nnodes, Nnodes))
 b = np.zeros(Nnodes)
 
 
-for elem in triangles:
+
+# Montagem da matriz global com Ks por elemento
+for idx_elem, elem in enumerate(triangles):
 	node_ids = elem
 	coords = points[node_ids, :2]
 	x1, y1 = coords[0]
@@ -143,7 +153,14 @@ for elem in triangles:
 	c2 = x1 - x3
 	c3 = x2 - x1
 	B = np.array([[b1, b2, b3], [c1, c2, c3]]) / (2*area)
-	k_local = Ksat * area * (B.T @ B)
+	# Pega o tag do material deste elemento
+	tag_mat = tags_materiais[idx_elem]
+	props = base.MATERIAIS.get(tag_mat, None)
+	if props is None:
+		Ks_elem = 1e-10  # valor mínimo de segurança
+	else:
+		Ks_elem = props["ks"]
+	k_local = Ks_elem * area * (B.T @ B)
 	for i in range(3):
 		for j in range(3):
 			A[node_ids[i], node_ids[j]] += k_local[i, j]
