@@ -1,0 +1,44 @@
+# Saída do terminal - geração de malha e execução do pipeline
+
+Cole aqui a saída completa do terminal após rodar os comandos:
+
+1. python malha_python.py
+2. python converter_malha.py
+3. python solver_richards2.py
+
+---
+
+Exemplo de saída esperada:
+
+```
+(.venv) PS C:\Users\Matheus Guimarães\Documents\Deep-Drainage---Richards-Equations> python malha_python.py
+--> Malha gerada pelo Gmsh. Convertendo para XDMF...
+    [OK] malha_dominio.xdmf
+    [OK] malha_bordas.xdmf
+--> Malha pronta! Execute apenas 'python malha_2D.py' para rodar todo o pipeline.
+
+(.venv) PS C:\Users\Matheus Guimarães\Documents\Deep-Drainage---Richards-Equations> python converter_malha.py
+Convertendo malha_tubular.msh para XDMF...
+--> Lendo malha original: malha_tubular.msh...
+--> Processando Triângulos (Domínio 2D)...
+    Sucesso: 'malha_dominio.xdmf' criado.
+--> Processando Linhas (Condições de Contorno)...
+    Sucesso: 'malha_bordas.xdmf' criado.
+Resumo da malha lida do .msh:
+  Nós: 299
+  Elementos triangle: 517
+  Elementos line: 65
+
+Pipeline de conversão finalizado!
+
+(.venv) PS C:\Users\Matheus Guimarães\Documents\Deep-Drainage---Richards-Equations> python solver_richards2.py
+=== DIAGNÓSTICO DE BORDAS NA MALHA ===
+Tags de borda encontradas na malha_bordas.xdmf: [101 102 103 104 105]
+Todas as tags de borda necessárias estão presentes.
+============================================
+... (restante do relatório do solver)
+```
+
+Cole a saída real abaixo deste cabeçalho para rastreabilidade do projeto.
+
+--- Saída: python solver_richards2.py ---

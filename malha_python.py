@@ -1,3 +1,13 @@
+
+
+# Logging automático da saída do terminal (arquivo + terminal)
+import sys
+def print_log(*args, **kwargs):
+    text = " ".join(str(a) for a in args)
+    print(*args, **kwargs)
+    with open("saida_terminal_pipeline.txt", "a", encoding="utf-8") as f_log:
+        f_log.write(text + "\n")
+
 import gmsh
 import meshio
 import numpy as np
@@ -53,7 +63,8 @@ id_concreto = res_conc[0][1]
 res_brita, _ = occ.cut([(2, r_brita_bruto)], [(2, r_conc_bruto)], removeTool=False)
 id_brita = res_brita[0][1]
 solos_originais = [(2, r_solo_inf), (2, r_solo_sup)]
-ferramenta_corte = [(2, r_brita_bruto)]
+# Use o id_brita atualizado após o corte da brita!
+ferramenta_corte = [(2, id_brita)]
 res_solos, _ = occ.cut(solos_originais, ferramenta_corte, removeTool=False)
 for dim, tag in res_solos:
     mass = occ.getCenterOfMass(dim, tag)

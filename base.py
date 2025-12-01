@@ -21,8 +21,8 @@ TAG_CONCRETO = 4       # Aduela
 
 MATERIAIS = {
     TAG_SOLO_INFERIOR: {
-        "nome": "Areia Fina",
-        "ks": 5.0e-5,    
+        "nome": "Areia Média",
+        "ks": 1.0e-4,    # Alterado para Areia Média conforme sugestão
         "theta_s": 0.35, 
         "theta_r": 0.05,
         "alpha": 3.5,    

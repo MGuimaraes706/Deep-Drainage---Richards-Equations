@@ -1,10 +1,18 @@
+
+
+# Logging automático da saída do terminal (arquivo + terminal)
+import sys
+def print_log(*args, **kwargs):
+    text = " ".join(str(a) for a in args)
+    print(*args, **kwargs)
+    with open("saida_terminal_pipeline.txt", "a", encoding="utf-8") as f_log:
+        f_log.write(text + "\n")
+
 import meshio
 import os
 import numpy as np
 
 def converter_gmsh_para_xdmf(nome_arquivo_msh):
-    """
-    Versão Robusta: Itera sobre blocos para garantir sincronia entre geometria e dados físicos.
     """
     Converte um arquivo .msh (Gmsh) para dois arquivos .xdmf (Python/Paraview/FEniCS).
     Versão Robusta: Itera sobre blocos para garantir sincronia entre geometria e dados físicos.
