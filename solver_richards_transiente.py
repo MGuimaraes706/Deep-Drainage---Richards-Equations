@@ -618,27 +618,6 @@ def assemble_matrices(h_iter, tags_materiais, points, triangles, dt):
     else:
         print_log(f"{RED}FALHA na simulação: Nenhuma solução foi gerada.{RESET}")
 
-    print_log(f"{YELLOW}{'='*80}{RESET}")
-    print_log(f"{PURPLE}FIM DO RELATÓRIO{RESET}\n")
-        coords = points[node_ids, :2]
-        x1, y1 = coords[0]; x2, y2 = coords[1]; x3, y3 = coords[2]
-        area = 0.5 * np.abs((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1))
-        b1 = y2 - y3; b2 = y3 - y1; b3 = y1 - y2
-        c1 = x3 - x2; c2 = x1 - x3; c3 = x2 - x1
-        B = np.array([[b1, b2, b3], [c1, c2, c3]]) / (2*area)
-        h_elem_avg = np.mean(h_iter[node_ids])
-        tag_mat = tags_materiais[idx_elem]
-        K_h, C_h = get_kh_ch(h_elem_avg, tag_mat)
-        A_local = K_h * area * (B.T @ B)
-        M_local_base = area / 12.0 * np.array([[2, 1, 1], [1, 2, 1], [1, 1, 2]])
-        M_local = (C_h / dt) * M_local_base
-        c_vec = np.array([c1, c2, c3])
-        b_grav_local = K_h * c_vec / 2.0
-        for i in range(3):
-            b_grav_global[node_ids[i]] += b_grav_local[i]
-            for j in range(3):
-                A_global[node_ids[i], node_ids[j]] += A_local[i, j]
-                M_global[node_ids[i], node_ids[j]] += M_local[i, j]
     return A_global.tocsr(), M_global.tocsr(), b_grav_global
 
 # Condições de contorno
