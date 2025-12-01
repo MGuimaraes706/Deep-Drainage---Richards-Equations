@@ -478,65 +478,42 @@ def get_kh_ch(h_elem, tag_mat):
     # Valores de BC (exemplo de lençol d'água)
 
 def assemble_matrices(h_iter, tags_materiais, points, triangles, dt):
-    h_esq = 0.0
-    h_dir = -2.0 
-
-    fixed_nodes = np.concatenate([nodes_top, nodes_bottom, nodes_left, nodes_right])
-    fixed_values = np.concatenate([
-        np.full(nodes_top.shape, h_top),
-        np.full(nodes_bottom.shape, h_bottom),
-        np.full(nodes_left.shape, h_esq),
-        np.full(nodes_right.shape, h_dir)
-    ])
-    unique_nodes, idx_unique = np.unique(fixed_nodes, return_index=True)
-    unique_values = fixed_values[idx_unique]
-
-
-    # Condição Inicial: Seca Extrema (h = -10.0m)
     Nnodes = points.shape[0]
     A_global = lil_matrix((Nnodes, Nnodes))
-
-    # ==============================================================================
-    # 5. EXECUÇÃO TEMPORAL E PICARD
-    # ==============================================================================
-
-    print_log("="*72)
-    print_log("==== Solver de Richards Transiente Não-Linear (v3) ====")
-    print_log("="*72)
-    print_log(f"Pontos (Nós):    {YELLOW}{Nnodes}{RESET}")
-    print_log(f"Elementos (Tri): {YELLOW}{Nelems}{RESET}")
-    print_log(f"Passo de Tempo (dt):       {YELLOW}{dt:.1f}{RESET} s (10 minutos - AJUSTADO)")
-    print_log(f"Tempo Total:               {YELLOW}{tempo_total/3600:.1f}{RESET} horas (7 dias - AJUSTADO)")
-    print_log(f"Tolerância Picard:         {YELLOW}{TOL_PICARD:.1e}{RESET}")
-    print_log(f"{PURPLE}Condição Inicial: h = -10.0m (Seco){RESET}")
-    print_log("")
-
-
-    num_passos = int(tempo_total // dt)
     M_global = lil_matrix((Nnodes, Nnodes))
     b_grav_global = np.zeros(Nnodes)
-
-    # Preparação para exportação
-    if not os.path.exists("resultados"): os.makedirs("resultados")
+    K_diag = []
+    C_diag = []
     for idx_elem, elem in enumerate(triangles):
         node_ids = elem
-
-    # Loop Temporal
-    for passo in range(1, num_passos + 1):
-        h_iter = h_old.copy() 
-    
-        for iter_picard in range(MAX_ITER):
-        
-            # 1. Montagem das Matrizes e Termo de Gravidade com base em h_iter
-            A_mat, M_mat, b_grav, K_diag, C_diag = assemble_matrices(h_iter, tags_materiais, points, triangles, dt)
-        
-            # Log de Diagnóstico (primeira iteração de cada passo)
-            if iter_picard == 0:
-                C_min = np.min(C_diag); C_max = np.max(C_diag)
-                K_min = np.min(K_diag); K_max = np.max(K_diag)
-            
-                if passo <= 2 or passo % 72 == 0 or passo == num_passos: # Log a cada 72 passos (12 horas)
-                    print_log(f"T={passo*dt/3600:.1f}h | C_h min/max: {C_min:.2e}/{C_max:.2e} | K_h min/max: {K_min:.2e}/{K_max:.2e}")
+        coords = points[node_ids, :2]
+        x1, y1 = coords[0]
+        x2, y2 = coords[1]
+        x3, y3 = coords[2]
+        area = 0.5 * np.abs((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1))
+        b1 = y2 - y3
+        b2 = y3 - y1
+        b3 = y1 - y2
+        c1 = x3 - x2
+        c2 = x1 - x3
+        c3 = x2 - x1
+        B = np.array([[b1, b2, b3], [c1, c2, c3]]) / (2*area)
+        h_elem_avg = np.mean(h_iter[node_ids])
+        tag_mat = tags_materiais[idx_elem]
+        K_h, C_h = get_kh_ch(h_elem_avg, tag_mat)
+        K_diag.append(K_h)
+        C_diag.append(C_h)
+        A_local = K_h * area * (B.T @ B)
+        M_local_base = area / 12.0 * np.array([[2, 1, 1], [1, 2, 1], [1, 1, 2]])
+        M_local = (C_h / dt) * M_local_base
+        c_vec = np.array([c1, c2, c3])
+        b_grav_local = K_h * c_vec / 2.0
+        for i in range(3):
+            b_grav_global[node_ids[i]] += b_grav_local[i]
+            for j in range(3):
+                A_global[node_ids[i], node_ids[j]] += A_local[i, j]
+                M_global[node_ids[i], node_ids[j]] += M_local[i, j]
+    return A_global.tocsr(), M_global.tocsr(), b_grav_global, np.array(K_diag), np.array(C_diag)
 
 
             # 2. Matriz do Sistema Global: Lado Esquerdo
