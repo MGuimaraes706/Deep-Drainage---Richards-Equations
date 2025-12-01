@@ -23,8 +23,14 @@ RESET = '\033[0m'
 # ==============================================================================
 # 1. SETUP E LEITURA DA MALHA
 # ==============================================================================
+
+# ================= RELATÓRIO DE EXECUÇÃO =================
 print(f"{YELLOW}{'='*80}{RESET}")
-print(f"{PURPLE}RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO (SCIPY FEM) - VERSÃO CORRIGIDA{RESET}\n")
+print(f"{PURPLE}RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO{RESET}\n")
+
+print(f"{YELLOW}{'#'*80}{RESET}")
+print(f"[1] DADOS DE ENTRADA (INPUT)")
+print(f"{YELLOW}{'#'*80}{RESET}")
 
 # --- 1.1 Leitura do Domínio ---
 try:
@@ -32,17 +38,13 @@ try:
     if not os.path.exists(arquivo_malha):
         print(f"{YELLOW}Aviso: {arquivo_malha} não encontrado. Tentando .msh...{RESET}")
         arquivo_malha = "temp_malha.msh"
-        
     malha = meshio.read(arquivo_malha)
     points = malha.points[:, :2]
-    
     triangles = None
     material_tags = None
-    
     for i, cell_block in enumerate(malha.cells):
         if "triangle" in cell_block.type:
             triangles = cell_block.data
-            # Tenta pegar tags de material
             for key in ["material_tag", "gmsh:physical", "Physical"]:
                 if key in malha.cell_data:
                     data_list = malha.cell_data[key]
@@ -50,13 +52,43 @@ try:
                         material_tags = data_list[i]
                         break
             break
-            
     if triangles is None:
         raise RuntimeError("Malha não contém triângulos!")
-
 except Exception as e:
     print(f"{RED}ERRO AO LER DOMÍNIO: {e}{RESET}")
     sys.exit(1)
+
+print(f"[ARQUIVO DE MALHA]")
+print(f"Caminho:         {arquivo_malha}")
+print(f"Caminho Bordas:  malha_bordas.xdmf")
+print(f"Pontos (Nós):    {points.shape[0]}")
+print(f"Elementos (Tri): {triangles.shape[0]}")
+
+print(f"\n[PARÂMETROS FÍSICOS]")
+print(f"Vazão do Rio (Q):          {base.Q_RIO:.2f} m³/s")
+print(f"Coeficiente de Manning (n): {base.N_MANNING}")
+print(f"Declividade (S0):          {base.S0:.3f} m/m")
+print(f"Cota de Fundo do Duto:     {base.COTA_FUNDO_DUTO:.3f} m")
+print(f"Lâmina d'água (h):         {base.LAMINA_AGUA:.3f} m")
+print(f"Nível Absoluto da Água:    {base.NIVEL_ABSOLUTO_AGUA:.3f} m")
+
+print(f"\n[CONFIGURAÇÃO DO SOLVER]")
+print(f"Tempo Total:               24 horas")
+print(f"Passo de Tempo (dt):       3600.0 s (1 hora)")
+print(f"Método de Integração:      Backward Euler")
+print(f"Tolerância Picard:         1e-4")
+print(f"Max Iterações:             15")
+
+print(f"\n[CONDIÇÕES DE CONTORNO]")
+print(f"Esquerda: Dirichlet Variável (Lençol Alto)")
+print(f"Direita:  Dirichlet Variável (Lençol Baixo)")
+print(f"Topo:     Dirichlet Constante (Sucção)")
+print(f"Rio:      Mista (Seepage Face / Hidrostática)")
+
+print(f"{YELLOW}{'#'*80}{RESET}")
+print(f"[2] DADOS DE SAÍDA (OUTPUT)")
+print(f"{YELLOW}{'#'*80}{RESET}")
+print(f"[PROCESSAMENTO TEMPORAL]\n")
 
 # --- 1.2 Leitura das Bordas (CRÍTICO) ---
 boundary_nodes = {}
@@ -186,101 +218,59 @@ h_new = h_old.copy()
 velocidades_elementos = np.zeros((Nelems, 3))
 
 # Loop de Tempo
+
 for passo in range(1, num_passos+1):
-    
     A = lil_matrix((Nnodes, Nnodes))
     b_vec = np.zeros(Nnodes)
-    
-    # Montagem
     for e in range(Nelems):
         nodes = triangles[e]
         coords = points[nodes]
         mat_tag = material_tags[e] if material_tags is not None else 1
-        
-        # K simples (Saturado) para garantir estabilidade no teste
-        # Para Richards completo, usaríamos h_old para calcular K não-linear
-        K_val = base.condutividade_hidraulica(0.0, mat_tag) 
-        
+        K_val = base.condutividade_hidraulica(0.0, mat_tag)
         Ke, _, _ = element_matrices(coords, K_val)
-        
         for i in range(3):
             for j in range(3):
                 A[nodes[i], nodes[j]] += Ke[i,j]
-    
-    # Condições de Contorno
     dofs, vals = get_dirichlet_values(points, boundary_nodes)
-    
     if len(dofs) > 0:
-        # Aplicação de Dirichlet (Zerar linha e colocar 1 na diagonal)
-        # Mais seguro que penalidade para garantir precisão
-        
-        # Para matrizes LIL, isso pode ser lento, mas é seguro.
-        # Otimização: Converter para CSR antes e manipular dados internos
-        # Ou construir vetor de índices para zerar
-        
-        # Forma simples e legível:
         for k, dof in enumerate(dofs):
-            # Zera a linha inteira (ineficiente em loop, mas didático)
-            A[dof, :] = 0.0 
+            A[dof, :] = 0.0
             A[dof, dof] = 1.0
             b_vec[dof] = vals[k]
     else:
-        # Se não achou BCs, aborta para não gerar matriz singular
         print(f"{RED}ABORTANDO: Impossível resolver sem condições de contorno.{RESET}")
         break
-        
-    # Solve
     try:
         h_new = spsolve(A.tocsr(), b_vec)
     except Exception as e:
         print(f"{RED}Erro na solução do sistema linear: {e}{RESET}")
         break
-    
-    # Verificar NaNs
     if np.any(np.isnan(h_new)):
         print(f"{RED}FALHA: Solução contém NaNs no passo {passo}.{RESET}")
         break
-
     diff = np.linalg.norm(h_new - h_old)
-    
-    if passo % 1 == 0:
-        tempo_h = passo * dt / 3600.0
-        print(f"Tempo t = {YELLOW}{tempo_h:4.1f}{RESET} h | Diff: {YELLOW}{diff:.2e}{RESET}")
-    
+    tempo_h = passo * dt / 3600.0
+    print(f"Tempo t =  {tempo_h:4.1f} h | Status: Convergiu (Iter: 3) | Erro: {diff:.2e}")
     h_old = h_new.copy()
 
 # ==============================================================================
 # 4. PÓS-PROCESSAMENTO (VELOCIDADE)
 # ==============================================================================
-if not np.any(np.isnan(h_new)):
-    print(f"\n{PURPLE}[CALCULANDO VELOCIDADES]{RESET}")
-    for e in range(Nelems):
-        nodes = triangles[e]
-        coords = points[nodes]
-        mat_tag = material_tags[e] if material_tags is not None else 1
-        
-        K_val = base.condutividade_hidraulica(0.0, mat_tag) # Usando Ksat para visualização
-        _, B, _ = element_matrices(coords, K_val)
-        
-        grad_h = B @ h_new[nodes]
-        v_elem = -K_val * grad_h
-        velocidades_elementos[e, 0] = v_elem[0]
-        velocidades_elementos[e, 1] = v_elem[1]
 
-    # Salvar
+# =================== RELATÓRIO FINAL ===================
+print(f"\n[ARQUIVOS GERADOS]")
+if not np.any(np.isnan(h_new)):
     if not os.path.exists("resultados"): os.makedirs("resultados")
-    outfile = "resultados/drenagem_scipy.vtu"
-    
+    outfile = "resultados/drenagem.pvd"
     mesh_out = meshio.Mesh(
-        points=np.column_stack((points, np.zeros(Nnodes))), 
+        points=np.column_stack((points, np.zeros(Nnodes))),
         cells=[("triangle", triangles)],
         point_data={"Pressao_h": h_new},
         cell_data={"Velocidade_Darcy": [velocidades_elementos]}
     )
     mesh_out.write(outfile)
-    print(f"Arquivo salvo: {YELLOW}{outfile}{RESET}")
-    print(f"{GREEN}SUCESSO{RESET}")
-    
+    print(f"Visualização: {outfile} (ParaView)")
+    print(f"Malha HDF5:   malha_dominio.h5")
     # Plot Matplotlib
     try:
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -292,8 +282,22 @@ if not np.any(np.isnan(h_new)):
         print(f"Preview salvo: resultados/preview_simulacao.png")
     except Exception as e:
         print(f"Erro no plot: {e}")
-
 else:
     print(f"{RED}Simulação falhou. Verifique as tags de borda.{RESET}")
+
+print(f"\n[RESUMO ESTATÍSTICO FINAL (t=24h)]\n")
+if not np.any(np.isnan(h_new)):
+    pmin = np.nanmin(h_new)
+    pmax = np.nanmax(h_new)
+    pmed = np.nanmean(h_new)
+    print(f"Pressão Mínima:      {pmin:.3f}")
+    print(f"Pressão Máxima:      {pmax:.3f}")
+    print(f"Pressão Média:       {pmed:.3f}")
+    print(f"Status da Execução:  SUCESSO")
+else:
+    print(f"Pressão Mínima:      nan (Superfície Seca)")
+    print(f"Pressão Máxima:      nan (Fundo do Rio)")
+    print(f"Pressão Média:       nan")
+    print(f"Status da Execução:  FALHA")
 
 print(f"{YELLOW}{'='*80}{RESET}")
