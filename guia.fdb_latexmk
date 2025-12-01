@@ -1,9 +1,10 @@
 # Fdb version 4
-["pdflatex"] 1764554588.15175 "c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex" "guia.pdf" "guia" 1764554589.18176 2
+["pdflatex"] 1764607931.15689 "c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex" "guia.pdf" "guia" 1764607932.95564 0
   "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1762883089 81233 162cdbb56ad506ecc8e9f6f582c30b13 ""
   "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1200.pk" 1760580439 31952 fa2bb842dcac6095eb511b32ee4821d9 ""
   "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1440.pk" 1760580441 40136 39189d8a171699c9cc8b93223519ce1f ""
   "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1728.pk" 1760584361 49100 7a7146bfd59d05089f00aaefd0b63998 ""
+  "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx2074.pk" 1760727871 59008 03edc7962d88b16ae4eb90662bab5258 ""
   "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1200.pk" 1760584360 28440 da1479d88a08a51dc863f5c975ccae89 ""
   "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1440.pk" 1762708486 34320 eef63483b92e42da03f44b56ce85c497 ""
   "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1762537879 14064 6e1f68f1898e0ac7fb869db6262cbdaf ""
@@ -11,6 +12,7 @@
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecbx1200.tfm" 993061958 3200 b8d69bc738e5ef3e08cefeef3109ff56 ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecbx1440.tfm" 993061960 3196 0b37fa3083e15c57cfa8c4ff52f2807a ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecbx1728.tfm" 993061962 3204 d35cb76836b6cb4ed404dd64a550530d ""
+  "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecbx2074.tfm" 993061964 3208 da5ec29ca7c2f5f55c296dd6713d4a74 ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecrm0600.tfm" 993062116 3160 116e21835795bb29209ae8bb4682382f ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecrm0800.tfm" 993062118 3152 11ecf5aad6aacf00ff18f394ab23a8b5 ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/ecrm1200.tfm" 993062126 3152 4850ff0163852b7fab34bd55e1197f28 ""
@@ -43,9 +45,7 @@
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb" 1247596667 30251 6afa5cb1d0204815a708a080681d4674 ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1247596667 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb" 1247596667 36741 0ee9e374ec3e30da87cdfb0ea3575226 ""
-  "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb" 1247596667 36281 c355509802a035cadc5f15869451dcee ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb" 1247596666 35469 dcf3a5f2fc1862f5952e3ee5eb1d98c4 ""
-  "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1247596667 35752 024fb6c41858982481f6968b5fc26508 ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1247596667 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1247596667 32726 39f0f9e62e84beb801509898a605dbd5 ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1247596667 32569 5e5ddc8df908dea60932f3c484a54c0d ""
@@ -72,9 +72,9 @@
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/tex/latex/geometry/geometry.sty" 1578053545 42759 9cf6c5257b1bc7af01a58859749dd37a ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/tex/latex/graphics/keyval.sty" 1749322634 2671 d9941f4bf4750e9b0603c9a2ec54693b ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/tex/latex/l3backend/l3backend-pdftex.def" 1751005717 30351 a2b09edc6c93a742566b222c33d0278e ""
-  "c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex" 1764526495 3692 063285185a39021245ebc283c1588c83 ""
-  "guia.aux" 1764554588 1018 f6c213846d83c89f2cc9d488ef612992 "pdflatex"
-  "guia.tex" 1764526495 3692 063285185a39021245ebc283c1588c83 ""
+  "c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex" 1764607928 3449 8e320e8a9519d921d01eb54b9cca7be5 ""
+  "guia.aux" 1764607932 1018 d433231a36609ffff2833eae8af21f04 "pdflatex"
+  "guia.tex" 1764607928 3449 8e320e8a9519d921d01eb54b9cca7be5 ""
   (generated)
   "guia.aux"
   "guia.log"
