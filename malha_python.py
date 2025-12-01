@@ -133,14 +133,23 @@ if tri_cells:
     print("    [OK] malha_dominio.xdmf")
 line_cells = [c for c in msh.cells if c.type == "line"]
 if line_cells:
-    line_data = []
+    # Corrigir: garantir que cada linha tenha sua tag correta, agrupando por tag
+    all_lines = []
+    all_tags = []
     for i, c in enumerate(msh.cells):
         if c.type == "line":
-            line_data.append(msh.cell_data["gmsh:physical"][i])
+            tag_array = msh.cell_data["gmsh:physical"][i]
+            for j, line in enumerate(c.data):
+                all_lines.append(line)
+                all_tags.append(tag_array[j])
+    # Agrupar por tag para garantir que todas as bordas estejam presentes
+    all_lines = np.array(all_lines)
+    all_tags = np.array(all_tags)
+    # meshio espera cell_data como dict de listas
     line_mesh = meshio.Mesh(
         points=msh.points[:, :2],
-        cells=line_cells,
-        cell_data={"borda_tag": line_data}
+        cells=[("line", all_lines)],
+        cell_data={"borda_tag": [all_tags]}
     )
     meshio.write("malha_bordas.xdmf", line_mesh)
     print("    [OK] malha_bordas.xdmf")

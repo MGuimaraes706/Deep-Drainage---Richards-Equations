@@ -27,6 +27,37 @@ tempo_total = 24*3600.0
 Q_rio = config.VAZAO_RIO
 nivel_rio = config.NIVEL_AGUA_ABSOLUTO
 
+
+# Diagnóstico: Verificar tags de borda presentes na malha_bordas.xdmf
+try:
+	borda_mesh = meshio.read("malha_bordas.xdmf")
+	tags = []
+	if "borda_tag" in borda_mesh.cell_data:
+		for arr in borda_mesh.cell_data["borda_tag"]:
+			tags.extend(np.unique(arr))
+	tags = np.unique(tags)
+	print(f"\033[1;36m=== DIAGNÓSTICO DE BORDAS NA MALHA ===\033[0m")
+	print(f"Tags de borda encontradas na malha_bordas.xdmf: {tags}")
+	tags_necessarias = [101, 102, 103, 104, 105]
+	nomes = {
+		101: "Esquerda",
+		102: "Direita",
+		103: "Base",
+		104: "Topo",
+		105: "Parede do Rio"
+	}
+	faltando = [t for t in tags_necessarias if t not in tags]
+	if len(faltando) > 0:
+		print("\033[1;31mATENÇÃO: As seguintes tags de borda estão FALTANDO na malha:")
+		for t in faltando:
+			print(f"  - Tag {t} ({nomes.get(t, 'Desconhecida')})")
+		print("Corrija a malha no Gmsh ou no script de geração para garantir que todas as bordas físicas estejam presentes!\033[0m")
+	else:
+		print("\033[1;32mTodas as tags de borda necessárias estão presentes.\033[0m")
+	print(f"\033[1;36m{'='*44}\033[0m\n")
+except Exception as e:
+	print(f"\033[1;31m[ERRO ao ler malha_bordas.xdmf para diagnóstico de bordas: {e}]\033[0m")
+
 # Ler malha 2D (malha_dominio.xdmf)
 malha = meshio.read("malha_dominio.xdmf")
 points = malha.points
