@@ -96,3 +96,4 @@ def conteudo_umidade(h, material_tag):
 
 Q_RIO = 2.0  # Vazão do Rio (m³/s)
 N_MANNING = 0.013  # Coeficiente de Manning
+S0 = 0.005  # Declividade (m/m)
