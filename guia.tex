@@ -85,6 +85,29 @@ O domínio possui fronteiras fixas descritas diretamente no código:
 \end{itemize}
 Todos os nós com essas condições são tratados por imposição direta (linha nula, diagonal unitária) após montar o sistema em formato LIL, convertendo para CSR somente antes do \texttt{spsolve}. A condição inicial é seca: $h = -10$ m em todo o domínio, exceto nos nós onde as condições de Dirichlet já são aplicadas.
 
+\subsection{Mapeamento das Tags da Malha}
+O arquivo \texttt{malha\_tubular.geo} (Gmsh) atribui etiquetas físicas que são preservadas no par \texttt{malha\_dominio.xdmf/h5} e lidas pelo solver. A tabela a seguir relaciona cada tag ao seu papel no modelo:
+
+\begin{center}
+\begin{tabular}{lll}
+	oprule
+Entidade & Nome no Gmsh & Uso no Solver \\
+\midrule
+Superfície & \texttt{Solo\_Inferior} & Região com material profundo (definições em \texttt{base.py}). \\
+Superfície & \texttt{Solo\_Superior} & Região com propriedades da camada superior. \\
+Superfície & \texttt{Envelope\_Brita} & Camada intermediária de alta condutividade. \\
+Superfície & \texttt{Concreto} & Domínio sólido da aduela (apenas para visualização). \\
+Curva & \texttt{Contorno\_Externo} & Conjunto de fronteiras retangulares; o solver identifica os nós associados e aplica as cargas fixas citadas acima conforme a coordenada ($x$ ou $y$). \\
+Curva & \texttt{Parede\_Interna\_Rio} & Limite interno correspondente à parede da galeria; atualmente recebe a mesma regra Dirichlet definida por coordenadas, podendo ser usada futuramente para condições dependentes do nível d'água. \\
+Ponto & \texttt{Piezo\_Longe} & Nó monitorado distante da aduela. \\
+Ponto & \texttt{Piezo\_Perto} & Nó monitorado próximo à parede externa. \\
+Ponto & \texttt{Piezo\_Fundo} & Nó monitorado sob a aduela. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+As curvas físicas servem como ``guarda-chuvas'' para o pós-processamento: ao ler os datasets de fronteira em \texttt{solver\_richards\_transiente.py}, obtêm-se os índices dos nós para cada segmento. Contudo, a versão atual simplifica a aplicação das condições pela inspeção direta das coordenadas, uma vez que as faces externas são alinhadas aos eixos. Ainda assim, manter as tags facilita evoluções como aplicar fluxos distintos por fronteira ou ativar acoplamento rio-solo apenas na curva \texttt{Parede\_Interna\_Rio}. As tags de pontos garantem que os mesmos nós existam independentemente do refinamento de malha, preservando séries temporais consistentes nos piezômetros.
+
 \section{Algoritmo Implementado}
 O arquivo \texttt{solver\_richards\_transiente.py} executa os passos:
 \begin{enumerate}

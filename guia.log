@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  1 DEC 2025 14:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  1 DEC 2025 14:49
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -153,7 +153,8 @@ Package: iftex 2024/12/12 v1.0g TeX engine tests
  (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-06-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count300
-) (guia.aux)
+)
+No file guia.aux.
 \openout1 = `guia.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
@@ -172,9 +173,15 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
 LaTeX Font Info:    ... okay on input line 15.
 Package babel Info: 'brazil' activates 'portuges' shorthands.
 (babel)             Reported on input line 15.
-
 *geometry* driver: auto-detecting
-*geometry*art:(L,W,R)=(85.35826pt, 455.24411pt, 56.9055pt)
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(85.35826pt, 455.24411pt, 56.9055pt)
 * v-part:(T,H,B)=(85.35826pt, 702.78308pt, 56.9055pt)
 * \paperwidth=597.50787pt
 * \paperheight=845.04684pt
@@ -205,8 +212,7 @@ LaTeX Font Info:    Trying to load font information for U+msa on input line 17.
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 17.
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
@@ -215,44 +221,55 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 {C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 
 [2]
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:95: Undefined control sequence.
+<recently read> \midrule 
+                         
+l.95 \midrule
+             
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-[3] (guia.aux)
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:105: Undefined control sequence.
+<recently read> \bottomrule 
+                            
+l.105 \bottomrule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (791.50177pt too wide) in paragraph at lines 92--107
+ [] 
+ []
+
+
+
+[3]
+
+[4] (guia.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-09-02>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 3645 strings out of 468081
- 56573 string characters out of 5419460
- 478017 words of memory out of 5000000
- 32301 multiletter control sequences out of 15000+600000
+ 3646 strings out of 468081
+ 56703 string characters out of 5419460
+ 478026 words of memory out of 5000000
+ 32302 multiletter control sequences out of 15000+600000
  643475 words of font info for 83 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,14n,65p,465b,216s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\Matheus G
-uimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\Matheus Guimarães\AppData\Loca
-l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfo
-ur/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\
-ecrm1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users
-\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\Matheus Guimarães\Ap
-pData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk><C:/Users/Matheus Guimarães/AppData/Local/Programs/Mi
-KTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/pu
-blic/amsfonts/cm/cmex10.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cm
-mi12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/M
-atheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Matheus Guimarães/Ap
-pData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs
-/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/p
-ublic/amsfonts/cm/cmsy10.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
-msy8.pfb>
-Output written on guia.pdf (3 pages, 191398 bytes).
+ 57i,14n,65p,808b,216s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on guia.pdf (4 pages, 200477 bytes).
 PDF statistics:
- 309 PDF objects out of 1000 (max. 8388607)
- 0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
-
-tatistics:
- 309 PDF objects out of 1000 (max. 8388607)
+ 333 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

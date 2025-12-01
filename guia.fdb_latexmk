@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1764610633.13687 "c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex" "guia.pdf" "guia" 1764610635.93909 0
+["pdflatex"] 1764611354.78121 "c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex" "guia.pdf" "guia" 1764611355.89926 2
   "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1762883089 81233 162cdbb56ad506ecc8e9f6f582c30b13 ""
   "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1440.pk" 1760580441 40136 39189d8a171699c9cc8b93223519ce1f ""
   "C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1728.pk" 1760584361 49100 7a7146bfd59d05089f00aaefd0b63998 ""
@@ -72,9 +72,9 @@
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/tex/latex/geometry/geometry.sty" 1578053545 42759 9cf6c5257b1bc7af01a58859749dd37a ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/tex/latex/graphics/keyval.sty" 1749322634 2671 d9941f4bf4750e9b0603c9a2ec54693b ""
   "C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/tex/latex/l3backend/l3backend-pdftex.def" 1751005717 30351 a2b09edc6c93a742566b222c33d0278e ""
-  "c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex" 1764610627 7085 c78aa469ba14233f8d33126df7d7451a ""
-  "guia.aux" 1764610635 1340 f37b64373987189e4c209797575904b3 "pdflatex"
-  "guia.tex" 1764610627 7085 c78aa469ba14233f8d33126df7d7451a ""
+  "c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex" 1764611352 9221 8034f21188483766ea07a6d6a9df6e2d ""
+  "guia.aux" 1764611355 1461 d2ab163cff61ce1397fcfcee36b08620 "pdflatex"
+  "guia.tex" 1764611352 9221 8034f21188483766ea07a6d6a9df6e2d ""
   (generated)
   "guia.aux"
   "guia.log"
