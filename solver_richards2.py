@@ -6,7 +6,7 @@ import os
 from typing import Tuple
 
 import numpy as np
-from scipy.sparse import diags
+from scipy.sparse import lil_matrix
 from scipy.sparse.linalg import spsolve
 
 import base
@@ -32,31 +32,32 @@ def montar_sistema_1d(
     h_topo: float,
     h_fundo: float,
     ks: float,
-) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Discretiza d/dz[K (dh/dz + 1)] = 0 assumindo K=Ks constante."""
+) -> Tuple[np.ndarray, lil_matrix, np.ndarray]:
+    """Monta o sistema FEM 1D para o caso estacionário com K constante."""
 
     z = np.linspace(0.0, altura, n_pontos)
-    dz = z[1] - z[0]
-
-    # Usamos um operador de segunda derivada para o termo dh/dz, assumindo K constante.
-    main = -2.0 * np.ones(n_pontos)
-    off = np.ones(n_pontos - 1)
-    lap = diags([off, main, off], offsets=[-1, 0, 1], format="csr") / dz**2
-
-    # Termo da gravidade: d/dz(K) = 0, então sobra apenas o gradiente imposto.
-    # O RHS representa a derivada da carga geodésica (1). Como K é constante, fica -K * d(1)/dz = 0.
+    n_elems = n_pontos - 1
+    A = lil_matrix((n_pontos, n_pontos))
     rhs = np.zeros(n_pontos)
 
-    # Condições de contorno Dirichlet
-    lap = lap.tolil()
-    lap[0, :] = 0.0
-    lap[0, 0] = 1.0
-    rhs[0] = h_topo
-    lap[-1, :] = 0.0
-    lap[-1, -1] = 1.0
-    rhs[-1] = h_fundo
+    for elem in range(n_elems):
+        n1 = elem
+        n2 = elem + 1
+        le = z[n2] - z[n1]
+        k_local = (ks / le) * np.array([[1.0, -1.0], [-1.0, 1.0]])
+        load_local = np.zeros(2)
+        for i_local, global_i in enumerate([n1, n2]):
+            rhs[global_i] += load_local[i_local]
+            for j_local, global_j in enumerate([n1, n2]):
+                A[global_i, global_j] += k_local[i_local, j_local]
 
-    return z, lap.tocsr() * ks, rhs
+    # Condições de contorno Dirichlet
+    for node, valor in [(0, h_topo), (n_pontos - 1, h_fundo)]:
+        A[node, :] = 0.0
+        A[node, node] = 1.0
+        rhs[node] = valor
+
+    return z, A, rhs
 
 
 def resolver_1d() -> None:
@@ -75,7 +76,7 @@ def resolver_1d() -> None:
     print_log(f"Cond. topo: {h_topo:.2f} m | Cond. fundo: {h_fundo:.2f} m")
 
     z, matriz, rhs = montar_sistema_1d(altura, n_pontos, h_topo, h_fundo, ks)
-    h_sol = spsolve(matriz, rhs)
+    h_sol = spsolve(matriz.tocsr(), rhs)
 
     gradiente = np.gradient(h_sol, z)
     fluxo = -ks * (gradiente + 1.0)  # q = -K (dh/dz + 1)
