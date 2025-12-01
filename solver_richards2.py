@@ -69,6 +69,8 @@ print(f"Coeficiente de Manning (n): {YELLOW}{config.MANNING_N}{RESET}")
 print(f"Declividade (S0):          {YELLOW}{config.DECLIVIDADE_S0}{RESET} {PURPLE}m/m{RESET}")
 print(f"Cota de Fundo do Duto:     {YELLOW}{config.Y_FUNDO_ADUELA:.3f}{RESET} {PURPLE}m{RESET}")
 print(f"Lâmina d'água (h):         {YELLOW}{config.LAMINA_AGUA:.3f}{RESET} {PURPLE}m{RESET}")
+
+print(f"Gravidade (g):             {YELLOW}{g:.2f}{RESET} {PURPLE}m/s²{RESET}")
 print(f"Nível Absoluto da Água:    {YELLOW}{nivel_rio:.3f}{RESET} {PURPLE}m{RESET}\n")
 
 print(f"{PURPLE}[CONFIGURAÇÃO DO SOLVER]{RESET}\n")
