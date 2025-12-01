@@ -135,25 +135,33 @@ onde $S_e = (\theta - \theta_r)/(\theta_s - \theta_r)$. A derivada numérica cen
 \end{equation}
 
 \section{Parâmetros Físicos Definidos em \texttt{base.py}}
-O arquivo \texttt{base.py} centraliza todas as tags de material e os parâmetros Van Genuchten--Mualem usados nas equações anteriores. A tabela resume o significado de cada grandeza e mostra onde ela aparece no modelo:
+O arquivo \texttt{base.py} centraliza as constantes de material e torna explícita a ligação com a equação de Richards. A Tabela~\ref{tab:parametros-base} resume os símbolos principais;
+em seguida listamos as funções auxiliares disponíveis.
 
-\begin{center}
-\begin{tabularx}{\textwidth}{>{\ttfamily}lX}
-	oprule
-Parâmetro $\&$ Relação com a equação \textit{de Richards} \\
-\midrule
-ks $\&$ Condutividade hidráulica saturada $K_s$ [m/s]. É o valor limite de $K(h)$ quando $h \ge 0$. No solver estacionário 1D usa-se ks constante em toda a coluna; no transiente multiplica-se o termo $\mathbf{B}^T \mathbf{B}$ de cada elemento. \\
-theta\_s $\&$ Conteúdo de umidade saturado. Define o platô máximo da função $\theta(h)$ e, portanto, do termo $C(h)=\partial \theta / \partial h$. \\
-theta\_r $\&$ Conteúdo de umidade residual. Garante que $\theta(h)$ não tende a zero em sucções elevadas, evitando singularidades em $C(h)$. \\
-alpha $\&$ Parâmetro de sucção de entrada de ar [1/m]. Controla a curvatura da relação $\theta(h)$ e, indiretamente, a transição entre zona saturada e não saturada. Aparece dentro de $S_e = (1 + |\alpha h|^n)^{-m}$. \\
-n $\&$ Expoente de forma dos poros (adimensional). Define $m = 1 - 1/n$ e influencia tanto $\theta(h)$ quanto $K(h)$ na expressão de Mualem. \\
-m $\&$ Derivado de $n$; usado explicitamente na implementação para evitar recomputar $1 - 1/n$ durante a avaliação das curvas. \\
-$TAG\_$ * $\&$ Identificadores inteiros para cada subdomínio $(Solo\_Inferior, Solo\_Superior, Envelope\_Brita, Concreto)$. São lidos do dataset \texttt{data2} em \texttt{malha\_dominio.h5} e permitem buscar rapidamente o conjunto $\{ks,\theta_s,\theta_r,\alpha,n\}$ aplicável a cada elemento. \\
-\bottomrule
-\end{tabularx}
-\end{center}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{>{\ttfamily}l p{0.65\textwidth}}
+        	oprule
+        Parâmetro & Papel no modelo \\
+        \midrule
+        ks & Condutividade hidráulica saturada $K_s$ [m/s]; limita $K(h)$ quando $h\ge 0$ e pondera o termo difusivo $\mathbf{B}^T \mathbf{B}$. \\
+        theta\_s & Conteúdo de umidade saturado; define o patamar máximo de $\theta(h)$ e controla o valor máximo de $C(h)$. \\
+        theta\_r & Conteúdo residual; impede que $\theta(h)$ vá a zero em sucções elevadas, estabilizando $C(h)$. \\
+        alpha & Parâmetro de entrada de ar [1/m]; governa a curvatura de $S_e = (1 + |\alpha h|^n)^{-m}$. \\
+        n & Expoente de forma dos poros; determina $m = 1 - 1/n$ e, portanto, a inclinação das curvas de retenção e condutividade. \\
+        TAG\_* & Identificadores inteiros de cada subdomínio (Solo\_Inferior, Solo\_Superior, Envelope\_Brita, Concreto), usados para resgatar rapidamente o conjunto \{$ks, \theta_s, \theta_r, \alpha, n$\}. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Principais parâmetros físicos declarados em \texttt{base.py}.}
+    \label{tab:parametros-base}
+\end{table}
 
-Além da tabela, \texttt{base.py} expõe helpers \texttt{condutividade\_hidraulica(h, tag)} e \texttt{conteudo\_umidade(h, tag)}, os quais são chamados em \texttt{solver\_richards\_transiente.py} para calcular $K(h)$ e $\theta(h)$ durante as iterações de Picard. Qualquer novo material deve ser inserido nesse arquivo para manter a consistência entre a malha, as tags físicas e os coeficientes usados nas matrizes globais.
+Funções utilitárias disponibilizadas:
+\begin{itemize}
+    \item \texttt{condutividade\_hidraulica(h, tag)}: implementa a equação de Mualem para fornecer $K(h)$ de cada material.
+    \item \texttt{conteudo\_umidade(h, tag)}: avalia $\theta(h)$ segundo Van Genuchten, permitindo obter $C(h)$ via diferença finita.
+    \item Novos materiais devem ser cadastrados nesta estrutura para preservar consistência entre as tags da malha e os coeficientes usados nas matrizes globais.
+\end{itemize}
 
 \section{Formulação Fraca e Elementos Finitos}
 O procedimento numérico segue três passos principais:
