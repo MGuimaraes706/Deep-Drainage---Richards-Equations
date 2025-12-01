@@ -1,6 +1,6 @@
-PWD c:\Users\Matheus Guimarães\Documents\Deep-Drainage---Richards-Equations
+PWD C:\Users\Matheus Guimarães\Documents\Deep-Drainage---Richards-Equations
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\Matheus Guimarães\Documents\Deep-Drainage---Richards-Equations\guia.tex
+INPUT guia.tex
 OUTPUT guia.log
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
