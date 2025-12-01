@@ -88,6 +88,7 @@ def converter_gmsh_para_xdmf(nome_arquivo_msh):
     else:
         print("    AVISO: Nenhuma linha de fronteira encontrada.")
 
+
 import subprocess
 
 if __name__ == "__main__":
@@ -95,11 +96,14 @@ if __name__ == "__main__":
     ARQUIVO_GEO = "malha_tubular.geo"
     ARQUIVO_MSH = "malha_tubular.msh"
 
+    # Caminho absoluto do gmsh.exe fornecido pelo usuário
+    GMESH_PATH = r"C:\\Users\\Matheus Guimarães\\Downloads\\gmsh-4.15.0-Windows64\\gmsh-4.15.0-Windows64.exe"
+
     # 1. Gerar .msh a partir do .geo usando Gmsh
     print(f"Gerando arquivo .msh com Gmsh a partir de {ARQUIVO_GEO}...")
-    ret = subprocess.run(["gmsh", ARQUIVO_GEO, "-2", "-format", "msh2", "-o", ARQUIVO_MSH])
+    ret = subprocess.run([GMESH_PATH, ARQUIVO_GEO, "-2", "-format", "msh2", "-o", ARQUIVO_MSH])
     if ret.returncode != 0:
-        raise RuntimeError("Erro ao rodar Gmsh. Verifique se o Gmsh está instalado e no PATH.")
+        raise RuntimeError("Erro ao rodar Gmsh. Verifique se o caminho do gmsh.exe está correto.")
     print(f"Arquivo {ARQUIVO_MSH} gerado com sucesso.")
 
     # 2. Converter para XDMF
