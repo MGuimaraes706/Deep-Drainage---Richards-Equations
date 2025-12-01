@@ -50,6 +50,27 @@ onde $S_e = (\theta - \theta_r)/(\theta_s - \theta_r)$. A derivada numérica cen
     C(h) = \max\left( \frac{\theta(h + \delta h) - \theta(h - \delta h)}{2\,\delta h} ,\ 10^{-8} \right), \qquad \delta h = 10^{-4}\ \text{m}.
 \end{equation}
 
+\section{Parâmetros Físicos Definidos em \texttt{base.py}}
+O arquivo \texttt{base.py} centraliza todas as tags de material e os parâmetros Van Genuchten--Mualem usados nas equações anteriores. A tabela resume o significado de cada grandeza e mostra onde ela aparece no modelo:
+
+\begin{center}
+\begin{tabularx}{\textwidth}{>{\ttfamily}lX}
+	oprule
+Parâmetro & Relação com a equação \textit{de Richards} \\
+\midrule
+ks & Condutividade hidráulica saturada $K_s$ [m/s]. É o valor limite de $K(h)$ quando $h \ge 0$. No solver estacionário 1D usa-se ks constante em toda a coluna; no transiente multiplica-se o termo $\mathbf{B}^T \mathbf{B}$ de cada elemento. \\
+theta\_s & Conteúdo de umidade saturado. Define o platô máximo da função $\theta(h)$ e, portanto, do termo $C(h)=\partial \theta / \partial h$. \\
+theta\_r & Conteúdo de umidade residual. Garante que $\theta(h)$ não tende a zero em sucções elevadas, evitando singularidades em $C(h)$. \\
+alpha & Parâmetro de sucção de entrada de ar [1/m]. Controla a curvatura da relação $\theta(h)$ e, indiretamente, a transição entre zona saturada e não saturada. Aparece dentro de $S_e = (1 + |\alpha h|^n)^{-m}$. \\
+n & Expoente de forma dos poros (adimensional). Define $m = 1 - 1/n$ e influencia tanto $\theta(h)$ quanto $K(h)$ na expressão de Mualem. \\
+m & Derivado de $n$; usado explicitamente na implementação para evitar recomputar $1 - 1/n$ durante a avaliação das curvas. \\
+TAG\_* & Identificadores inteiros para cada subdomínio (Solo\_Inferior, Solo\_Superior, Envelope\_Brita, Concreto). São lidos do dataset \texttt{data2} em \texttt{malha\_dominio.h5} e permitem buscar rapidamente o conjunto \{ks,\theta_s,\theta_r,\alpha,n\} aplicável a cada elemento. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Além da tabela, \texttt{base.py} expõe helpers \texttt{condutividade\_hidraulica(h, tag)} e \texttt{conteudo\_umidade(h, tag)}, os quais são chamados em \texttt{solver\_richards\_transiente.py} para calcular $K(h)$ e $\theta(h)$ durante as iterações de Picard. Qualquer novo material deve ser inserido nesse arquivo para manter a consistência entre a malha, as tags físicas e os coeficientes usados nas matrizes globais.
+
 \section{Formulação Fraca e Elementos Finitos}
 Adotando funções de peso $w$, integra-se a equação em um elemento $\Omega_e$ e aplica-se integração por partes, obtendo-se
 \begin{equation}
