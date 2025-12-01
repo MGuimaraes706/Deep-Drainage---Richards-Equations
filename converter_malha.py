@@ -89,28 +89,17 @@ def converter_gmsh_para_xdmf(nome_arquivo_msh):
         print("    AVISO: Nenhuma linha de fronteira encontrada.")
 
 
-import subprocess
 
 if __name__ == "__main__":
     # NOME DOS ARQUIVOS
-    ARQUIVO_GEO = "malha_tubular.geo"
-    ARQUIVO_MSH = "malha_tubular.msh"
+    ARQUIVO_MSH = "malha_tubular.msh"  # Exportado manualmente do Gmsh a partir do .geo
 
-    # Caminho absoluto do gmsh.exe fornecido pelo usuário
-    GMESH_PATH = r"C:\\Users\\Matheus Guimarães\\Downloads\\gmsh-4.15.0-Windows64\\gmsh.exe"
-
-    # 1. Gerar .msh a partir do .geo usando Gmsh
-    print(f"Gerando arquivo .msh com Gmsh a partir de {ARQUIVO_GEO}...")
-    ret = subprocess.run([GMESH_PATH, ARQUIVO_GEO, "-2", "-format", "msh2", "-o", ARQUIVO_MSH])
-    if ret.returncode != 0:
-        raise RuntimeError("Erro ao rodar Gmsh. Verifique se o caminho do gmsh.exe está correto.")
-    print(f"Arquivo {ARQUIVO_MSH} gerado com sucesso.")
-
-    # 2. Converter para XDMF
+    # 1. Converter para XDMF
+    print(f"Convertendo {ARQUIVO_MSH} para XDMF...")
     converter_gmsh_para_xdmf(ARQUIVO_MSH)
 
-    # 3. Resumo da malha
-    print("\nResumo da malha gerada:")
+    # 2. Resumo da malha
+    print("\nResumo da malha lida do .msh:")
     msh = meshio.read(ARQUIVO_MSH)
     print(f"  Nós: {msh.points.shape[0]}")
     for cell_block in msh.cells:
