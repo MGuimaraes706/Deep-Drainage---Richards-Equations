@@ -19,7 +19,7 @@ RESET = '\033[0m'
 # Parâmetros do problema
 g = 9.81  # gravidade [m/s^2]
 dt = 600.0  # 10 minutos
-tempo_total = 7 * 24 * 3600.0 # 7 dias
+tempo_total = 24 * 3600.0 # 24 horas (reduzido para execução rápida)
 TOL_PICARD = 1e-4
 MAX_ITER = 15
 def print_log(*args, **kwargs):
@@ -50,6 +50,7 @@ Nnodes = points.shape[0]
 Nelems = triangles.shape[0]
 
 def get_kh_ch(h_elem, tag_mat):
+    import base
     props = base.MATERIAIS.get(tag_mat, None)
     if props is None:
         return 1.0e-13, 1.0e-9
