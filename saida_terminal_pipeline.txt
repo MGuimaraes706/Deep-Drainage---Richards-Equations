@@ -42,3 +42,12 @@ Todas as tags de borda necessárias estão presentes.
 Cole a saída real abaixo deste cabeçalho para rastreabilidade do projeto.
 
 --- Saída: python solver_richards2.py ---
+========================================================================
+==== Solver de Richards Transiente Não-Linear ====
+========================================================================
+Pontos (Nós):    [33m1625[0m
+Elementos (Tri): [33m2844[0m
+Passo de Tempo (dt):       [33m3600.0[0m s (1 hora)
+Tempo Total:               [33m24.0[0m horas
+Tolerância Picard:         [33m1.0e-04[0m
+

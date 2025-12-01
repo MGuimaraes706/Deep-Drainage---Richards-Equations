@@ -95,4 +95,25 @@ def capacidade_hidrica(h, material_tag):
     Retorna C(h) = d(theta)/dh. Necessário para o termo transiente.
     """
     # Implementação da derivada da curva de retenção (Opcional por enquanto)
+    # (Opcional: pode ser implementada depois)
     pass
+
+# Função de conteúdo de umidade theta(h) para Van Genuchten
+def conteudo_umidade(h, material_tag):
+    """
+    Retorna o conteúdo de umidade volumétrica theta para uma dada pressão h e material.
+    """
+    props = MATERIAIS.get(material_tag)
+    if not props:
+        raise ValueError(f"Material Tag {material_tag} não encontrado.")
+    theta_s = props.get('theta_s', 0.40)
+    theta_r = props.get('theta_r', 0.05)
+    alpha = props['alpha']
+    n = props['n']
+    m = 1.0 - (1.0 / n)
+    if h >= 0:
+        Se = 1.0
+    else:
+        Se = (1.0 + abs(alpha * h)**n)**(-m)
+    theta = theta_r + Se * (theta_s - theta_r)
+    return theta
