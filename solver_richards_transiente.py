@@ -69,27 +69,27 @@ def assemble_matrices(h_iter, tags_materiais, points, triangles, dt):
     C_diag = []
     for idx_elem, elem in enumerate(triangles):
         node_ids = elem
-    coords = points[node_ids, :2]
-    x1, y1 = coords[0]
-    x2, y2 = coords[1]
-    x3, y3 = coords[2]
-    area = 0.5 * np.abs((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1))
-    b1 = y2 - y3
-    b2 = y3 - y1
-    b3 = y1 - y2
-    c1 = x3 - x2
-    c2 = x1 - x3
-    c3 = x2 - x1
-    B = np.array([[b1, b2, b3], [c1, c2, c3]]) / (2*area)
-    h_elem_avg = np.mean(h_iter[node_ids])
-    tag_mat = tags_materiais[idx_elem]
-    K_h, C_h = get_kh_ch(h_elem_avg, tag_mat)
-    K_diag.append(K_h)
-    C_diag.append(C_h)
-    A_local = K_h * area * (B.T @ B)
-    M_local_base = area / 12.0 * np.array([[2, 1, 1], [1, 2, 1], [1, 1, 2]])
-    M_local = (C_h / dt) * M_local_base
-    c_vec = np.array([c1, c2, c3])
+        coords = points[node_ids, :2]
+        x1, y1 = coords[0]
+        x2, y2 = coords[1]
+        x3, y3 = coords[2]
+        area = 0.5 * np.abs((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1))
+        b1 = y2 - y3
+        b2 = y3 - y1
+        b3 = y1 - y2
+        c1 = x3 - x2
+        c2 = x1 - x3
+        c3 = x2 - x1
+        B = np.array([[b1, b2, b3], [c1, c2, c3]]) / (2*area)
+        h_elem_avg = np.mean(h_iter[node_ids])
+        tag_mat = tags_materiais[idx_elem]
+        K_h, C_h = get_kh_ch(h_elem_avg, tag_mat)
+        K_diag.append(K_h)
+        C_diag.append(C_h)
+        A_local = K_h * area * (B.T @ B)
+        M_local_base = area / 12.0 * np.array([[2, 1, 1], [1, 2, 1], [1, 1, 2]])
+        M_local = (C_h / dt) * M_local_base
+        c_vec = np.array([c1, c2, c3])
         b_grav_local = K_h * c_vec / 2.0
         for i in range(3):
             b_grav_global[node_ids[i]] += b_grav_local[i]
@@ -147,14 +147,16 @@ for passo in range(1, num_passos + 1):
     for iter_picard in range(MAX_ITER):
         A_mat, M_mat, b_grav, K_diag, C_diag = assemble_matrices(h_iter, tags_materiais, points, triangles, dt)
         if iter_picard == 0:
-            C_min = np.min(C_diag); C_max = np.max(C_diag)
-            K_min = np.min(K_diag); K_max = np.max(K_diag)
+            C_min = np.min(C_diag)
+            C_max = np.max(C_diag)
+            K_min = np.min(K_diag)
+            K_max = np.max(K_diag)
             if passo <= 2 or passo % 72 == 0 or passo == num_passos:
                 print_log(f"T={passo*dt/3600:.1f}h | C_h min/max: {C_min:.2e}/{C_max:.2e} | K_h min/max: {K_min:.2e}/{K_max:.2e}")
         K_global = M_mat + A_mat
-    b_time = M_mat @ h_old
-    b_global = b_time - b_grav
-    K_global_csr = K_global.tocsr()
+        b_time = M_mat @ h_old
+        b_global = b_time - b_grav
+        K_global_csr = K_global.tocsr()
         for idx, node in enumerate(unique_nodes):
             h_bc = unique_values[idx]
             K_global_csr[node, :] = 0
@@ -170,13 +172,13 @@ for passo in range(1, num_passos + 1):
         h_iter = h_new.copy()
         if iter_picard == MAX_ITER - 1:
             print_log(f"Tempo t = {YELLOW}{passo*dt/3600:.1f}{RESET} {PURPLE}h{RESET} | {RED}AVISO: Não convergiu após {MAX_ITER} iter. (Erro: {error:.2e}){RESET}")
-        h_last = h_new.copy()
+            h_last = h_new.copy()
     h_old = h_last.copy()
     if passo % 36 == 0:
         h_list.append(h_last.copy())
         tempos.append(passo * dt)
     if passo == 3:
-    print_log(f"...")
+        print_log(f"...")
 
 if h_list:
     saida_vtu = "resultados/drenagem.pvd"
