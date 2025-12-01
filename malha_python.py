@@ -146,4 +146,4 @@ if line_cells:
     print("    [OK] malha_bordas.xdmf")
 if os.path.exists("temp_malha.msh"):
     os.remove("temp_malha.msh")
-print("--> Processo concluído! Pode rodar o solver_richards.py agora.")
+print("--> Malha pronta! Execute apenas 'python malha_2D.py' para rodar todo o pipeline.")
