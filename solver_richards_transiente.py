@@ -39,10 +39,15 @@ try:
             break
     if triangles is None:
         raise RuntimeError("Malha não contém elementos triangulares!")
-    with h5py.File("malha_dominio.h5", "r") as f:
-    tags_materiais = np.array(f["data2"])
 except Exception as e:
-    print_log(f"{RED}ERRO FATAL: Falha ao ler a malha ou tags de material. {e}{RESET}")
+    print_log(f"{RED}ERRO FATAL: Falha ao ler a malha. {e}{RESET}")
+    sys.exit(1)
+
+try:
+    with h5py.File("malha_dominio.h5", "r") as f:
+        tags_materiais = np.array(f["data2"])
+except Exception as e:
+    print_log(f"{RED}ERRO FATAL: Falha ao ler as tags de material do HDF5. {e}{RESET}")
     sys.exit(1)
 
 Nnodes = points.shape[0]
