@@ -59,46 +59,42 @@ nodes_right = np.where(np.abs(x - x.max()) < tol)[0]
 
 # ====== RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO ======
 
-print(f"{YELLOW}{'='*80}{RESET}")
-print(f"{PURPLE}RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO{RESET}\n")
-print(f"{YELLOW}{'#'*80}{RESET}")
-print(f"{PURPLE}[1] DADOS DE ENTRADA (INPUT){RESET}")
-print(f"{YELLOW}{'#'*80}{RESET}")
 
-print(f"{PURPLE}[ARQUIVO DE MALHA]{RESET}\n")
-print(f"Caminho:         {YELLOW}malha_dominio.xdmf{RESET}")
-print(f"Caminho Bordas:  {YELLOW}malha_bordas.xdmf{RESET}")
-print(f"Pontos (Nós):    {YELLOW}{Nnodes}{RESET}")
-print(f"Elementos (Tri): {YELLOW}{Nelems}{RESET}\n")
-
-print(f"{PURPLE}[PARÂMETROS FÍSICOS]{RESET}\n")
-print(f"Vazão do Rio (Q):          {YELLOW}{Q_rio:.2f}{RESET} {PURPLE}m³/s{RESET}")
-print(f"Coeficiente de Manning (n): {YELLOW}{config.MANNING_N}{RESET}")
-print(f"Declividade (S0):          {YELLOW}{config.DECLIVIDADE_S0}{RESET} {PURPLE}m/m{RESET}")
-print(f"Cota de Fundo do Duto:     {YELLOW}{config.Y_FUNDO_ADUELA:.3f}{RESET} {PURPLE}m{RESET}")
-print(f"Lâmina d'água (h):         {YELLOW}{config.LAMINA_AGUA:.3f}{RESET} {PURPLE}m{RESET}")
-
-print(f"Gravidade (g):             {YELLOW}{g:.2f}{RESET} {PURPLE}m/s²{RESET}")
-print(f"Nível Absoluto da Água:    {YELLOW}{nivel_rio:.3f}{RESET} {PURPLE}m{RESET}\n")
-
-print(f"{PURPLE}[CONFIGURAÇÃO DO SOLVER]{RESET}\n")
-print(f"Tempo Total:               {YELLOW}{int(tempo_total/3600)}{RESET} {PURPLE}horas{RESET}")
-print(f"Passo de Tempo (dt):       {YELLOW}{dt:.1f}{RESET} {PURPLE}s{RESET} {RED}(1 hora){RESET}")
-print(f"Método de Integração:      {YELLOW}Backward Euler{RESET}")
-print(f"Tolerância Picard:         {YELLOW}1e-4{RESET}")
-print(f"Max Iterações:             {YELLOW}15{RESET}\n")
-
-print(f"{PURPLE}[CONDIÇÕES DE CONTORNO]{RESET}\n")
-print(f"Esquerda: {YELLOW}Dirichlet Variável{RESET} ({PURPLE}Lençol Alto{RESET})")
-print(f"Direita:  {YELLOW}Dirichlet Variável{RESET} ({PURPLE}Lençol Baixo{RESET})")
-print(f"Topo:     {YELLOW}Dirichlet Constante{RESET} ({PURPLE}Sucção{RESET})")
-print(f"Rio:      {YELLOW}Mista{RESET} ({PURPLE}Seepage Face / Hidrostática{RESET})\n")
-print(f"{YELLOW}{'#'*80}{RESET}")
-
-print(f"{PURPLE}[2] DADOS DE SAÍDA (OUTPUT){RESET}")
-print(f"{YELLOW}{'#'*80}{RESET}")
-
-print(f"{PURPLE}[PROCESSAMENTO TEMPORAL]{RESET}\n")
+print("="*72)
+print("==== Iniciando pipeline de simulação de drenagem " + "="*23)
+print("="*72)
+print("")
+print("[1] ARQUIVO DE MALHA")
+print(f"Caminho: malha_dominio.xdmf")
+print(f"Caminho Bordas: malha_bordas.xdmf")
+print(f"Pontos (Nós): {Nnodes}")
+print(f"Elementos (Tri): {Nelems}")
+print("")
+print("[2] PARÂMETROS FÍSICOS")
+print(f"Vazão do Rio (Q): {Q_rio:.2f} m³/s")
+print(f"Coeficiente de Manning (n): {config.MANNING_N}")
+print(f"Condutividade (Ks): {Ksat:.2e} m/s")
+print(f"Cota de Fundo do Duto: {config.Y_FUNDO_ADUELA:.3f} m")
+print(f"Lâmina d'Água (h): {config.LAMINA_AGUA:.3f} m")
+print(f"Gravidade (g): {g:.2f} m/s²")
+print(f"Nível Absoluto da Água: {nivel_rio:.3f} m")
+print("")
+print("[3] CONFIGURAÇÃO DO SOLVER")
+print(f"Tempo Total: 24 horas")
+print(f"Passo de Tempo (dt): {dt:.1f} s (1 hora)")
+print(f"Método de Integração: Backward-Euler")
+print(f"Tolerância Picard: 1e-4")
+print(f"Max Iterações: 15")
+print("")
+print("[4] CONDIÇÕES DE CONTORNO")
+print(f"Esquerda: Dirichlet Variável (Lençol Alto)")
+print(f"Direita: Dirichlet Variável (Lençol Baixo)")
+print(f"Topo: Dirichlet Constante (Superfície Seca)")
+print(f"Rio: Mista (Seepage Face / Hidrostática)")
+print("")
+print("="*72)
+print("==== PROCESSAMENTO TEMPORAL " + "="*39)
+print("="*72)
 
 
 # Montagem da matriz global
@@ -207,4 +203,3 @@ print(f"{YELLOW}{'='*80}{RESET}")
 print(f"{PURPLE}FIM DO RELATÓRIO{RESET}\n")
 
 
-Reveja esse solver pois os arquivos de saída estão mostrando apenas h. 
