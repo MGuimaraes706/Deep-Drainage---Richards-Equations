@@ -136,6 +136,7 @@ for idx, node in enumerate(fixed_nodes):
 
 
 
+num_passos = int(tempo_total // dt)
 # PROCESSAMENTO TEMPORAL DETALHADO
 for passo in range(1, num_passos+1):
     h = spsolve(A.tocsr(), b)
