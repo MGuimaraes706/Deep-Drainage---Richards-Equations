@@ -1,5 +1,3 @@
-
-
 # Solver de Richards 2D FEM linear (triângulos), sem FEniCS
 
 # Imports padrão
@@ -7,9 +5,12 @@ import numpy as np
 import meshio
 from scipy.sparse import lil_matrix
 from scipy.sparse.linalg import spsolve
+import os
+import sys
+
 # Importa parâmetros reais
 import config
-
+import base
 
 # Códigos ANSI para cores
 RED = '\033[31m'
@@ -18,188 +19,253 @@ PURPLE = '\033[35m'
 GREEN = '\033[32m'
 RESET = '\033[0m'
 
-
-# Parâmetros do problema
-Ksat = 1e-6  # condutividade hidráulica saturada [m/s] (exemplo, pode ser lido de base.py)
-g = 9.81  # gravidade [m/s^2]
-dt = 3600.0  # 1 hora
-tempo_total = 24*3600.0
-Q_rio = config.VAZAO_RIO
-nivel_rio = config.NIVEL_AGUA_ABSOLUTO
+# ==============================================================================
+# 1. SETUP E LEITURA DA MALHA
+# ==============================================================================
+print(f"{YELLOW}{'='*80}{RESET}")
+print(f"{PURPLE}RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO (SCIPY FEM){RESET}\n")
 
 # Ler malha 2D (malha_dominio.xdmf)
-malha = meshio.read("malha_dominio.xdmf")
-points = malha.points
-triangles = None
-for cell_block in malha.cells:
-    if cell_block.type == "triangle":
-        triangles = cell_block.data
-        break
-if triangles is None:
-    raise RuntimeError("Malha não contém elementos triangulares!")
+try:
+    # Ler malha do domínio
+    malha = meshio.read("malha_dominio.xdmf")
+    points = malha.points[:, :2] # Pegar apenas X, Y
+    
+    # Extrair triângulos e tags de material
+    triangles = None
+    material_tags = None
+    
+    for i, cell_block in enumerate(malha.cells):
+        if cell_block.type == "triangle":
+            triangles = cell_block.data
+            # Tenta pegar os dados do material associados
+            if "material_tag" in malha.cell_data:
+                material_tags = malha.cell_data["material_tag"][i]
+            break
+            
+    if triangles is None:
+        raise RuntimeError("Malha não contém elementos triangulares!")
+        
+    # Ler malha das bordas (para condições de contorno)
+    malha_bordas = meshio.read("malha_bordas.xdmf")
+    lines = None
+    borda_tags = None
+    
+    for i, cell_block in enumerate(malha_bordas.cells):
+        if cell_block.type == "line":
+            lines = cell_block.data
+            if "borda_tag" in malha_bordas.cell_data:
+                borda_tags = malha_bordas.cell_data["borda_tag"][i]
+            break
+
+except Exception as e:
+    print(f"{RED}ERRO AO LER MALHAS: {e}{RESET}")
+    print("Verifique se rodou o 'gerador_malha.py' antes.")
+    sys.exit(1)
+
 Nnodes = points.shape[0]
 Nelems = triangles.shape[0]
 
-# Condições de contorno: exemplo - h=0 no topo (y=max), h=-2 na base (y=min)
-y = points[:,1]
+print(f"{PURPLE}[DADOS DE ENTRADA]{RESET}")
+print(f"Nós: {YELLOW}{Nnodes}{RESET} | Elementos: {YELLOW}{Nelems}{RESET}")
+print(f"Materiais identificados: {YELLOW}{np.unique(material_tags)}{RESET}")
 
-h_top = 0.0
-h_bottom = -2.0
-tol = 1e-8
-nodes_top = np.where(np.abs(y - y.max()) < tol)[0]
-nodes_bottom = np.where(np.abs(y - y.min()) < tol)[0]
-# Bordas esquerda e direita
-x = points[:,0]
-h_esq = 0.0  # ou outro valor físico adequado
-h_dir = -2.0 # ou outro valor físico adequado
-nodes_left = np.where(np.abs(x - x.min()) < tol)[0]
-nodes_right = np.where(np.abs(x - x.max()) < tol)[0]
+# ==============================================================================
+# 2. PARÂMETROS
+# ==============================================================================
+dt = 3600.0  # 1 hora
+tempo_total = 24 * 3600.0
+num_passos = int(tempo_total // dt)
 
+# ==============================================================================
+# 3. IDENTIFICAÇÃO DE NÓS DE CONTORNO (DIRICHLET)
+# ==============================================================================
+# Mapear nós para tags de borda
+# Criamos um dicionário: tag_borda -> lista de nós
+boundary_nodes = {}
 
-# ====== RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO ======
+if lines is not None and borda_tags is not None:
+    for i, line in enumerate(lines):
+        tag = borda_tags[i]
+        n1, n2 = line
+        if tag not in boundary_nodes:
+            boundary_nodes[tag] = set()
+        boundary_nodes[tag].add(n1)
+        boundary_nodes[tag].add(n2)
 
-print(f"{YELLOW}{'='*80}{RESET}")
-print(f"{PURPLE}RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO{RESET}\n")
-print(f"{YELLOW}{'#'*80}{RESET}")
-print(f"{PURPLE}[1] DADOS DE ENTRADA (INPUT){RESET}")
-print(f"{YELLOW}{'#'*80}{RESET}")
+# Função para aplicar BCs
+def get_dirichlet_values(points, boundary_nodes):
+    fixed_dofs = []
+    fixed_vals = []
+    
+    # Esquerda
+    if config.TAG_BORDA_ESQUERDA in boundary_nodes:
+        nodes = list(boundary_nodes[config.TAG_BORDA_ESQUERDA])
+        for n in nodes:
+            x, y = points[n]
+            val = config.aplicar_bc_externa(x, y, config.TAG_BORDA_ESQUERDA)
+            if val is not None:
+                fixed_dofs.append(n)
+                fixed_vals.append(val)
+                
+    # Direita
+    if config.TAG_BORDA_DIREITA in boundary_nodes:
+        nodes = list(boundary_nodes[config.TAG_BORDA_DIREITA])
+        for n in nodes:
+            x, y = points[n]
+            val = config.aplicar_bc_externa(x, y, config.TAG_BORDA_DIREITA)
+            if val is not None:
+                fixed_dofs.append(n)
+                fixed_vals.append(val)
+                
+    # Topo
+    if config.TAG_BORDA_TOPO in boundary_nodes:
+        nodes = list(boundary_nodes[config.TAG_BORDA_TOPO])
+        for n in nodes:
+            x, y = points[n]
+            val = config.aplicar_bc_externa(x, y, config.TAG_BORDA_TOPO)
+            if val is not None:
+                fixed_dofs.append(n)
+                fixed_vals.append(val)
+                
+    # Rio
+    if config.TAG_PAREDE_RIO in boundary_nodes:
+        nodes = list(boundary_nodes[config.TAG_PAREDE_RIO])
+        for n in nodes:
+            x, y = points[n]
+            tipo, val = config.condicao_parede_rio(y)
+            if tipo == "Dirichlet": # Seepage simplificado para Dirichlet
+                fixed_dofs.append(n)
+                fixed_vals.append(val)
+            else:
+                fixed_dofs.append(n)
+                fixed_vals.append(0.0) # Seepage face simplificado
 
-print(f"{PURPLE}[ARQUIVO DE MALHA]{RESET}\n")
-print(f"Caminho:         {YELLOW}malha_dominio.xdmf{RESET}")
-print(f"Caminho Bordas:  {YELLOW}malha_bordas.xdmf{RESET}")
-print(f"Pontos (Nós):    {YELLOW}{Nnodes}{RESET}")
-print(f"Elementos (Tri): {YELLOW}{Nelems}{RESET}\n")
+    return np.array(fixed_dofs, dtype=int), np.array(fixed_vals)
 
-print(f"{PURPLE}[PARÂMETROS FÍSICOS]{RESET}\n")
-print(f"Vazão do Rio (Q):          {YELLOW}{Q_rio:.2f}{RESET} {PURPLE}m³/s{RESET}")
-print(f"Coeficiente de Manning (n): {YELLOW}{config.MANNING_N}{RESET}")
-print(f"Declividade (S0):          {YELLOW}{config.DECLIVIDADE_S0}{RESET} {PURPLE}m/m{RESET}")
-print(f"Cota de Fundo do Duto:     {YELLOW}{config.Y_FUNDO_ADUELA:.3f}{RESET} {PURPLE}m{RESET}")
-print(f"Lâmina d'água (h):         {YELLOW}{config.LAMINA_AGUA:.3f}{RESET} {PURPLE}m{RESET}")
-
-print(f"Gravidade (g):             {YELLOW}{g:.2f}{RESET} {PURPLE}m/s²{RESET}")
-print(f"Nível Absoluto da Água:    {YELLOW}{nivel_rio:.3f}{RESET} {PURPLE}m{RESET}\n")
-
-print(f"{PURPLE}[CONFIGURAÇÃO DO SOLVER]{RESET}\n")
-print(f"Tempo Total:               {YELLOW}{int(tempo_total/3600)}{RESET} {PURPLE}horas{RESET}")
-print(f"Passo de Tempo (dt):       {YELLOW}{dt:.1f}{RESET} {PURPLE}s{RESET} {RED}(1 hora){RESET}")
-print(f"Método de Integração:      {YELLOW}Backward Euler{RESET}")
-print(f"Tolerância Picard:         {YELLOW}1e-4{RESET}")
-print(f"Max Iterações:             {YELLOW}15{RESET}\n")
-
-print(f"{PURPLE}[CONDIÇÕES DE CONTORNO]{RESET}\n")
-print(f"Esquerda: {YELLOW}Dirichlet Variável{RESET} ({PURPLE}Lençol Alto{RESET})")
-print(f"Direita:  {YELLOW}Dirichlet Variável{RESET} ({PURPLE}Lençol Baixo{RESET})")
-print(f"Topo:     {YELLOW}Dirichlet Constante{RESET} ({PURPLE}Sucção{RESET})")
-print(f"Rio:      {YELLOW}Mista{RESET} ({PURPLE}Seepage Face / Hidrostática{RESET})\n")
-print(f"{YELLOW}{'#'*80}{RESET}")
-
-print(f"{PURPLE}[2] DADOS DE SAÍDA (OUTPUT){RESET}")
-print(f"{YELLOW}{'#'*80}{RESET}")
-
-print(f"{PURPLE}[PROCESSAMENTO TEMPORAL]{RESET}\n")
-
-
-# Montagem da matriz global
-A = lil_matrix((Nnodes, Nnodes))
-b = np.zeros(Nnodes)
-
-for elem in triangles:
-    node_ids = elem
-    coords = points[node_ids, :2]
-    # Matriz de área do triângulo
+# ==============================================================================
+# 4. FUNÇÕES DE MONTAGEM FEM (ELEMENTO TRIANGULAR LINEAR)
+# ==============================================================================
+def element_matrices(coords, K_val):
+    # Coordenadas
     x1, y1 = coords[0]
     x2, y2 = coords[1]
     x3, y3 = coords[2]
-    area = 0.5 * np.abs((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1))
-    # Gradientes das funções de forma
-    b1 = y2 - y3
-    b2 = y3 - y1
-    b3 = y1 - y2
-    c1 = x3 - x2
-    c2 = x1 - x3
-    c3 = x2 - x1
-    B = np.array([[b1, b2, b3], [c1, c2, c3]]) / (2*area)
-    # Matriz local de rigidez (K constante)
-    k_local = Ksat * area * (B.T @ B)
-    for i in range(3):
-        for j in range(3):
-            A[node_ids[i], node_ids[j]] += k_local[i, j]
-    # Fonte (zero neste exemplo)
+    
+    # Área (2A)
+    detJ = (x2-x1)*(y3-y1) - (x3-x1)*(y2-y1)
+    area = 0.5 * abs(detJ)
+    
+    # Gradientes das funções de forma (b_i, c_i)
+    b = np.array([y2-y3, y3-y1, y1-y2])
+    c = np.array([x3-x2, x1-x3, x2-x1])
+    
+    # Matriz de Rigidez Local (K_local = integral(gradN * K * gradN))
+    # Para triângulo linear, gradN é constante
+    B = np.vstack((b, c)) / (2*area) # (2x3)
+    Ke = area * K_val * (B.T @ B) # (3x3)
+    
+    return Ke, B, area
 
-# Vetor de carga (fonte nula)
-# b já é zero
+# ==============================================================================
+# 5. LOOP TEMPORAL (SOLVER)
+# ==============================================================================
+print(f"\n{PURPLE}[INICIANDO SOLVER]{RESET}")
 
+# Condição Inicial
+h_old = np.full(Nnodes, -1.0)
+h_new = h_old.copy()
 
-# Aplicar condições de contorno de Dirichlet em todas as bordas
-fixed_nodes = np.concatenate([nodes_top, nodes_bottom, nodes_left, nodes_right])
-fixed_values = np.concatenate([
-    np.full(nodes_top.shape, h_top),
-    np.full(nodes_bottom.shape, h_bottom),
-    np.full(nodes_left.shape, h_esq),
-    np.full(nodes_right.shape, h_dir)
-])
-
-# Remover duplicatas (caso algum nó pertença a mais de uma borda)
-unique_nodes, idx_unique = np.unique(fixed_nodes, return_index=True)
-unique_values = fixed_values[idx_unique]
-
-for idx, node in enumerate(unique_nodes):
-    A[node, :] = 0
-    A[node, node] = 1
-    b[node] = unique_values[idx]
-
-
-
-
-num_passos = int(tempo_total // dt)
-# PROCESSAMENTO TEMPORAL DETALHADO
-for passo in range(1, num_passos+1):
-    h = spsolve(A.tocsr(), b)
-    # Simulação de convergência e erro fictício para exemplo
-    if passo <= 3:
-        it = 4
-        erro = 1.25e-4 if passo == 1 else (8.40e-5 if passo == 2 else 6.10e-5)
-    elif passo == 12:
-        it = 3
-        erro = 4.10e-5
-    elif passo >= num_passos-1:
-        it = 3
-        erro = 3.25e-5 if passo == num_passos-1 else 3.21e-5
-    else:
-        it = 3
-        erro = 5.00e-5
-    # Exibir alguns passos e os finais
-    if passo <= 3 or passo == 12 or passo >= num_passos-1:
-        print(f"Tempo t =  {YELLOW}{passo*dt/3600:.1f}{RESET} {PURPLE}h{RESET} | Status: {GREEN}Convergiu{RESET} (Iter: {YELLOW}{it}{RESET}) | Erro: {YELLOW}{erro:.2e}{RESET}")
-    elif passo == 4:
-        print(f"...")
-
-
-
-# Exportar resultado para VTU
-saida_vtu = "resultados/drenagem.pvd"
-import os
+# Preparar arquivo PVD
 if not os.path.exists("resultados"): os.makedirs("resultados")
-cells = [("triangle", triangles)]
-mesh = meshio.Mesh(points, cells, point_data={"h": h})
-mesh.write("saida_solver2.vtu")
 
+# Loop de Tempo
+for passo in range(1, num_passos+1):
+    
+    # Picard Loop (Iterações não-lineares)
+    # Para Richards, K depende de h. Aqui simplificaremos para K saturado
+    # para garantir que rode rápido, mas você pode adicionar o loop de update K(h)
+    
+    # Montagem Global
+    A = lil_matrix((Nnodes, Nnodes))
+    b_vec = np.zeros(Nnodes)
+    
+    # Array para armazenar velocidade nos elementos
+    velocidades_elementos = np.zeros((Nelems, 3)) # (vx, vy, 0) para paraview 3D
+    
+    # Loop sobre Elementos
+    for e in range(Nelems):
+        nodes = triangles[e]
+        coords = points[nodes]
+        
+        # Propriedade do Material
+        mat_tag = material_tags[e] if material_tags is not None else 1
+        
+        # Pressão média no elemento (para calcular K não-linear se quiser)
+        h_mean = np.mean(h_old[nodes])
+        K_val = base.condutividade_hidraulica(h_mean, mat_tag)
+        
+        # Matrizes Locais
+        Ke, B_grad, area = element_matrices(coords, K_val)
+        
+        # Montagem na Global
+        for i in range(3):
+            for j in range(3):
+                A[nodes[i], nodes[j]] += Ke[i,j]
+        
+        # Cálculo da Velocidade de Darcy (pós-processamento)
+        # v = -K * grad(h)
+        # grad(h) = B * h_local
+        h_local = h_new[nodes]
+        grad_h = B_grad @ h_local
+        v_elem = -K_val * grad_h
+        velocidades_elementos[e, 0] = v_elem[0]
+        velocidades_elementos[e, 1] = v_elem[1]
 
-# Resumo do campo exportado
-h_min = np.min(h)
-h_max = np.max(h)
-h_mean = np.mean(h)
+    # Condições de Contorno
+    dofs, vals = get_dirichlet_values(points, boundary_nodes)
+    
+    # Aplicar Dirichlet na Matriz (Método da Penalidade ou Zerar Linha)
+    # Zerar linha e colocar 1 na diagonal é mais seguro para sistemas pequenos
+    for i, dof in enumerate(dofs):
+        A[dof, :] = 0.0
+        A[dof, dof] = 1.0
+        b_vec[dof] = vals[i]
+        
+    # Termos de fonte (Gravidade) seriam adicionados ao b_vec aqui
+    # Para simplificar este exemplo, resolvemos Laplace/Darcy Saturado Variável
+    
+    # Resolver Sistema Linear
+    A_csr = A.tocsr()
+    h_new = spsolve(A_csr, b_vec)
+    
+    # Erro (diferença entre passos)
+    diff = np.linalg.norm(h_new - h_old)
+    
+    # Log
+    if passo % 1 == 0:
+        print(f"Tempo t = {YELLOW}{passo}{RESET} h | Diff: {diff:.2e}")
+    
+    h_old = h_new.copy()
 
-print(f"\n{PURPLE}[ARQUIVOS GERADOS]{RESET}\n")
-print(f"Visualização: {YELLOW}{saida_vtu}{RESET} (ParaView)")
-print(f"Malha HDF5:   {YELLOW}malha_dominio.h5{RESET}")
+# ==============================================================================
+# 6. EXPORTAÇÃO CORRETA (H e V)
+# ==============================================================================
+print(f"\n{PURPLE}[SALVANDO RESULTADOS]{RESET}")
 
-print(f"\n{PURPLE}[RESUMO ESTATÍSTICO FINAL (t=24h)]{RESET}\n")
-print(f"Pressão Mínima:      {YELLOW}{h_min:.3f}{RESET} {PURPLE}(Superfície Seca){RESET}")
-print(f"Pressão Máxima:      {YELLOW}{h_max:.3f}{RESET} {PURPLE}(Fundo do Rio){RESET}")
-print(f"Pressão Média:       {YELLOW}{h_mean:.3f}{RESET}")
-print(f"Status da Execução:  {GREEN}SUCESSO{RESET}")
+# Meshio precisa que os dados de célula (velocidade) tenham o mesmo número que cells
+# E dados de ponto (pressão) tenham mesmo número que points
 
-print(f"{YELLOW}{'='*80}{RESET}")
-print(f"{PURPLE}FIM DO RELATÓRIO{RESET}\n")
+mesh_out = meshio.Mesh(
+    points=np.column_stack((points, np.zeros(Nnodes))), # Adiciona Z=0 para 3D
+    cells=[("triangle", triangles)],
+    point_data={"Pressao_h": h_new},
+    cell_data={"Velocidade_Darcy": [velocidades_elementos]}
+)
+
+outfile = "resultados/drenagem_scipy.vtu"
+mesh_out.write(outfile)
+
+print(f"Arquivo salvo: {YELLOW}{outfile}{RESET}")
+print(f"Pressão Média: {np.mean(h_new):.3f}")
+print(f"{GREEN}SUCESSO{RESET}")
