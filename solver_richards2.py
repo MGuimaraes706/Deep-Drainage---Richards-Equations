@@ -126,7 +126,16 @@ for elem in triangles:
 # b já é zero
 
 
-# Aplicar condições de contorno de Dirichlet em todas as bordas
+
+# Diagnóstico de condições de contorno
+if len(nodes_top) == 0:
+	print(f"{RED}AVISO: Nenhum nó identificado no topo!{RESET}")
+if len(nodes_bottom) == 0:
+	print(f"{RED}AVISO: Nenhum nó identificado na base!{RESET}")
+if len(nodes_left) == 0:
+	print(f"{RED}AVISO: Nenhum nó identificado na esquerda!{RESET}")
+if len(nodes_right) == 0:
+	print(f"{RED}AVISO: Nenhum nó identificado na direita!{RESET}")
 
 fixed_nodes = np.concatenate([nodes_top, nodes_bottom, nodes_left, nodes_right])
 fixed_values = np.concatenate([
@@ -146,11 +155,17 @@ for idx, node in enumerate(unique_nodes):
 
 
 
-num_passos = int(tempo_total // dt)
-# PROCESSAMENTO TEMPORAL DETALHADO
 
+num_passos = int(tempo_total // dt)
+h_last = None
+nan_detected = False
 for passo in range(1, num_passos+1):
 	h = spsolve(A.tocsr(), b)
+	if np.any(np.isnan(h)):
+		print(f"{RED}ERRO: Solução contém valores nan no passo {passo}!{RESET}")
+		nan_detected = True
+		break
+	h_last = h.copy()
 	# Simulação de convergência e erro fictício para exemplo
 	if passo <= 3:
 		it = 4
@@ -172,32 +187,44 @@ for passo in range(1, num_passos+1):
 
 
 
+cells = [("triangle", triangles)]
+h_min = np.min(h)
+h_max = np.max(h)
+h_mean = np.mean(h)
+
 # Exportar resultado para VTU
 saida_vtu = "resultados/drenagem.pvd"
 import os
 if not os.path.exists("resultados"): os.makedirs("resultados")
 
-cells = [("triangle", triangles)]
-mesh = meshio.Mesh(points, cells, point_data={"h": h})
-mesh.write("saida_solver2.vtu")
+if h_last is not None and not nan_detected:
+	cells = [("triangle", triangles)]
+	mesh = meshio.Mesh(points, cells, point_data={"h": h_last})
+	mesh.write("saida_solver2.vtu")
+	h_min = np.min(h_last)
+	h_max = np.max(h_last)
+	h_mean = np.mean(h_last)
+else:
+	h_min = h_max = h_mean = float('nan')
 
 
-# Resumo do campo exportado
 
-h_min = np.min(h)
-h_max = np.max(h)
-h_mean = np.mean(h)
-
-
-print(f"\n{PURPLE}[ARQUIVOS GERADOS]{RESET}\n")
+print(f"\n{PURPLE}ARQUIVOS GERADOS{RESET}\n")
 print(f"Visualização: {YELLOW}{saida_vtu}{RESET} (ParaView)")
 print(f"Malha HDF5:   {YELLOW}malha_dominio.h5{RESET}")
 
-print(f"\n{PURPLE}[RESUMO ESTATÍSTICO FINAL (t=24h)]{RESET}\n")
-print(f"Pressão Mínima:      {YELLOW}{h_min:.3f}{RESET} {PURPLE}(Superfície Seca){RESET}")
-print(f"Pressão Máxima:      {YELLOW}{h_max:.3f}{RESET} {PURPLE}(Fundo do Rio){RESET}")
-print(f"Pressão Média:       {YELLOW}{h_mean:.3f}{RESET}")
-print(f"Status da Execução:  {GREEN}SUCESSO{RESET}")
+print(f"\n{PURPLE}RESUMO ESTATÍSTICO FINAL (t=24h){RESET}\n")
+if not nan_detected:
+	print(f"Pressão Mínima:      {YELLOW}{h_min:.3f}{RESET} {PURPLE}(Superfície Seca){RESET}")
+	print(f"Pressão Máxima:      {YELLOW}{h_max:.3f}{RESET} {PURPLE}(Fundo do Rio){RESET}")
+	print(f"Pressão Média:       {YELLOW}{h_mean:.3f}{RESET}")
+	print(f"Status da Execução:  {GREEN}SUCESSO{RESET}")
+else:
+	print(f"{RED}Falha na simulação: solução contém valores nan. Verifique as condições de contorno e a malha!{RESET}")
+	print(f"Pressão Mínima:      nan")
+	print(f"Pressão Máxima:      nan")
+	print(f"Pressão Média:       nan")
+	print(f"Status da Execução:  {RED}FALHA{RESET}")
 
 print(f"{YELLOW}{'='*80}{RESET}")
 print(f"{PURPLE}FIM DO RELATÓRIO{RESET}\n")
