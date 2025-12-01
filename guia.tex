@@ -46,6 +46,13 @@ Dividimos $[0,H]$ em $N-1$ intervalos de comprimento $L_e$ e adotamos funções 
 \end{equation}
 Não há termos de fonte no lado direito. Montamos a matriz global $\mathbf{K}$ somando contribuições dos elementos e impomos Dirichlet fixando as linhas dos nós extremos.
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.42\textwidth]{figuras/elemento_1d.png}
+    \caption{Esquema do elemento 1D linear padrão (P1) com funções de forma $N_1$ e $N_2$.}
+    \label{fig:elemento1d}
+\end{figure}
+
 \subsection{Sistema Linear e Pós-processamento}
 O sistema resultante é $\mathbf{K}\,\mathbf{h}=\mathbf{f}$, resolvido com \texttt{spsolve}. O fluxo em cada elemento é calculado por
 \begin{equation}
@@ -83,6 +90,13 @@ Dividimos o domínio em triângulos e aproximamos $h$ por combinações lineares
     \mathbf{K}_e = \int_{\Omega_e} K(h_e) \, (\mathbf{B}^T \mathbf{B})\,\mathrm{d}\Omega \approx K(h_e) A_e \, \mathbf{B}^T \mathbf{B},
 \end{equation}
 com $A_e$ a área do triângulo. Se $K$ for assumido constante por elemento (caso linear), basta usar o valor médio $K(h_e)$.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.55\textwidth]{figuras/elemento_2d.png}
+    \caption{Elemento triangular $P_1$ usado no domínio 2D: nós $i,j,k$, vetores $\mathbf{B}$ constantes e coordenadas baricêntricas.}
+    \label{fig:elemento2d}
+\end{figure}
 
 \subsection{Montagem e Aplicação de Contornos}
 As matrizes locais são adicionadas ao sistema global usando a numeração de nós retornada pelo Gmsh. Os contornos Dirichlet (topo, fundo, esquerda, direita e parede interna) são tratados zerando as linhas correspondentes na matriz global (em formato LIL) e forçando a diagonal igual a 1, com o vetor de força substituído pelo valor prescrito. Nenhum termo de massa aparece, pois estamos tratando o regime estacionário. O sistema final $\mathbf{K}\,\mathbf{h}=\mathbf{f}$ pode ser resolvido com \texttt{spsolve} diretamente.
@@ -126,7 +140,7 @@ onde $C(h) = \partial \theta / \partial h$ é a capacidade hídrica e $\mathbf{K
 \subsection{Modelo de Van Genuchten--Mualem}
 Cada material listado em \texttt{base.py} possui parâmetros $(\theta_r,\theta_s,\alpha,n,K_s)$, com $m = 1 - 1/n$. As funções constitutivas usadas no código são:
 \begin{align}
-    	heta(h) &= \theta_r + (\theta_s - \theta_r)\left[1 + (\alpha |h|)^n\right]^{-m},\\
+    	h_{\eta}(h) &= \theta_r + (\theta_s - \theta_r)\left[1 + (\alpha |h|)^n\right]^{-m},\\
     K(h) &= K_s\, S_e^{1/2}\left[1 - \left(1 - S_e^{1/m}\right)^m\right]^2,
 \end{align}
 onde $S_e = (\theta - \theta_r)/(\theta_s - \theta_r)$. A derivada numérica central implementada no solver computa $C(h)$ via
