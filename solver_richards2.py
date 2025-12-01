@@ -42,11 +42,18 @@ Nelems = triangles.shape[0]
 
 # Condições de contorno: exemplo - h=0 no topo (y=max), h=-2 na base (y=min)
 y = points[:,1]
+
 h_top = 0.0
 h_bottom = -2.0
 tol = 1e-8
 nodes_top = np.where(np.abs(y - y.max()) < tol)[0]
 nodes_bottom = np.where(np.abs(y - y.min()) < tol)[0]
+# Bordas esquerda e direita
+x = points[:,0]
+h_esq = 0.0  # ou outro valor físico adequado
+h_dir = -2.0 # ou outro valor físico adequado
+nodes_left = np.where(np.abs(x - x.min()) < tol)[0]
+nodes_right = np.where(np.abs(x - x.max()) < tol)[0]
 
 
 # ====== RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO ======
@@ -123,17 +130,24 @@ for elem in triangles:
 # Vetor de carga (fonte nula)
 # b já é zero
 
-# Aplicar condições de contorno de Dirichlet
-fixed_nodes = np.concatenate([nodes_top, nodes_bottom])
+
+# Aplicar condições de contorno de Dirichlet em todas as bordas
+fixed_nodes = np.concatenate([nodes_top, nodes_bottom, nodes_left, nodes_right])
 fixed_values = np.concatenate([
     np.full(nodes_top.shape, h_top),
-    np.full(nodes_bottom.shape, h_bottom)
+    np.full(nodes_bottom.shape, h_bottom),
+    np.full(nodes_left.shape, h_esq),
+    np.full(nodes_right.shape, h_dir)
 ])
 
-for idx, node in enumerate(fixed_nodes):
+# Remover duplicatas (caso algum nó pertença a mais de uma borda)
+unique_nodes, idx_unique = np.unique(fixed_nodes, return_index=True)
+unique_values = fixed_values[idx_unique]
+
+for idx, node in enumerate(unique_nodes):
     A[node, :] = 0
     A[node, node] = 1
-    b[node] = fixed_values[idx]
+    b[node] = unique_values[idx]
 
 
 
