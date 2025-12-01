@@ -185,16 +185,15 @@ for passo in range(1, num_passos + 1):
                     np.max(K_diag),
                 )
             )
-        K_global = M_mat + A_mat
+        K_global = (M_mat + A_mat).tolil()
         b_time = M_mat @ h_old
         b_global = b_time - b_grav
-        K_global_csr = K_global.tocsr()
         for idx, node in enumerate(unique_nodes):
             h_bc = unique_values[idx]
-            K_global_csr[node, :] = 0.0
-            K_global_csr[node, node] = 1.0
+            K_global[node, :] = 0.0
+            K_global[node, node] = 1.0
             b_global[node] = h_bc
-        h_new = spsolve(K_global_csr, b_global)
+        h_new = spsolve(K_global.tocsr(), b_global)
         error = np.linalg.norm(h_new - h_iter) / (np.linalg.norm(h_new) + 1e-12)
         if error < TOL_PICARD:
             h_last = h_new.copy()

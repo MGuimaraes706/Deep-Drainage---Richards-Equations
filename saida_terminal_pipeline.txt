@@ -561,3 +561,33 @@ Status da Execução:  [32mSUCESSO[0m
 [33m================================================================================[0m
 [35mFIM DO RELATÓRIO[0m
 
+========================================================================
+==== Solver de Richards Transiente Não-Linear (v3) ====
+========================================================================
+Pontos (Nós):    [33m1625[0m
+Elementos (Tri): [33m2844[0m
+Passo de Tempo (dt):       [33m600.0[0m s (10 minutos)
+Tempo Total:               [33m24.0[0m horas
+Tolerância Picard:         [33m1.0e-04[0m
+[35mCondição Inicial: h = -10.0 m (seco)[0m
+
+T=0.2h | C_h min/max: 6.27e-06/4.88e-03 | K_h min/max: 4.44e-17/1.48e-11
+Tempo t = [33m0.2[0mh | [32mConvergiu[0m (Iter: [33m1[0m) | Erro: [33m2.38e-06[0m
+T=0.3h | C_h min/max: 6.27e-06/4.88e-03 | K_h min/max: 4.44e-17/1.48e-11
+Tempo t = [33m0.3[0mh | [32mConvergiu[0m (Iter: [33m1[0m) | Erro: [33m2.37e-06[0m
+...
+T=12.0h | C_h min/max: 6.27e-06/4.88e-03 | K_h min/max: 4.43e-17/1.48e-11
+Tempo t = [33m12.0[0mh | [32mConvergiu[0m (Iter: [33m1[0m) | Erro: [33m1.90e-06[0m
+T=24.0h | C_h min/max: 6.27e-06/4.88e-03 | K_h min/max: 4.42e-17/1.48e-11
+Tempo t = [33m24.0[0mh | [32mConvergiu[0m (Iter: [33m1[0m) | Erro: [33m1.58e-06[0m
+
+[35mRESUMO ESTATÍSTICO FINAL (t=24.0h)[0m
+
+Pressão Mínima:      [33m-10.014[0m
+Pressão Máxima:      [33m0.000[0m
+Pressão Média:       [33m-9.392[0m
+Visualização: [33mresultados/drenagem.pvd[0m (ParaView)
+Status da Execução:  [32mSUCESSO[0m
+[33m================================================================================[0m
+[35mFIM DO RELATÓRIO[0m
+
