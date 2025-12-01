@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  1 DEC 2025 15:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  1 DEC 2025 15:27
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -336,76 +336,134 @@ To recover gracefully from this error, it's best to
 delete the erroneous units; e.g., type `2' to delete
 two letters. (See Chapter 27 of The TeXbook.)
 
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:32: Missing $ inserted.
+
+LaTeX Warning: Command \c invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \~ invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \c invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \~ invalid in math mode on input line 32.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:32: Display math should end with $$.
+<to be read again> 
+                   -
+l.32 ...mpostas: o topo possui sucção fixa de $-
+                                                  2$ m e o fundo está em $0...
+The `$' that I just saw supposedly matches a previous `$$'.
+So I shall assume that you typed `$$' both times.
+
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+
+Overfull \hbox (288.6118pt too wide) detected at line 32
+[][] [] \OT1/cmr/m/n/12 = 0  \OMS/cmsy/m/n/12 )  [] \OT1/cmr/m/n/12 = 0\OML/cmm/m/it/12 ; []Observequearetadescendenterefleteexatamenteascondiesdecontornoimpostas \OT1/cmr/m/n/12 : \OML/cmm/m/it/12 otopopossuisucofixade
+ []
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 32.
+
+Missing character: There is no � in font cmr12!
+
+LaTeX Warning: Command \` invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \c invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \~ invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \c invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \~ invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 32.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:33: Missing $ inserted.
 <inserted text> 
                 $
-l.32 
+l.33 
      
 I've inserted a begin-math/end-math symbol since I think
 you left one out. Proceed, with fingers crossed.
 
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:32: Display math should end with $$.
-<to be read again> 
-                   \tex_par:D 
-l.32 
-     
-The `$' that I just saw supposedly matches a previous `$$'.
-So I shall assume that you typed `$$' both times.
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+
+Overfull \hbox (424.8376pt too wide) in paragraph at lines 32--33
+\T1/cmr/m/n/12 -2$\OML/cmm/m/it/12 meofundoestem$\T1/cmr/m/n/12 0$\OML/cmm/m/it/12 m:Comooproblemareduz \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 seequaodeLaplace\OT1/cmr/m/n/12 1\OML/cmm/m/it/12 D; asoluoobrigatoriamentelinear; indicandogradientehidrulicoconstanteefluxouniformeemtodaacoluna:$ 
+ []
 
 
-LaTeX Warning: Reference `fig:perfil2d' on page 1 undefined on input line 34.
+LaTeX Warning: Reference `fig:perfil2d' on page 1 undefined on input line 35.
 
 
-LaTeX Warning: Reference `fig:superficie2d' on page 1 undefined on input line 34.
+LaTeX Warning: Reference `fig:superficie2d' on page 1 undefined on input line 35.
 
 <figuras/estacionario_2d_perfil.png, id=3, 361.35pt x 216.81pt>
 File: figuras/estacionario_2d_perfil.png Graphic file (type png)
 <use figuras/estacionario_2d_perfil.png>
-Package pdftex.def Info: figuras/estacionario_2d_perfil.png  used on input line 38.
+Package pdftex.def Info: figuras/estacionario_2d_perfil.png  used on input line 39.
 (pdftex.def)             Requested size: 218.51521pt x 131.10924pt.
-<figuras/estacionario_2d_contorno.png, id=4, 397.485pt x 252.945pt>
+
+
+[1
+
+{C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map} <./figuras/estacionario_1d_linear.png>]
+<figuras/estacionario_2d_contorno.png, id=21, 397.485pt x 252.945pt>
 File: figuras/estacionario_2d_contorno.png Graphic file (type png)
 <use figuras/estacionario_2d_contorno.png>
-Package pdftex.def Info: figuras/estacionario_2d_contorno.png  used on input line 45.
+Package pdftex.def Info: figuras/estacionario_2d_contorno.png  used on input line 47.
 (pdftex.def)             Requested size: 341.43307pt x 217.28143pt.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-<figuras/estacionario_2d_superficie.png, id=5, 433.62pt x 289.08pt>
+<figuras/estacionario_2d_superficie.png, id=22, 433.62pt x 289.08pt>
 File: figuras/estacionario_2d_superficie.png Graphic file (type png)
 <use figuras/estacionario_2d_superficie.png>
-Package pdftex.def Info: figuras/estacionario_2d_superficie.png  used on input line 52.
+Package pdftex.def Info: figuras/estacionario_2d_superficie.png  used on input line 55.
 (pdftex.def)             Requested size: 341.43307pt x 227.63405pt.
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:56: LaTeX Error: Bad math environment delimiter.
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:60: LaTeX Error: Bad math environment delimiter.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.56 \end{equation}
+l.60 \end{equation}
                    
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:56: You can't use `\eqno' in vertical mode.
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:60: You can't use `\eqno' in horizontal mode.
 \veqno ->\@kernel@eqno 
                        \aftergroup \ignorespaces 
-l.56 \end{equation}
+l.60 \end{equation}
                    
 Sorry, but I'm not programmed to handle this case;
 I'll just pretend that you didn't ask for it.
 If you're in the wrong mode, you might be able to
 return to the right one by typing `I}' or `I$' or `I\par'.
 
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:56: Missing $ inserted.
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:60: Missing $ inserted.
 <inserted text> 
                 $
-l.56 \end{equation}
+l.60 \end{equation}
                    
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -413,80 +471,76 @@ With luck, this will get me unwedged. But if you
 really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:56: Display math should end with $$.
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:60: Display math should end with $$.
 <to be read again> 
                    \endgroup 
-l.56 \end{equation}
+l.60 \end{equation}
                    
 The `$' that I just saw supposedly matches a previous `$$'.
 So I shall assume that you typed `$$' both times.
 
 
-
-[1
-
-{C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map} <./figuras/estacionario_1d_linear.png>]
-Overfull \hbox (23.297pt too wide) in paragraph at lines 60--62
+Overfull \hbox (23.297pt too wide) in paragraph at lines 64--66
 \T1/cmr/m/n/12 para ve-ri-fi-car se o gra-di-ente to-tal ex-cede o termo gra-vi-ta-ci-o-nal. O script \T1/cmtt/m/n/12 solver_richards2.py
  []
 
 
-Overfull \hbox (46.95192pt too wide) in paragraph at lines 60--62
+Overfull \hbox (46.95192pt too wide) in paragraph at lines 64--66
 \T1/cmr/m/n/12 re-gis-tra um breve re-la-t�-rio no ter-mi-nal, salva $\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 z; h; q\OT1/cmr/m/n/12 )$ \T1/cmr/m/n/12 em \T1/cmtt/m/n/12 resultados/caso_estacionario_1d.npz
  []
 
 
 
 [2 <./figuras/estacionario_2d_perfil.png> <./figuras/estacionario_2d_contorno.png>]
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:100: Missing $ inserted.
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
 <inserted text> 
                 $
-l.100 \end{tabularx}
+l.104 \end{tabularx}
                     
 I've inserted a begin-math/end-math symbol since I think
 you left one out. Proceed, with fingers crossed.
 
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:100: Missing $ inserted.
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
 <inserted text> 
                 $
-l.100 \end{tabularx}
-                    
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-Missing character: There is no � in font cmr12!
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:100: Missing $ inserted.
-<inserted text> 
-                $
-l.100 \end{tabularx}
-                    
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:100: Missing $ inserted.
-<inserted text> 
-                $
-l.100 \end{tabularx}
+l.104 \end{tabularx}
                     
 I've inserted a begin-math/end-math symbol since I think
 you left one out. Proceed, with fingers crossed.
 
 Missing character: There is no � in font cmr12!
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:100: Missing $ inserted.
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
 <inserted text> 
                 $
-l.100 \end{tabularx}
+l.104 \end{tabularx}
+                    
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
+<inserted text> 
+                $
+l.104 \end{tabularx}
+                    
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+Missing character: There is no � in font cmr12!
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
+<inserted text> 
+                $
+l.104 \end{tabularx}
                     
 I've inserted a begin-math/end-math symbol since I think
 you left one out. Proceed, with fingers crossed.
 
 
-LaTeX Warning: Command \' invalid in math mode on input line 100.
+LaTeX Warning: Command \' invalid in math mode on input line 104.
 
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:100: Missing $ inserted.
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
 <inserted text> 
                 $
-l.100 \end{tabularx}
+l.104 \end{tabularx}
                     
 I've inserted a begin-math/end-math symbol since I think
 you left one out. Proceed, with fingers crossed.
@@ -495,7 +549,7 @@ Missing character: There is no � in font cmr12!
 
 
 [3]
-Overfull \hbox (87.18318pt too wide) in paragraph at lines 103--104
+Overfull \hbox (87.18318pt too wide) in paragraph at lines 107--108
 []\T1/cmr/m/n/12 Al�m da ta-bela, \T1/cmtt/m/n/12 base.py \T1/cmr/m/n/12 ex-p�e hel-pers \T1/cmtt/m/n/12 condutividade_hidraulica(h, tag) \T1/cmr/m/n/12 e \T1/cmtt/m/n/12 conteudo_umidade(h,
  []
 
@@ -507,20 +561,20 @@ Overfull \hbox (87.18318pt too wide) in paragraph at lines 103--104
 
 [6]
 
-LaTeX Warning: Reference `fig:transiente0' on page 7 undefined on input line 204.
+LaTeX Warning: Reference `fig:transiente0' on page 7 undefined on input line 208.
 
 
-LaTeX Warning: Reference `fig:transiente24' on page 7 undefined on input line 204.
+LaTeX Warning: Reference `fig:transiente24' on page 7 undefined on input line 208.
 
 <figuras/transiente_t0.png, id=46, 397.485pt x 252.945pt>
 File: figuras/transiente_t0.png Graphic file (type png)
 <use figuras/transiente_t0.png>
-Package pdftex.def Info: figuras/transiente_t0.png  used on input line 208.
+Package pdftex.def Info: figuras/transiente_t0.png  used on input line 212.
 (pdftex.def)             Requested size: 341.43307pt x 217.28143pt.
 <figuras/transiente_t24.png, id=47, 397.485pt x 252.945pt>
 File: figuras/transiente_t24.png Graphic file (type png)
 <use figuras/transiente_t24.png>
-Package pdftex.def Info: figuras/transiente_t24.png  used on input line 215.
+Package pdftex.def Info: figuras/transiente_t24.png  used on input line 220.
 (pdftex.def)             Requested size: 341.43307pt x 217.28143pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
@@ -531,13 +585,13 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [8 <./figuras/transiente_t0.png>]
 
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:232: LaTeX Error: Float(s) lost.
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:238: LaTeX Error: Float(s) lost.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.232 \end{document}
+l.238 \end{document}
                     
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -558,13 +612,13 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 Here is how much of TeX's memory you used:
  4694 strings out of 468081
  74277 string characters out of 5419460
- 502283 words of memory out of 5000000
+ 502277 words of memory out of 5000000
  33308 multiletter control sequences out of 15000+600000
  641099 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,13n,65p,808b,311s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,13n,65p,808b,313s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1728.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on guia.pdf (8 pages, 561133 bytes).
+Output written on guia.pdf (8 pages, 564065 bytes).
 PDF statistics:
  372 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

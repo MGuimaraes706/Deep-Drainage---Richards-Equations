@@ -29,6 +29,7 @@ Como degrau inicial, resolvemos um perfil unidimensional em regime estacionário
     \caption{Perfil 1D previsto para o caso estacionário com $K_s$ constante.}
     \label{fig:perfil1d}
 \end{figure}
+Observe que a reta descendente reflete exatamente as condições de contorno impostas: o topo possui sucção fixa de $-2$ m e o fundo está em $0$ m. Como o problema reduz-se à equação de Laplace 1D, a solução obrigatoriamente é linear, indicando gradiente hidráulico constante e fluxo uniforme em toda a coluna.
 
 \section{Caso Estacionário 2D}
 O próximo passo é congelar o termo transiente no domínio bidimensional obtido da malha \texttt{malha\_dominio.xdmf}. Nesse cenário, resolvemos $\nabla \cdot [K(h)(\nabla h + \mathbf{e}_z)] = 0$ com as mesmas condições de contorno empregadas no solver transiente, porém sem acumulação. Embora ainda não haja implementação específica, a distribuição de carga deve apresentar gradientes suaves entre o lençol alto (esquerda/fundo) e a superfície seca (topo/direita). As Figuras~\ref{fig:perfil2d}--\ref{fig:superficie2d} ilustram as curvas esperadas: um perfil vertical característico, o mapa de contornos e a superfície 3D da carga hidráulica.
@@ -39,6 +40,7 @@ O próximo passo é congelar o termo transiente no domínio bidimensional obtido
     \caption{Perfil vertical previsto em uma seção intermediária do domínio 2D estacionário.}
     \label{fig:perfil2d}
 \end{figure}
+A curvatura suave observada no perfil ocorre porque a geometria 2D possui fronteiras laterais com cargas distintas: a esquerda alimenta o aquífero com carga alta, enquanto direita e topo impõem valores negativos. O material heterogêneo também distorce o gradiente, produzindo uma linha não exatamente reta em comparação ao caso 1D homogêneo.
 
 \begin{figure}[h!]
     \centering
@@ -46,6 +48,7 @@ O próximo passo é congelar o termo transiente no domínio bidimensional obtido
     \caption{Curvas de nível esperadas para o regime 2D estacionário.}
     \label{fig:contorno2d}
 \end{figure}
+As curvas se adensam junto à parede direita porque ali a diferença entre a carga imposta ($-2$ m) e a zona interna é maior, logo o gradiente é elevado e a infiltração tende a convergir para o interior da aduela.
 
 \begin{figure}[h!]
     \centering
@@ -53,6 +56,7 @@ O próximo passo é congelar o termo transiente no domínio bidimensional obtido
     \caption{Superfície de carga prevista para o caso 2D estacionário.}
     \label{fig:superficie2d}
 \end{figure}
+Nesta visualização 3D, nota-se um ``plateau'' no canto esquerdo (lençol elevado) e uma rampa descendente direcionada ao topo/direita, reforçando a interpretação de que o rio interno atua como sumidouro.
 \end{equation}
 onde $z$ é positivo para cima. Implementamos diferenças finitas centralizadas em uma malha uniforme ($N=51$ pontos) e impomos Dirichlet no topo ($h=-2$ m) e no fundo ($h=0$ m). O sistema linear tridiagonal resultante é resolvido com \texttt{spsolve}; em seguida calcula-se o fluxo específico
 \begin{equation}
@@ -209,6 +213,7 @@ Para fins de planejamento e comunicação com o cliente, geramos imagens sintét
     \caption{Distribuição esperada da carga hidráulica no início da simulação ($t=0$ h).}
     \label{fig:transiente0}
 \end{figure}
+No instante inicial o domínio foi preparado com carga muito negativa (solo seco), exceto nos contornos com Dirichlet. Por isso a imagem apresenta tons frios generalizados, apenas com uma fina faixa mais quente na base onde o lençol alto impõe $h=0$ m.
 
 \begin{figure}[h!]
     \centering
@@ -216,6 +221,7 @@ Para fins de planejamento e comunicação com o cliente, geramos imagens sintét
     \caption{Distribuição esperada após 24 h de drenagem ($t=24$ h).}
     \label{fig:transiente24}
 \end{figure}
+Depois de 24 horas a drenagem já rebaixou os gradientes e a solução converge para um campo próximo ao estacionário: o interior da aduela apresenta cargas intermediárias e a transição entre o lençol alto e a superfície seca fica mais suave, como esperado para um processo difusivo sob Backward Euler.
 
 \section{Parâmetros Numéricos Principais}
 \begin{itemize}
