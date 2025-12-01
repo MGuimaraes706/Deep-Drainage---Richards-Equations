@@ -34,39 +34,64 @@ print(f"{YELLOW}{'#'*80}{RESET}")
 # Ler malha 2D (malha_dominio.xdmf)
 try:
     # Ler malha do domínio
-    malha = meshio.read("malha_dominio.xdmf")
-    points = malha.points[:, :2] # Pegar apenas X, Y
+    # Tenta ler o .xdmf primeiro, se falhar tenta .msh (caso tenha rodado gerador_malha.py)
+    arquivo_malha = "malha_dominio.xdmf"
+    if not os.path.exists(arquivo_malha):
+        print(f"{YELLOW}Aviso: {arquivo_malha} não encontrado. Tentando 'temp_malha.msh'...{RESET}")
+        arquivo_malha = "temp_malha.msh" # Fallback para o arquivo temporário do gmsh se existir
+        
+    malha = meshio.read(arquivo_malha)
     
-    # Extrair triângulos e tags de material
+    # Pegar pontos (apenas X e Y)
+    points = malha.points[:, :2] 
+    
+    # Extrair triângulos e tags de material de forma robusta
     triangles = None
     material_tags = None
     
+    # Varre todos os blocos de células
     for i, cell_block in enumerate(malha.cells):
-        if cell_block.type == "triangle":
+        # Verifica se é triângulo (pode vir como "triangle" ou "triangle6" etc)
+        if "triangle" in cell_block.type:
             triangles = cell_block.data
+            
             # Tenta pegar os dados do material associados
+            # Meshio pode guardar em cell_data ou cell_data_dict dependendo da versão
             if "material_tag" in malha.cell_data:
-                material_tags = malha.cell_data["material_tag"][i]
+                # cell_data é um dict: {'material_tag': [array1, array2...]}
+                # Precisamos pegar o array correspondente ao índice do bloco
+                if len(malha.cell_data["material_tag"]) > i:
+                    material_tags = malha.cell_data["material_tag"][i]
+            
+            # Se achou triângulos, para a busca (assumindo apenas um bloco de triângulos principal)
             break
             
     if triangles is None:
-        raise RuntimeError("Malha não contém elementos triangulares!")
+        # Debug: Mostrar o que tem dentro
+        tipos_encontrados = [c.type for c in malha.cells]
+        raise RuntimeError(f"Malha não contém elementos triangulares! Tipos encontrados: {tipos_encontrados}")
         
     # Ler malha das bordas (para condições de contorno)
-    malha_bordas = meshio.read("malha_bordas.xdmf")
+    arquivo_bordas = "malha_bordas.xdmf"
     lines = None
     borda_tags = None
     
-    for i, cell_block in enumerate(malha_bordas.cells):
-        if cell_block.type == "line":
-            lines = cell_block.data
-            if "borda_tag" in malha_bordas.cell_data:
-                borda_tags = malha_bordas.cell_data["borda_tag"][i]
-            break
+    if os.path.exists(arquivo_bordas):
+        malha_bordas = meshio.read(arquivo_bordas)
+        for i, cell_block in enumerate(malha_bordas.cells):
+            if "line" in cell_block.type:
+                lines = cell_block.data
+                if "borda_tag" in malha_bordas.cell_data:
+                    if len(malha_bordas.cell_data["borda_tag"]) > i:
+                        borda_tags = malha_bordas.cell_data["borda_tag"][i]
+                break
+    else:
+        print(f"{YELLOW}Aviso: {arquivo_bordas} não encontrado. As BCs podem falhar.{RESET}")
 
 except Exception as e:
     print(f"{RED}ERRO AO LER MALHAS: {e}{RESET}")
-    print("Verifique se rodou o 'gerador_malha.py' antes.")
+    print(f"Arquivo tentado: {arquivo_malha}")
+    print("Dica: Verifique se rodou o 'gerador_malha.py' ou 'converter_malha.py' antes.")
     sys.exit(1)
 
 Nnodes = points.shape[0]
@@ -74,8 +99,7 @@ Nelems = triangles.shape[0]
 
 # Relatório da Malha
 print(f"{PURPLE}[ARQUIVO DE MALHA]{RESET}\n")
-print(f"Caminho:         {YELLOW}malha_dominio.xdmf{RESET}")
-print(f"Caminho Bordas:  {YELLOW}malha_bordas.xdmf{RESET}")
+print(f"Caminho:         {YELLOW}{arquivo_malha}{RESET}")
 print(f"Pontos (Nós):    {YELLOW}{Nnodes}{RESET}")
 print(f"Elementos (Tri): {YELLOW}{Nelems}{RESET}\n")
 
@@ -239,13 +263,20 @@ for passo in range(1, num_passos+1):
         
     dofs, vals = get_dirichlet_values(points, boundary_nodes)
     
-    for i, dof in enumerate(dofs):
-        A[dof, :] = 0.0
-        A[dof, dof] = 1.0
-        b_vec[dof] = vals[i]
+    if len(dofs) > 0:
+        for i, dof in enumerate(dofs):
+            A[dof, :] = 0.0
+            A[dof, dof] = 1.0
+            b_vec[dof] = vals[i]
+    else:
+        print(f"{RED}AVISO: Nenhuma condição de contorno de Dirichlet encontrada!{RESET}")
         
     A_csr = A.tocsr()
-    h_new = spsolve(A_csr, b_vec)
+    try:
+        h_new = spsolve(A_csr, b_vec)
+    except Exception as e:
+        print(f"{RED}Erro no solve linear: {e}{RESET}")
+        break
     
     diff = np.linalg.norm(h_new - h_old)
     
@@ -316,7 +347,6 @@ try:
     fig, ax = plt.subplots(figsize=(10, 6))
     
     # Mapa de Cores da Pressão (h)
-    # cmap='RdBu_r' faz Azul=Negativo (Seco), Vermelho=Positivo (Água)
     contour = ax.tricontourf(triangulation, h_new, levels=20, cmap='RdBu_r')
     cbar = plt.colorbar(contour, ax=ax)
     cbar.set_label("Carga de Pressão h [m]")
@@ -325,15 +355,11 @@ try:
     ax.tricontour(triangulation, h_new, levels=[0.0], colors='white', linewidths=2)
 
     # Vetores de Velocidade (Quiver)
-    # Precisamos interpolar a velocidade (que está nos elementos) para os nós ou centróides
-    # Para simplificar, vamos plotar nos centróides dos triângulos
     xc = np.mean(x[triangles], axis=1)
     yc = np.mean(y[triangles], axis=1)
     u = velocidades_elementos[:, 0]
     v = velocidades_elementos[:, 1]
     
-    # Normalizar para visualização (opcional, ou plotar como está)
-    # Vamos pular alguns vetores se houver muitos elementos
     step = 1 
     if Nelems > 2000: step = 10
     elif Nelems > 500: step = 5
@@ -349,7 +375,6 @@ try:
     plot_file = "resultados/preview_simulacao.png"
     plt.savefig(plot_file, dpi=300)
     print(f"Gráfico salvo: {YELLOW}{plot_file}{RESET}")
-    # plt.show() # Descomente se quiser abrir a janela (pode travar no Docker/WSL sem GUI)
 
 except Exception as e:
     print(f"{RED}Erro ao gerar gráfico Matplotlib: {e}{RESET}")
