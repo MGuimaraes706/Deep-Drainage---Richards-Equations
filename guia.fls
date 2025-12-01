@@ -128,6 +128,7 @@ INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\public
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt1200.tfm
 OUTPUT guia.pdf
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
+INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecbx1200.tfm
 INPUT .\figuras\estacionario_1d_linear.png
 INPUT .\figuras\estacionario_1d_linear.png
 INPUT .\figuras\estacionario_1d_linear.png
@@ -161,7 +162,6 @@ INPUT .\figuras\estacionario_2d_superficie.png
 INPUT .\figuras\estacionario_2d_superficie.png
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecti1200.tfm
 INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\tcrm1200.tfm
-INPUT C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecbx1200.tfm
 INPUT .\figuras\transiente_t0.png
 INPUT .\figuras\transiente_t0.png
 INPUT .\figuras\transiente_t0.png
@@ -179,12 +179,12 @@ INPUT .\figuras\transiente_t24.png
 INPUT guia.aux
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm0800.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm0800.pk
-INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk
-INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\tcrm1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\tcrm1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1200.pk
+INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk
+INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt1200.pk
 INPUT C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1440.pk
