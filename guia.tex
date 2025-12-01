@@ -17,12 +17,19 @@
 
 \begin{document}
 
-onde $z$ é positivo para cima. O script \texttt{solver\_richards2.py} monta elementos finitos lineares de dois nós para cada intervalo $[z_i, z_{i+1}]$, com rigidez local $(K_s/L_e)\begin{bmatrix}1 & -1\\-1 & 1\end{bmatrix}$. As condições de contorno Dirichlet ($h=-2$ m no topo, $h=0$ m na base) substituem diretamente as linhas correspondentes. Após resolver \texttt{spsolve}, calcula-se o fluxo específico
+\maketitle
 
 \section{Caso Estacionário 1D (\texttt{solver\_richards2.py})}
 Como degrau inicial, resolvemos um perfil unidimensional em regime estacionário assumindo condutividade saturada constante ($K_s$) e ausência do termo de capacidade. A Equação de Richards reduz-se a
 \begin{equation}
     \frac{\mathrm{d}}{\mathrm{d}z}\left[K_s\left(\frac{\mathrm{d}h}{\mathrm{d}z}+1\right)\right]=0 \quad \Rightarrow \quad \frac{\mathrm{d}^2 h}{\mathrm{d}z^2}=0,
+\end{equation}
+onde $z$ é positivo para cima. O script \texttt{solver\_richards2.py} monta elementos finitos lineares de dois nós para cada intervalo $[z_i, z_{i+1}]$, com rigidez local $(K_s/L_e)\begin{bmatrix}1 & -1\\-1 & 1\end{bmatrix}$. As condições de contorno Dirichlet ($h=-2$ m no topo, $h=0$ m na base) substituem diretamente as linhas correspondentes. Após resolver \texttt{spsolve}, calcula-se o fluxo específico
+\begin{equation}
+    q(z) = -K_s \left( \frac{\mathrm{d}h}{\mathrm{d}z} + 1 \right)
+\end{equation}
+para verificar se o gradiente total excede o termo gravitacional. Os vetores $(z,h,q)$ são gravados em \texttt{resultados/caso\_estacionario\_1d.npz}. A Figura~\ref{fig:perfil1d} mostra o perfil esperado e serve como referência analítica para validar os constitutivos antes de ativarmos os casos 2D.
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.45\textwidth]{figuras/estacionario_1d_linear.png}
@@ -57,12 +64,6 @@ As curvas se adensam junto à parede direita porque ali a diferença entre a car
     \label{fig:superficie2d}
 \end{figure}
 Nesta visualização 3D, nota-se um ``plateau'' no canto esquerdo (lençol elevado) e uma rampa descendente direcionada ao topo/direita, reforçando a interpretação de que o rio interno atua como sumidouro.
-\end{equation}
-onde $z$ é positivo para cima. Implementamos diferenças finitas centralizadas em uma malha uniforme ($N=51$ pontos) e impomos Dirichlet no topo ($h=-2$ m) e no fundo ($h=0$ m). O sistema linear tridiagonal resultante é resolvido com \texttt{spsolve}; em seguida calcula-se o fluxo específico
-\begin{equation}
-    q(z) = -K_s \left( \frac{\mathrm{d}h}{\mathrm{d}z} + 1 \right)
-\end{equation}
-para verificar se o gradiente total excede o termo gravitacional. O script \texttt{solver\_richards2.py} registra um breve relatório no terminal, salva $(z,h,q)$ em \texttt{resultados/caso\_estacionario\_1d.npz} e destaca que o mesmo arcabouço poderá ser estendido para 2D substituindo o operador laplaciano por uma montagem FEM. Esta seção serve como referência analítica para validar os componentes constitutivos antes de ativarmos o solver transiente completo descrito a seguir.
 
 \section{Enunciado do Problema}
 Modela-se o fluxo variavelmente saturado no entorno de uma galeria de drenagem profunda (aduela) em regime transiente. A geometria bidimensional é discretizada por elementos triangulares obtidos do arquivo \texttt{malha	extunderscore dominio.xdmf}. O objetivo é reproduzir a evolução da carga hidráulica $h$ em sete camadas de solo, incorporando a recarga e a extração induzidas pelo nível de água no canal interno.
