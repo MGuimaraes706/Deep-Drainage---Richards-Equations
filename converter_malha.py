@@ -97,7 +97,7 @@ if __name__ == "__main__":
     ARQUIVO_MSH = "malha_tubular.msh"
 
     # Caminho absoluto do gmsh.exe fornecido pelo usuário
-    GMESH_PATH = r"C:\\Users\\Matheus Guimarães\\Downloads\\gmsh-4.15.0-Windows64\\gmsh-4.15.0-Windows64.exe"
+    GMESH_PATH = r"C:\\Users\\Matheus Guimarães\\Downloads\\gmsh-4.15.0-Windows64\\gmsh.exe"
 
     # 1. Gerar .msh a partir do .geo usando Gmsh
     print(f"Gerando arquivo .msh com Gmsh a partir de {ARQUIVO_GEO}...")
