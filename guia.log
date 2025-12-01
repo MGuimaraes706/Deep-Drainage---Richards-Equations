@@ -366,4 +366,18 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 20.
 msb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Font shape `T1/
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <17.28> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 22.
+<figuras/estacionario_1d_linear.png, id=1, 289.08pt x 361.35pt>
+File: figuras/estacionario_1d_linear.png Graphic file (type png)
+<use figuras/estacionario_1d_linear.png>
+Package pdftex.def Info: figuras/estacionario_1d_linear.png  used on input line
+ 28.
+(pdftex.def)             Requested size: 204.85846pt x 256.06956pt.
+
+! Improper \prevdepth.
+<recently read> \prevdepth 
+                           
+l.31 \end{figure}
+                 
+? 
