@@ -1,18 +1,15 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  1 DEC 2025 16:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  1 DEC 2025 17:04
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**./guia.tex
-(guia.tex
+**"c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex"
+(c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-09-02>
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/base\artic
-le.cls
+(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
 Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/base\size1
-2.clo
+(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/base\size12.clo
 File: size12.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count275
@@ -26,84 +23,53 @@ File: size12.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
 \abovecaptionskip=\skip49
 \belowcaptionskip=\skip50
 \bibindent=\dimen148
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/base\input
-enc.sty
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.sty
 Package: inputenc 2024/02/08 v1.3d Input encoding file
 \inpenc@prehook=\toks17
 \inpenc@posthook=\toks18
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/base\fonte
-nc.sty
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
 Package: fontenc 2024/12/21 v2.1c Standard LaTeX package
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/generic/babel\ba
-bel.sty
-Package: babel 2025/10/01 v25.13 The multilingual framework for LuaLaTeX, pdfLa
-TeX and XeLaTeX
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
+Package: babel 2025/10/01 v25.13 The multilingual framework for LuaLaTeX, pdfLaTeX and XeLaTeX
 \babel@savecnt=\count283
-LaTeX Encoding Info:    Redeclaring text command \ij (encoding OT1) on input li
-ne 2045.
-LaTeX Encoding Info:    Redeclaring text command \IJ (encoding OT1) on input li
-ne 2047.
-LaTeX Encoding Info:    Redeclaring text command \ij (encoding T1) on input lin
-e 2049.
-LaTeX Encoding Info:    Redeclaring text command \IJ (encoding T1) on input lin
-e 2050.
-LaTeX Encoding Info:    Ignoring declaration for text command \ij (encoding ?) 
-on input line 2051.
-LaTeX Encoding Info:    Ignoring declaration for text command \IJ (encoding ?) 
-on input line 2053.
-LaTeX Encoding Info:    Ignoring declaration for text command \SS (encoding ?) 
-on input line 2078.
+LaTeX Encoding Info:    Redeclaring text command \ij (encoding OT1) on input line 2045.
+LaTeX Encoding Info:    Redeclaring text command \IJ (encoding OT1) on input line 2047.
+LaTeX Encoding Info:    Redeclaring text command \ij (encoding T1) on input line 2049.
+LaTeX Encoding Info:    Redeclaring text command \IJ (encoding T1) on input line 2050.
+LaTeX Encoding Info:    Ignoring declaration for text command \ij (encoding ?) on input line 2051.
+LaTeX Encoding Info:    Ignoring declaration for text command \IJ (encoding ?) on input line 2053.
+LaTeX Encoding Info:    Ignoring declaration for text command \SS (encoding ?) on input line 2078.
 \U@D=\dimen149
 \l@unhyphenated=\language79
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/generic/babel\tx
-tbabel.def)
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.def)
 \bbl@readstream=\read2
 \bbl@dirlevel=\count284
 
 *************************************
 * Local config file bblopts.cfg used
 *
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblo
-pts.cfg
-File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
- babel
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/babel-port
-uges\brazil.ldf
+(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblopts.cfg
+File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of babel
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/babel-portuges\brazil.ldf
 Language: portuges 2021/07/09 v1.2t Portuguese support from the babel system
 Package babel Info: Hyphen rules for 'brazil' set to \l@portuguese
 (babel)             (\language56). Reported on input line 111.
 Package babel Info: Making " an active character on input line 143.
-))
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\am
-smath.sty
+)) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
 Package: amsmath 2025/06/16 v2.17y AMS math features
 \@mathmargin=\skip51
 
 For additional information on amsmath, use the `?' option.
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\am
-stext.sty
+(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
 Package: amstext 2024/11/17 v2.01 AMS text
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\am
-sgen.sty
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks19
 \ex@=\dimen150
-))
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\am
-sbsy.sty
+)) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 \pmbraise@=\dimen151
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\am
-sopn.sty
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
 \inf@bad=\count285
@@ -153,22 +119,16 @@ LaTeX Info: Redefining \Relbar on input line 970.
 \mathdisplay@stack=\toks23
 LaTeX Info: Redefining \[ on input line 2949.
 LaTeX Info: Redefining \] on input line 2950.
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\a
-mssymb.sty
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\a
-msfonts.sty
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-))
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\b
-ooktabs.sty
+)) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \heavyrulewidth=\dimen159
 \lightrulewidth=\dimen160
@@ -187,13 +147,9 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisruleclass=\count299
 \@lastruleclass=\count300
 \@thisrulewidth=\dimen171
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabu
-larx.sty
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabularx.sty
 Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/tools\arra
-y.sty
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
 Package: array 2025/06/08 v2.6j Tabular extension package (FMi)
 \col@sep=\dimen172
 \ar@mcellbox=\box55
@@ -210,22 +166,14 @@ Package: array 2025/06/08 v2.6j Tabular extension package (FMi)
 \TX@delta=\dimen178
 \TX@cols=\count301
 \TX@ftn=\toks25
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/geometry\g
-eometry.sty
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics\k
-eyval.sty
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks26
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/generic/iftex\if
-vtex.sty
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/generic/iftex\if
-tex.sty
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
 ))
 \Gm@cnth=\count302
@@ -240,36 +188,22 @@ Package: iftex 2024/12/12 v1.0g TeX engine tests
 \Gm@layouthoffset=\dimen185
 \Gm@layoutvoffset=\dimen186
 \Gm@dimlist=\toks27
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/geometry\g
-eometry.cfg))
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics\g
-raphicx.sty
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics\g
-raphics.sty
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
 Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics\t
-rig.sty
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
 Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics-c
-fg\graphics.cfg
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 106.
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics-d
-ef\pdftex.def
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
 File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen187
 \Gin@req@width=\dimen188
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\
-l3backend-pdftex.def
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-06-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count305
 ) (guia.aux)
@@ -326,9 +260,7 @@ Package babel Info: 'brazil' activates 'portuges' shorthands.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/context/base/mki
-i\supp-pdf.mkii
+(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count306
 \scratchdimen=\dimen189
@@ -341,29 +273,18 @@ i\supp-pdf.mkii
 \MPnumerator=\count310
 \makeMPintoPDFobject=\count311
 \everyMPtoPDFconversion=\toks29
-)
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-p
-kg\epstopdf-base.sty
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-85.
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\e
-pstopdf-sys.cfg
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 LaTeX Font Info:    Trying to load font information for U+msa on input line 20.
-
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\u
-msa.fd
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 20.
-
-
-(C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\u
-msb.fd
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <17.28> not available
@@ -371,13 +292,335 @@ LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <17.28> not available
 <figuras/estacionario_1d_linear.png, id=1, 289.08pt x 361.35pt>
 File: figuras/estacionario_1d_linear.png Graphic file (type png)
 <use figuras/estacionario_1d_linear.png>
-Package pdftex.def Info: figuras/estacionario_1d_linear.png  used on input line
- 28.
+Package pdftex.def Info: figuras/estacionario_1d_linear.png  used on input line 28.
 (pdftex.def)             Requested size: 204.85846pt x 256.06956pt.
 
-! Improper \prevdepth.
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:31: Improper \prevdepth.
 <recently read> \prevdepth 
                            
 l.31 \end{figure}
                  
-? 
+You can refer to \spacefactor only in horizontal mode;
+you can refer to \prevdepth only in vertical mode; and
+neither of these is meaningful inside \write. So
+I'm forgetting what you said and using zero instead.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:31: You can't use `\prevdepth' in display math mode.
+\end@float ...pdima \prevdepth \vbox {}\prevdepth 
+                                                  \@tempdima \penalty \@floa...
+l.31 \end{figure}
+                 
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:31: Missing number, treated as zero.
+<to be read again> 
+                   \penalty 
+l.31 \end{figure}
+                 
+A number should have been here; I inserted `0'.
+(If you can't figure out why I needed to see a number,
+look up `weird error' in the index to The TeXbook.)
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:31: Illegal unit of measure (pt inserted).
+<to be read again> 
+                   \penalty 
+l.31 \end{figure}
+                 
+Dimensions can be in units of em, ex, in, pt, pc,
+cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
+I'll assume that you meant to say pt, for printer's points.
+To recover gracefully from this error, it's best to
+delete the erroneous units; e.g., type `2' to delete
+two letters. (See Chapter 27 of The TeXbook.)
+
+
+LaTeX Warning: Command \c invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \~ invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \c invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \~ invalid in math mode on input line 32.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:32: Display math should end with $$.
+<to be read again> 
+                   -
+l.32 ...mpostas: o topo possui sucção fixa de $-
+                                                  2$ m e o fundo está em $0...
+The `$' that I just saw supposedly matches a previous `$$'.
+So I shall assume that you typed `$$' both times.
+
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+
+Overfull \hbox (288.6118pt too wide) detected at line 32
+[][] [] \OT1/cmr/m/n/12 = 0  \OMS/cmsy/m/n/12 )  [] \OT1/cmr/m/n/12 = 0\OML/cmm/m/it/12 ; []Observequearetadescendenterefleteexatamenteascondiesdecontornoimpostas \OT1/cmr/m/n/12 : \OML/cmm/m/it/12 otopopossuisucofixade
+ []
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 32.
+
+Missing character: There is no � in font cmr12!
+
+LaTeX Warning: Command \` invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \c invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \~ invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \c invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \~ invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 32.
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 32.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:33: Missing $ inserted.
+<inserted text> 
+                $
+l.33 
+     
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+Missing character: There is no � in font cmr12!
+
+Overfull \hbox (424.8376pt too wide) in paragraph at lines 32--33
+\T1/cmr/m/n/12 -2$\OML/cmm/m/it/12 meofundoestem$\T1/cmr/m/n/12 0$\OML/cmm/m/it/12 m:Comooproblemareduz \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 seequaodeLaplace\OT1/cmr/m/n/12 1\OML/cmm/m/it/12 D; asoluoobrigatoriamentelinear; indicandogradientehidrulicoconstanteefluxouniformeemtodaacoluna:$ 
+ []
+
+
+LaTeX Warning: Reference `fig:perfil2d' on page 1 undefined on input line 35.
+
+
+LaTeX Warning: Reference `fig:superficie2d' on page 1 undefined on input line 35.
+
+<figuras/estacionario_2d_perfil.png, id=3, 361.35pt x 216.81pt>
+File: figuras/estacionario_2d_perfil.png Graphic file (type png)
+<use figuras/estacionario_2d_perfil.png>
+Package pdftex.def Info: figuras/estacionario_2d_perfil.png  used on input line 39.
+(pdftex.def)             Requested size: 218.51521pt x 131.10924pt.
+
+
+[1
+
+{C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map} <./figuras/estacionario_1d_linear.png>]
+<figuras/estacionario_2d_contorno.png, id=21, 397.485pt x 252.945pt>
+File: figuras/estacionario_2d_contorno.png Graphic file (type png)
+<use figuras/estacionario_2d_contorno.png>
+Package pdftex.def Info: figuras/estacionario_2d_contorno.png  used on input line 47.
+(pdftex.def)             Requested size: 341.43307pt x 217.28143pt.
+<figuras/estacionario_2d_superficie.png, id=22, 433.62pt x 289.08pt>
+File: figuras/estacionario_2d_superficie.png Graphic file (type png)
+<use figuras/estacionario_2d_superficie.png>
+Package pdftex.def Info: figuras/estacionario_2d_superficie.png  used on input line 55.
+(pdftex.def)             Requested size: 341.43307pt x 227.63405pt.
+
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:60: LaTeX Error: Bad math environment delimiter.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.60 \end{equation}
+                   
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:60: You can't use `\eqno' in horizontal mode.
+\veqno ->\@kernel@eqno 
+                       \aftergroup \ignorespaces 
+l.60 \end{equation}
+                   
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:60: Missing $ inserted.
+<inserted text> 
+                $
+l.60 \end{equation}
+                   
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:60: Display math should end with $$.
+<to be read again> 
+                   \endgroup 
+l.60 \end{equation}
+                   
+The `$' that I just saw supposedly matches a previous `$$'.
+So I shall assume that you typed `$$' both times.
+
+
+Overfull \hbox (23.297pt too wide) in paragraph at lines 64--66
+\T1/cmr/m/n/12 para ve-ri-fi-car se o gra-di-ente to-tal ex-cede o termo gra-vi-ta-ci-o-nal. O script \T1/cmtt/m/n/12 solver_richards2.py
+ []
+
+
+Overfull \hbox (46.95192pt too wide) in paragraph at lines 64--66
+\T1/cmr/m/n/12 re-gis-tra um breve re-la-t�-rio no ter-mi-nal, salva $\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 z; h; q\OT1/cmr/m/n/12 )$ \T1/cmr/m/n/12 em \T1/cmtt/m/n/12 resultados/caso_estacionario_1d.npz
+ []
+
+
+
+[2 <./figuras/estacionario_2d_perfil.png> <./figuras/estacionario_2d_contorno.png>]
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
+<inserted text> 
+                $
+l.104 \end{tabularx}
+                    
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
+<inserted text> 
+                $
+l.104 \end{tabularx}
+                    
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+Missing character: There is no � in font cmr12!
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
+<inserted text> 
+                $
+l.104 \end{tabularx}
+                    
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
+<inserted text> 
+                $
+l.104 \end{tabularx}
+                    
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+Missing character: There is no � in font cmr12!
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
+<inserted text> 
+                $
+l.104 \end{tabularx}
+                    
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 104.
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:104: Missing $ inserted.
+<inserted text> 
+                $
+l.104 \end{tabularx}
+                    
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+Missing character: There is no � in font cmr12!
+
+
+[3]
+Overfull \hbox (87.18318pt too wide) in paragraph at lines 107--108
+[]\T1/cmr/m/n/12 Al�m da ta-bela, \T1/cmtt/m/n/12 base.py \T1/cmr/m/n/12 ex-p�e hel-pers \T1/cmtt/m/n/12 condutividade_hidraulica(h, tag) \T1/cmr/m/n/12 e \T1/cmtt/m/n/12 conteudo_umidade(h,
+ []
+
+
+
+[4]
+
+[5]
+
+[6]
+
+LaTeX Warning: Reference `fig:transiente0' on page 7 undefined on input line 208.
+
+
+LaTeX Warning: Reference `fig:transiente24' on page 7 undefined on input line 208.
+
+<figuras/transiente_t0.png, id=46, 397.485pt x 252.945pt>
+File: figuras/transiente_t0.png Graphic file (type png)
+<use figuras/transiente_t0.png>
+Package pdftex.def Info: figuras/transiente_t0.png  used on input line 212.
+(pdftex.def)             Requested size: 341.43307pt x 217.28143pt.
+<figuras/transiente_t24.png, id=47, 397.485pt x 252.945pt>
+File: figuras/transiente_t24.png Graphic file (type png)
+<use figuras/transiente_t24.png>
+Package pdftex.def Info: figuras/transiente_t24.png  used on input line 220.
+(pdftex.def)             Requested size: 341.43307pt x 217.28143pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+[7 <./figuras/estacionario_2d_superficie.png>]
+
+[8 <./figuras/transiente_t0.png>]
+
+c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:238: LaTeX Error: Float(s) lost.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.238 \end{document}
+                    
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+(guia.aux)
+ ***********
+LaTeX2e <2025-06-01> patch level 1
+L3 programming layer <2025-09-02>
+ ***********
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 4694 strings out of 468081
+ 74277 string characters out of 5419460
+ 502286 words of memory out of 5000000
+ 33308 multiletter control sequences out of 15000+600000
+ 641099 words of font info for 73 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 57i,13n,65p,808b,313s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1728.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on guia.pdf (8 pages, 564065 bytes).
+PDF statistics:
+ 372 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+
