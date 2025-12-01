@@ -727,16 +727,3 @@ if h_list:
                 C_diag.append(C_h)
                 # Matriz de Stiffness (A_local) - Termo de Difusão (K(h))
                 A_local = K_h * area * (B.T @ B)
-                # Matriz de Massa (M_local) - Termo de Capacidade (C(h) / dt)
-                M_local_base = area / 12.0 * np.array([[2, 1, 1], [1, 2, 1], [1, 1, 2]])
-                M_local = (C_h / dt) * M_local_base
-                # Vetor de Carga de Gravidade (b_grav_local)
-                c_vec = np.array([c1, c2, c3])
-                b_grav_local = K_h * c_vec / 2.0
-                # Agregação
-                for i in range(3):
-                    b_grav_global[node_ids[i]] += b_grav_local[i]
-                    for j in range(3):
-                        A_global[node_ids[i], node_ids[j]] += A_local[i, j]
-                        M_global[node_ids[i], node_ids[j]] += M_local[i, j]
-            return A_global.tocsr(), M_global.tocsr(), b_grav_global, np.array(K_diag), np.array(C_diag)
