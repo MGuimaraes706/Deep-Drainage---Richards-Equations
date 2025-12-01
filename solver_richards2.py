@@ -7,6 +7,8 @@ from scipy.sparse import lil_matrix
 from scipy.sparse.linalg import spsolve
 import os
 import sys
+import matplotlib.pyplot as plt
+import matplotlib.tri as tri
 
 # Importa parâmetros reais
 import config
@@ -298,6 +300,59 @@ print(f"Pressão Mínima:      {YELLOW}{h_min:.3f}{RESET} {PURPLE}(Superfície S
 print(f"Pressão Máxima:      {YELLOW}{h_max:.3f}{RESET} {PURPLE}(Fundo do Rio){RESET}")
 print(f"Pressão Média:       {YELLOW}{h_mean:.3f}{RESET}")
 print(f"Status da Execução:  {GREEN}SUCESSO{RESET}")
+
+# ==============================================================================
+# 7. PLOTAGEM RÁPIDA (MATPLOTLIB)
+# ==============================================================================
+print(f"\n{PURPLE}[GERANDO GRÁFICO PREVIEW]{RESET}")
+
+try:
+    # Preparar dados para Matplotlib
+    x = points[:, 0]
+    y = points[:, 1]
+    triangulation = tri.Triangulation(x, y, triangles)
+
+    # Configurar Plot
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # Mapa de Cores da Pressão (h)
+    # cmap='RdBu_r' faz Azul=Negativo (Seco), Vermelho=Positivo (Água)
+    contour = ax.tricontourf(triangulation, h_new, levels=20, cmap='RdBu_r')
+    cbar = plt.colorbar(contour, ax=ax)
+    cbar.set_label("Carga de Pressão h [m]")
+
+    # Linha do Lençol Freático (h=0)
+    ax.tricontour(triangulation, h_new, levels=[0.0], colors='white', linewidths=2)
+
+    # Vetores de Velocidade (Quiver)
+    # Precisamos interpolar a velocidade (que está nos elementos) para os nós ou centróides
+    # Para simplificar, vamos plotar nos centróides dos triângulos
+    xc = np.mean(x[triangles], axis=1)
+    yc = np.mean(y[triangles], axis=1)
+    u = velocidades_elementos[:, 0]
+    v = velocidades_elementos[:, 1]
+    
+    # Normalizar para visualização (opcional, ou plotar como está)
+    # Vamos pular alguns vetores se houver muitos elementos
+    step = 1 
+    if Nelems > 2000: step = 10
+    elif Nelems > 500: step = 5
+    
+    ax.quiver(xc[::step], yc[::step], u[::step], v[::step], color='black', scale=0.05, width=0.002)
+
+    ax.set_title("Resultado Final: Pressão e Fluxo")
+    ax.set_xlabel("X [m]")
+    ax.set_ylabel("Y [m]")
+    ax.set_aspect('equal')
+
+    # Salvar
+    plot_file = "resultados/preview_simulacao.png"
+    plt.savefig(plot_file, dpi=300)
+    print(f"Gráfico salvo: {YELLOW}{plot_file}{RESET}")
+    # plt.show() # Descomente se quiser abrir a janela (pode travar no Docker/WSL sem GUI)
+
+except Exception as e:
+    print(f"{RED}Erro ao gerar gráfico Matplotlib: {e}{RESET}")
 
 print(f"{YELLOW}{'='*80}{RESET}")
 print(f"{PURPLE}FIM DO RELATÓRIO{RESET}\n")
