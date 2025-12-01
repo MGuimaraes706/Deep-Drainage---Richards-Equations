@@ -1,276 +1,112 @@
+"""Solver simplificado para o caso estacionário da Equação de Richards."""
 
+from __future__ import annotations
 
-# Solver de Richards 2D FEM linear (triângulos), sem FEniCS
+import os
+from typing import Tuple
 
-# Imports padrão
 import numpy as np
+from scipy.sparse import diags
+from scipy.sparse.linalg import spsolve
+
+import base
+import config
 
 
-# Logging automático da saída do terminal (arquivo + terminal)
-import sys
-def print_log(*args, **kwargs):
+# ---------------------------------------------------------------------------
+# Utilidades de log (recicla o arquivo textual do pipeline clássico)
+# ---------------------------------------------------------------------------
+def print_log(*args, **kwargs) -> None:
     text = " ".join(str(a) for a in args)
     print(*args, **kwargs)
     with open("saida_terminal_pipeline.txt", "a", encoding="utf-8") as f_log:
         f_log.write(text + "\n")
 
 
-# Solver de Richards 2D FEM linear (triângulos), sem FEniCS
+# ---------------------------------------------------------------------------
+# Caso estacionário 1D
+# ---------------------------------------------------------------------------
+def montar_sistema_1d(
+    altura: float,
+    n_pontos: int,
+    h_topo: float,
+    h_fundo: float,
+    ks: float,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Discretiza d/dz[K (dh/dz + 1)] = 0 assumindo K=Ks constante."""
 
-# Imports padrão
-import numpy as np
-import meshio
-from scipy.sparse import lil_matrix
-from scipy.sparse.linalg import spsolve
-# Importa parâmetros reais
-import config
+    z = np.linspace(0.0, altura, n_pontos)
+    dz = z[1] - z[0]
 
+    # Usamos um operador de segunda derivada para o termo dh/dz, assumindo K constante.
+    main = -2.0 * np.ones(n_pontos)
+    off = np.ones(n_pontos - 1)
+    lap = diags([off, main, off], offsets=[-1, 0, 1], format="csr") / dz**2
 
-# Códigos ANSI para cores
-RED = '\033[31m'
-YELLOW = '\033[33m'
-PURPLE = '\033[35m'
-GREEN = '\033[32m'
-RESET = '\033[0m'
+    # Termo da gravidade: d/dz(K) = 0, então sobra apenas o gradiente imposto.
+    # O RHS representa a derivada da carga geodésica (1). Como K é constante, fica -K * d(1)/dz = 0.
+    rhs = np.zeros(n_pontos)
 
+    # Condições de contorno Dirichlet
+    lap = lap.tolil()
+    lap[0, :] = 0.0
+    lap[0, 0] = 1.0
+    rhs[0] = h_topo
+    lap[-1, :] = 0.0
+    lap[-1, -1] = 1.0
+    rhs[-1] = h_fundo
 
-
-# Parâmetros do problema
-g = 9.81  # gravidade [m/s^2]
-dt = 3600.0  # 1 hora
-tempo_total = 24*3600.0
-Q_rio = config.VAZAO_RIO
-nivel_rio = config.NIVEL_AGUA_ABSOLUTO
-
-# Importa materiais e tags
-import h5py
-import base
-with h5py.File("malha_dominio.h5", "r") as f:
-	tags_materiais = np.array(f["data2"])
-
-# Ler malha 2D (malha_dominio.xdmf)
-malha = meshio.read("malha_dominio.xdmf")
-points = malha.points
-triangles = None
-for cell_block in malha.cells:
-	if cell_block.type == "triangle":
-		triangles = cell_block.data
-		break
-if triangles is None:
-	raise RuntimeError("Malha não contém elementos triangulares!")
+    return z, lap.tocsr() * ks, rhs
 
 
-# Ler malha 2D (malha_dominio.xdmf)
-malha = meshio.read("malha_dominio.xdmf")
-points = malha.points
-triangles = None
-for cell_block in malha.cells:
-	if cell_block.type == "triangle":
-		triangles = cell_block.data
-		break
-if triangles is None:
-	raise RuntimeError("Malha não contém elementos triangulares!")
-Nnodes = points.shape[0]
-Nelems = triangles.shape[0]
+def resolver_1d() -> None:
+    params = base.MATERIAIS[base.TAG_SOLO_INFERIOR]
+    altura = config.PROFUNDIDADE_DOMINIO if hasattr(config, "PROFUNDIDADE_DOMINIO") else 6.0
+    n_pontos = 51
+    h_topo = -2.0
+    h_fundo = 0.0
+    ks = params["ks"]
 
-# Condições de contorno: exemplo - h=0 no topo (y=max), h=-2 na base (y=min)
-y = points[:,1]
+    print_log("=" * 72)
+    print_log("== Caso Estacionário 1D da Equação de Richards (K constante) ==")
+    print_log("=" * 72)
+    print_log(f"Altura da coluna: {altura:.2f} m | Pontos: {n_pontos}")
+    print_log(f"Ks utilizado: {ks:.2e} m/s")
+    print_log(f"Cond. topo: {h_topo:.2f} m | Cond. fundo: {h_fundo:.2f} m")
 
-h_top = 0.0
-h_bottom = -2.0
-tol = 1e-8
-nodes_top = np.where(np.abs(y - y.max()) < tol)[0]
-nodes_bottom = np.where(np.abs(y - y.min()) < tol)[0]
-# Bordas esquerda e direita
-x = points[:,0]
-h_esq = 0.0  # ou outro valor físico adequado
-h_dir = -2.0 # ou outro valor físico adequado
-nodes_left = np.where(np.abs(x - x.min()) < tol)[0]
-nodes_right = np.where(np.abs(x - x.max()) < tol)[0]
+    z, matriz, rhs = montar_sistema_1d(altura, n_pontos, h_topo, h_fundo, ks)
+    h_sol = spsolve(matriz, rhs)
 
+    gradiente = np.gradient(h_sol, z)
+    fluxo = -ks * (gradiente + 1.0)  # q = -K (dh/dz + 1)
 
+    print_log("\nPerfil obtido (primeiros 5 pontos):")
+    for zi, hi, qi in zip(z[:5], h_sol[:5], fluxo[:5]):
+        print_log(f"z = {zi:5.2f} m | h = {hi:6.3f} m | q = {qi: .3e} m/s")
 
-# ====== RELATÓRIO DE EXECUÇÃO DA SIMULAÇÃO ======
+    print_log("...")
+    print_log(f"z = {z[-1]:5.2f} m | h = {h_sol[-1]:6.3f} m | q = {fluxo[-1]: .3e} m/s")
 
-
-print("="*72)
-print("==== Iniciando pipeline de simulação de drenagem " + "="*23)
-print("="*72)
-print("")
-print(f"{PURPLE}ARQUIVO DE MALHA{RESET}")
-print(f"Caminho:         {YELLOW}malha_dominio.xdmf{RESET}")
-print(f"Caminho Bordas:  {YELLOW}malha_bordas.xdmf{RESET}")
-print(f"Pontos (Nós):    {YELLOW}{Nnodes}{RESET}")
-print(f"Elementos (Tri): {YELLOW}{Nelems}{RESET}")
-print("")
-print(f"{PURPLE}PARÂMETROS FÍSICOS{RESET}")
-print(f"Vazão do Rio (Q):          {GREEN}{Q_rio:.2f}{RESET} m³/s")
-print(f"Coeficiente de Manning (n): {GREEN}{config.MANNING_N}{RESET}")
-ks_presentes = [base.MATERIAIS.get(tag, {"ks": 0})["ks"] for tag in np.unique(tags_materiais)]
-ks_medio = np.mean(ks_presentes) if ks_presentes else 0
-print(f"Condutividade (Ks):        {GREEN}{ks_medio:.2e}{RESET} m/s (média dos materiais)")
-print(f"Cota de Fundo do Duto:     {GREEN}{config.Y_FUNDO_ADUELA:.3f}{RESET} m")
-print(f"Lâmina d'Água (h):         {GREEN}{config.LAMINA_AGUA:.3f}{RESET} m")
-print(f"Gravidade (g):             {GREEN}{g:.2f}{RESET} m/s²")
-print(f"Nível Absoluto da Água:    {GREEN}{nivel_rio:.3f}{RESET} m")
-print("")
-print(f"{PURPLE}CONFIGURAÇÃO DO SOLVER{RESET}")
-print(f"Tempo Total:               {YELLOW}24 horas{RESET}")
-print(f"Passo de Tempo (dt):       {YELLOW}{dt:.1f}{RESET} s (1 hora)")
-print(f"Método de Integração:      {YELLOW}Backward-Euler{RESET}")
-print(f"Tolerância Picard:         {YELLOW}1e-4{RESET}")
-print(f"Max Iterações:             {YELLOW}15{RESET}")
-print("")
-print(f"{PURPLE}CONDIÇÕES DE CONTORNO{RESET}")
-print(f"Esquerda: {YELLOW}Dirichlet Variável{RESET} ({PURPLE}Lençol Alto{RESET})")
-print(f"Direita:  {YELLOW}Dirichlet Variável{RESET} ({PURPLE}Lençol Baixo{RESET})")
-print(f"Topo:     {YELLOW}Dirichlet Constante{RESET} ({PURPLE}Superfície Seca{RESET})")
-print(f"Rio:      {YELLOW}Mista{RESET} ({PURPLE}Seepage Face / Hidrostática{RESET})")
-print("")
-print(f"{YELLOW}{'='*72}{RESET}")
-print(f"{YELLOW}==== PROCESSAMENTO TEMPORAL {'='*39}{RESET}")
-print(f"{YELLOW}{'='*72}{RESET}")
+    if not os.path.exists("resultados"):
+        os.makedirs("resultados")
+    np.savez(
+        "resultados/caso_estacionario_1d.npz",
+        z=z,
+        h=h_sol,
+        fluxo=fluxo,
+        ks=ks,
+    )
+    print_log("\nResultados salvos em resultados/caso_estacionario_1d.npz")
+    print_log("=" * 72)
 
 
-# Montagem da matriz global
-A = lil_matrix((Nnodes, Nnodes))
-b = np.zeros(Nnodes)
+if __name__ == "__main__":
+    resolver_1d()
 
-
-
-# Montagem da matriz global com Ks por elemento
-for idx_elem, elem in enumerate(triangles):
-	node_ids = elem
-	coords = points[node_ids, :2]
-	x1, y1 = coords[0]
-	x2, y2 = coords[1]
-	x3, y3 = coords[2]
-	area = 0.5 * np.abs((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1))
-	b1 = y2 - y3
-	b2 = y3 - y1
-	b3 = y1 - y2
-	c1 = x3 - x2
-	c2 = x1 - x3
-	c3 = x2 - x1
-	B = np.array([[b1, b2, b3], [c1, c2, c3]]) / (2*area)
-	# Pega o tag do material deste elemento
-	tag_mat = tags_materiais[idx_elem]
-	props = base.MATERIAIS.get(tag_mat, None)
-	if props is None:
-		Ks_elem = 1e-10  # valor mínimo de segurança
-	else:
-		Ks_elem = props["ks"]
-	k_local = Ks_elem * area * (B.T @ B)
-	for i in range(3):
-		for j in range(3):
-			A[node_ids[i], node_ids[j]] += k_local[i, j]
-	# Fonte (zero neste exemplo)
-
-# Vetor de carga (fonte nula)
-# b já é zero
-
-
-
-# Diagnóstico de condições de contorno
-if len(nodes_top) == 0:
-	print(f"{RED}AVISO: Nenhum nó identificado no topo!{RESET}")
-if len(nodes_bottom) == 0:
-	print(f"{RED}AVISO: Nenhum nó identificado na base!{RESET}")
-if len(nodes_left) == 0:
-	print(f"{RED}AVISO: Nenhum nó identificado na esquerda!{RESET}")
-if len(nodes_right) == 0:
-	print(f"{RED}AVISO: Nenhum nó identificado na direita!{RESET}")
-
-fixed_nodes = np.concatenate([nodes_top, nodes_bottom, nodes_left, nodes_right])
-fixed_values = np.concatenate([
-	np.full(nodes_top.shape, h_top),
-	np.full(nodes_bottom.shape, h_bottom),
-	np.full(nodes_left.shape, h_esq),
-	np.full(nodes_right.shape, h_dir)
-])
-# Remover duplicatas
-unique_nodes, idx_unique = np.unique(fixed_nodes, return_index=True)
-unique_values = fixed_values[idx_unique]
-for idx, node in enumerate(unique_nodes):
-	A[node, :] = 0
-	A[node, node] = 1
-	b[node] = unique_values[idx]
-
-
-
-
-
-num_passos = int(tempo_total // dt)
-h_last = None
-nan_detected = False
-for passo in range(1, num_passos+1):
-	h = spsolve(A.tocsr(), b)
-	if np.any(np.isnan(h)):
-		print(f"{RED}ERRO: Solução contém valores nan no passo {passo}!{RESET}")
-		nan_detected = True
-		break
-	h_last = h.copy()
-	# Simulação de convergência e erro fictício para exemplo
-	if passo <= 3:
-		it = 4
-		erro = 1.25e-4 if passo == 1 else (8.40e-5 if passo == 2 else 6.10e-5)
-	elif passo == 12:
-		it = 3
-		erro = 4.10e-5
-	elif passo >= num_passos-1:
-		it = 3
-		erro = 3.25e-5 if passo == num_passos-1 else 3.21e-5
-	else:
-		it = 3
-		erro = 5.00e-5
-	# Exibir alguns passos e os finais
-	if passo <= 3 or passo == 12 or passo >= num_passos-1:
-		print(f"Tempo t =  {YELLOW}{passo*dt/3600:.1f}{RESET} {PURPLE}h{RESET} | Status: {GREEN}Convergiu{RESET} (Iter: {YELLOW}{it}{RESET}) | Erro: {YELLOW}{erro:.2e}{RESET}")
-	elif passo == 4:
-		print(f"...")
-
-
-
-cells = [("triangle", triangles)]
-h_min = np.min(h)
-h_max = np.max(h)
-h_mean = np.mean(h)
-
-# Exportar resultado para VTU
-saida_vtu = "resultados/drenagem.pvd"
-import os
-if not os.path.exists("resultados"): os.makedirs("resultados")
-
-if h_last is not None and not nan_detected:
-	cells = [("triangle", triangles)]
-	mesh = meshio.Mesh(points, cells, point_data={"h": h_last})
-	mesh.write("saida_solver2.vtu")
-	h_min = np.min(h_last)
-	h_max = np.max(h_last)
-	h_mean = np.mean(h_last)
-else:
-	h_min = h_max = h_mean = float('nan')
-
-
-
-print(f"\n{PURPLE}ARQUIVOS GERADOS{RESET}\n")
-print(f"Visualização: {YELLOW}{saida_vtu}{RESET} (ParaView)")
-print(f"Malha HDF5:   {YELLOW}malha_dominio.h5{RESET}")
-
-print(f"\n{PURPLE}RESUMO ESTATÍSTICO FINAL (t=24h){RESET}\n")
-if not nan_detected:
-	print(f"Pressão Mínima:      {YELLOW}{h_min:.3f}{RESET} {PURPLE}(Superfície Seca){RESET}")
-	print(f"Pressão Máxima:      {YELLOW}{h_max:.3f}{RESET} {PURPLE}(Fundo do Rio){RESET}")
-	print(f"Pressão Média:       {YELLOW}{h_mean:.3f}{RESET}")
-	print(f"Status da Execução:  {GREEN}SUCESSO{RESET}")
-else:
-	print(f"{RED}Falha na simulação: solução contém valores nan. Verifique as condições de contorno e a malha!{RESET}")
-	print(f"Pressão Mínima:      nan")
-	print(f"Pressão Máxima:      nan")
-	print(f"Pressão Média:       nan")
-	print(f"Status da Execução:  {RED}FALHA{RESET}")
-
-print(f"{YELLOW}{'='*80}{RESET}")
-print(f"{PURPLE}FIM DO RELATÓRIO{RESET}\n")
+    print_log(
+        "\nObservação: este solver trata apenas o problema 1D estacionário. "
+        "Extensões para 2D podem reutilizar a estrutura atual trocando o operador "
+        "discreto laplaciano por uma montagem FEM com malha triangular."
+    )
 
 
