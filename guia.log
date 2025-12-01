@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  1 DEC 2025 14:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.15)  1 DEC 2025 14:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -128,51 +128,90 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+)) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen159
+\lightrulewidth=\dimen160
+\cmidrulewidth=\dimen161
+\belowrulesep=\dimen162
+\belowbottomsep=\dimen163
+\aboverulesep=\dimen164
+\abovetopsep=\dimen165
+\cmidrulesep=\dimen166
+\cmidrulekern=\dimen167
+\defaultaddspace=\dimen168
+\@cmidla=\count297
+\@cmidlb=\count298
+\@aboverulesep=\dimen169
+\@belowrulesep=\dimen170
+\@thisruleclass=\count299
+\@lastruleclass=\count300
+\@thisrulewidth=\dimen171
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabularx.sty
+Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
+ (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+Package: array 2025/06/08 v2.6j Tabular extension package (FMi)
+\col@sep=\dimen172
+\ar@mcellbox=\box55
+\extrarowheight=\dimen173
+\NC@list=\toks24
+\extratabsurround=\skip54
+\backup@length=\skip55
+\ar@cellbox=\box56
+)
+\TX@col@width=\dimen174
+\TX@old@table=\dimen175
+\TX@old@col=\dimen176
+\TX@target=\dimen177
+\TX@delta=\dimen178
+\TX@cols=\count301
+\TX@ftn=\toks25
+) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
  (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
-\KV@toks@=\toks24
+\KV@toks@=\toks26
 ) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
  (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
 ))
-\Gm@cnth=\count297
-\Gm@cntv=\count298
-\c@Gm@tempcnt=\count299
-\Gm@bindingoffset=\dimen159
-\Gm@wd@mp=\dimen160
-\Gm@odd@mp=\dimen161
-\Gm@even@mp=\dimen162
-\Gm@layoutwidth=\dimen163
-\Gm@layoutheight=\dimen164
-\Gm@layouthoffset=\dimen165
-\Gm@layoutvoffset=\dimen166
-\Gm@dimlist=\toks25
+\Gm@cnth=\count302
+\Gm@cntv=\count303
+\c@Gm@tempcnt=\count304
+\Gm@bindingoffset=\dimen179
+\Gm@wd@mp=\dimen180
+\Gm@odd@mp=\dimen181
+\Gm@even@mp=\dimen182
+\Gm@layoutwidth=\dimen183
+\Gm@layoutheight=\dimen184
+\Gm@layouthoffset=\dimen185
+\Gm@layoutvoffset=\dimen186
+\Gm@dimlist=\toks27
  (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)) (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-06-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count300
+\l__color_backend_stack_int=\count305
+) (guia.aux
+Package babel Info: 'brazil' activates 'portuges' shorthands.
+(babel)             Reported on input line 5.
 )
-No file guia.aux.
 \openout1 = `guia.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-Package babel Info: 'brazil' activates 'portuges' shorthands.
-(babel)             Reported on input line 15.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -207,11 +246,11 @@ Package babel Info: 'brazil' activates 'portuges' shorthands.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 17.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 19.
 (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 17.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 19.
  (C:\Users\Matheus Guimarães\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
@@ -221,34 +260,6 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 {C:/Users/Matheus Guimarães/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 
 [2]
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:95: Undefined control sequence.
-<recently read> \midrule 
-                         
-l.95 \midrule
-             
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-c:/Users/Matheus Guimarães/Documents/Deep-Drainage---Richards-Equations/guia.tex:105: Undefined control sequence.
-<recently read> \bottomrule 
-                            
-l.105 \bottomrule
-                 
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-
-Overfull \hbox (791.50177pt too wide) in paragraph at lines 92--107
- [] 
- []
-
-
 
 [3]
 
@@ -259,17 +270,17 @@ L3 programming layer <2025-09-02>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 3646 strings out of 468081
- 56703 string characters out of 5419460
- 478026 words of memory out of 5000000
- 32302 multiletter control sequences out of 15000+600000
+ 3852 strings out of 468081
+ 60222 string characters out of 5419460
+ 487500 words of memory out of 5000000
+ 32496 multiletter control sequences out of 15000+600000
  643475 words of font info for 83 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,14n,65p,808b,216s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,13n,65p,808b,277s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\Matheus Guimarães\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Matheus Guimarães/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on guia.pdf (4 pages, 200477 bytes).
+Output written on guia.pdf (4 pages, 201774 bytes).
 PDF statistics:
- 333 PDF objects out of 1000 (max. 8388607)
+ 335 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
