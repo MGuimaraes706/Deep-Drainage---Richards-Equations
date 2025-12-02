@@ -54,6 +54,15 @@ Não há termos de fonte no lado direito. Montamos a matriz global $\mathbf{K}$ 
 \end{figure}
 O desenho da Figura~\ref{fig:elemento1d} representa exatamente a transformação isoparamétrica usual: começamos do segmento de referência $\xi\in[0,1]$, associamos $N_1=1-\xi$, $N_2=\xi$ e mapeamos para o segmento físico $[z_i,z_j]$. O comprimento $L_e$ surge do Jacobiano ($\mathrm{d}z/\mathrm{d}\xi=L_e$) e garante que o gradiente das funções de forma seja constante, facilitando o cálculo da matriz local.
 
+\paragraph{Construção passo a passo}
+\begin{enumerate}
+    \item \textbf{Elemento de referência:} considere o segmento unitário em coordenada natural $\xi$, com nós $\xi=0$ e $\xi=1$.
+    \item \textbf{Funções de forma:} associe $N_1(\xi)=1-\xi$ e $N_2(\xi)=\xi$; no espaço físico, o campo $h_e(z)=N_1(\xi)h_i+N_2(\xi)h_j$.
+    \item \textbf{Mapeamento geométrico:} a posição física é $z(\xi)=N_1(\xi)z_i+N_2(\xi)z_j$, cujo Jacobiano vale $J=\mathrm{d}z/\mathrm{d}\xi=L_e$.
+    \item \textbf{Gradientes:} pela regra da cadeia, $\mathrm{d}N/\mathrm{d}z = (1/J) \, \mathrm{d}N/\mathrm{d}\xi$, logo $\mathrm{d}N_1/\mathrm{d}z=-1/L_e$ e $\mathrm{d}N_2/\mathrm{d}z=1/L_e$.
+    \item \textbf{Matriz local:} substitua esses gradientes em $\mathbf{K}_e = \int B^T K_s B \mathrm{d}\Omega$ para chegar à matriz $\tfrac{K_s}{L_e}\begin{bmatrix}1 & -1 \\ -1 & 1\end{bmatrix}$ usada na montagem.
+\end{enumerate}
+
 \subsection{Sistema Linear e Pós-processamento}
 O sistema resultante é $\mathbf{K}\,\mathbf{h}=\mathbf{f}$, resolvido com \texttt{spsolve}. O fluxo em cada elemento é calculado por
 \begin{equation}
@@ -99,6 +108,15 @@ com $A_e$ a área do triângulo. Se $K$ for assumido constante por elemento (cas
     \label{fig:elemento2d}
 \end{figure}
 Na Figura~\ref{fig:elemento2d} destacamos o triângulo de referência com coordenadas baricêntricas $(\lambda_1,\lambda_2,\lambda_3)$: cada função de forma é igual à respectiva coordenada, resultando em gradientes constantes após o mapeamento afim para o triângulo físico. Os vetores $\mathbf{B}$ nada mais são que as derivadas espaciais dessas funções, reescaladas pela área $A_e$ conforme a expressão apresentada acima.
+
+\paragraph{Construção passo a passo}
+\begin{enumerate}
+    \item \textbf{Triângulo de referência:} use coordenadas baricêntricas $(\lambda_1,\lambda_2,\lambda_3)$ no triângulo unitário, com $\lambda_1+\lambda_2+\lambda_3=1$.
+    \item \textbf{Funções de forma:} defina $N_i = \lambda_i$, de modo que $N_i=1$ no nó $i$ e zero nos demais.
+    \item \textbf{Mapeamento afim:} a posição física é $\mathbf{x}(\lambda) = \sum_i N_i\mathbf{x}_i$, cujo Jacobiano $J = 2A_e$ relaciona áreas do elemento de referência ao triângulo físico.
+    \item \textbf{Gradientes constantes:} as derivadas espaciais das funções resultam em $\nabla N_i = \tfrac{1}{2A_e}(b_i, c_i)$, onde $b_i = y_j - y_k$ e $c_i = x_k - x_j$.
+    \item \textbf{Matriz local:} substitua os gradientes em $\mathbf{K}_e = K(h_e) A_e \mathbf{B}^T \mathbf{B}$ e em $\mathbf{M}_e$ para obter as contribuições de rigidez e massa do triângulo isoparamétrico.
+\end{enumerate}
 
 \subsection{Montagem e Aplicação de Contornos}
 As matrizes locais são adicionadas ao sistema global usando a numeração de nós retornada pelo Gmsh. Os contornos Dirichlet (topo, fundo, esquerda, direita e parede interna) são tratados zerando as linhas correspondentes na matriz global (em formato LIL) e forçando a diagonal igual a 1, com o vetor de força substituído pelo valor prescrito. Nenhum termo de massa aparece, pois estamos tratando o regime estacionário. O sistema final $\mathbf{K}\,\mathbf{h}=\mathbf{f}$ pode ser resolvido com \texttt{spsolve} diretamente.
