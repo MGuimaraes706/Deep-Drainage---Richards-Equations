@@ -1,6 +1,13 @@
 # Deep Drainage - Richards Equations (Pipeline Clássico)
 
-## Fluxo de Trabalho
+## 📌 Sobre o Projeto
+Este repositório contém um simulador computacional desenvolvido em **Python** (utilizando a biblioteca **FEniCS** para o Método de Elementos Finitos) focado na resolução da **Equação de Richards**. Ele modela o fluxo de fluidos em meios porosos (saturados e não-saturados), aplicado a problemas de drenagem profunda e infiltração.
+
+O pipeline de simulação é robusto e engloba a geração de malhas não estruturadas via **Gmsh**, conversão eficiente de domínios, e saída de dados em alta fidelidade para o **ParaView**.
+
+> 📖 **Documentação Matemática:** Para compreender em detalhes a formulação fraca, discretização e as técnicas numéricas empregadas no solver, consulte o documento [**`guia.pdf`**](./guia.pdf) anexo a este repositório.
+
+## 🚀 Fluxo de Trabalho
 
 1. **Gere a malha no Gmsh**
    - Abra o arquivo `.geo` no Gmsh.
@@ -95,9 +102,9 @@ Malha HDF5:   malha_dominio.h5
 
 [RESUMO ESTATÍSTICO FINAL (t=24h)]
 
-Pressão Mínima:      nan (Superfície Seca)
-Pressão Máxima:      nan (Fundo do Rio)
-Pressão Média:       nan
+Pressão Mínima:      -2.450 m (Superfície Seca)
+Pressão Máxima:       0.780 m (Fundo do Rio)
+Pressão Média:       -0.542 m
 Status da Execução:  SUCESSO
 ================================================================================
 FIM DO RELATÓRIO
